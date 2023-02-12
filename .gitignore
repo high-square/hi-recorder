@@ -35,4 +35,5 @@ application.yml
 /.nb-gradle/
 
 ### VS Code ###
+<<<<<<< HEAD
 .vscode/
