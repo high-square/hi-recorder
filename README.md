@@ -8,6 +8,6 @@
 
 ## [요구사항 구체화](requirements-analysis/undefined/undefined-2/)
 
-> #### [Use Case](requirements-analysis/undefined/undefined-2/use-case.md)
+> ### [Use Case](requirements-analysis/undefined/undefined-2/use-case.md)
 >
 > ### [요구사항 구체화](requirements-analysis/undefined/undefined-2/undefined/)
