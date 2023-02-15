@@ -1,12 +1,10 @@
-package highsquare.hirecoder.Entity;
+package highsquare.hirecoder.entity;
 
 import lombok.Getter;
-import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+
+import static javax.persistence.FetchType.*;
 
 
 @Entity
@@ -17,7 +15,14 @@ public class Board {
     @Column(name="board_id")
     private Long id;
     // 게시글 작성자 Member 아이디
+    @ManyToOne(fetch= LAZY)
+    @JoinColumn(name="member_id")
+    private Member member;
     // 게시글 제목
+    @ManyToOne(fetch= LAZY)
+    @JoinColumn(name="study_id")
+    private Study study;
+
     private String title;
     // 파일
     /**
