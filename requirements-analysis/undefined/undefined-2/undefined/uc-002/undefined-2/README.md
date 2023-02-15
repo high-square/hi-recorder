@@ -1,5 +1,9 @@
 # 게시글 조회
 
-## 내가 쓴 게시글 조회
+{% content-ref url="undefined.md" %}
+[undefined.md](undefined.md)
+{% endcontent-ref %}
 
-## 스터디 게시글 조회
+{% content-ref url="undefined-1.md" %}
+[undefined-1.md](undefined-1.md)
+{% endcontent-ref %}

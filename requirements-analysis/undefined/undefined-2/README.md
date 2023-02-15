@@ -1,5 +1,9 @@
 # 요구사항 구체화
 
-## [Use Case](use-case.md)
+{% content-ref url="use-case.md" %}
+[use-case.md](use-case.md)
+{% endcontent-ref %}
 
-## [Use Case 상세](undefined/)
+{% content-ref url="undefined/" %}
+[undefined](undefined/)
+{% endcontent-ref %}

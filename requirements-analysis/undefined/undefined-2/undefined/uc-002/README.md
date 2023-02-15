@@ -1,9 +1,17 @@
 # UC-002 게시글
 
-## [게시글 작성](undefined.md)
+{% content-ref url="undefined.md" %}
+[undefined.md](undefined.md)
+{% endcontent-ref %}
 
-## [게시글 수정](undefined-1.md)
+{% content-ref url="undefined-1.md" %}
+[undefined-1.md](undefined-1.md)
+{% endcontent-ref %}
 
-## [게시글 조회](undefined-2/)&#x20;
+{% content-ref url="undefined-2/" %}
+[undefined-2](undefined-2/)
+{% endcontent-ref %}
 
-## [게시글 삭제](undefined-3.md)
+{% content-ref url="undefined-3.md" %}
+[undefined-3.md](undefined-3.md)
+{% endcontent-ref %}

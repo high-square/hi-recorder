@@ -1,7 +1,13 @@
 # Use case 상세
 
-## [UC-001 로그온](uc-001/)
+{% content-ref url="uc-001/" %}
+[uc-001](uc-001/)
+{% endcontent-ref %}
 
-## [UC-002 게시글](uc-002/)
+{% content-ref url="uc-002/" %}
+[uc-002](uc-002/)
+{% endcontent-ref %}
 
-## [UC-003 댓글](uc-003/)
+{% content-ref url="uc-003/" %}
+[uc-003](uc-003/)
+{% endcontent-ref %}

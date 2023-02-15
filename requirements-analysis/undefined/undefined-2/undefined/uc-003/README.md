@@ -1,9 +1,17 @@
 # UC-003 댓글
 
-## [댓글 작성](undefined.md)
+{% content-ref url="undefined.md" %}
+[undefined.md](undefined.md)
+{% endcontent-ref %}
 
-## [댓글 수정](undefined-1.md)
+{% content-ref url="undefined-1.md" %}
+[undefined-1.md](undefined-1.md)
+{% endcontent-ref %}
 
-## [내가 쓴 댓글 조회](undefined-2.md)
+{% content-ref url="undefined-2.md" %}
+[undefined-2.md](undefined-2.md)
+{% endcontent-ref %}
 
-## [댓글 삭제](undefined-3.md)
+{% content-ref url="undefined-3.md" %}
+[undefined-3.md](undefined-3.md)
+{% endcontent-ref %}
