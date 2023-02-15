@@ -1,4 +1,4 @@
-# Use case 상세
+# 요구사항 구체화
 
 {% content-ref url="uc-001/" %}
 [uc-001](uc-001/)
