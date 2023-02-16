@@ -1,18 +1,21 @@
 package highsquare.hirecoder.entity;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 import static javax.persistence.FetchType.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 
 @Entity
-@Getter
+@Getter @Setter
 public class Board {
     // 게시글 아이디
     @Id @GeneratedValue
-    @Column(name="board_id")
     private Long id;
     // 게시글 작성자 Member 아이디
     @ManyToOne(fetch= LAZY)
