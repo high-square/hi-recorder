@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>Clean Blog - Start Bootstrap Theme</title>
+  <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
+  <!-- Font Awesome icons (free version)-->
+  <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+  <!-- Google fonts-->
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+  <!-- Core theme CSS (includes Bootstrap)-->
+  <link href="/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+  <div class="container px-4 px-lg-5">
+    <a class="navbar-brand" href="index.html">Start Bootstrap</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ms-auto py-4 py-lg-0">
+        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">About</a></li>
+        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="post.html">Sample Post</a></li>
+        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Page Header-->
+<header class="masthead" style="background-image: url('/assets/img/home-bg.jpg')">
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="site-heading">
+          <h1>Clean Blog</h1>
+          <span class="subheading">A Blog Theme by Start Bootstrap</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- Main Content-->
+<div class="container px-4 px-lg-5">
+  <div class="row gx-4 gx-lg-5 justify-content-center">
+    <h1 class="h1 text-center" th:text="${board.Title}"></h1>
+    <div class="row text-center" style="background-color:#0dcaf0">
+      <div class="col-xl-7"></div>
+      <div class="col-xl-3" style="color:white"><b>작성자 :</b></div>
+      <div class="col-xl-1" th:text="${board.memberName}"></div>
+    </div>
+    <div class="row text-center" style="background-color:#0dcaf0">
+      <div class="col-xl-7"></div>
+      <div class="col-xl-3" style="color:white"><b>조회수 :</b></div>
+      <div class="col-xl-1" th:text="${board.viewCnt}"></div>
+    </div>
+    <div class="row text-center">
+      <div class="col-xl-7"></div>
+      <div class="col-xl-3" style="color:white"><b>좋아요수 :</b></div>
+      <div class="col-xl-1">
+        <input type="hidden" id="like_check" th:value="${likeCheck}">
+        <img class="likeimg" id="likeimg" src="/assets/img/like-icon-file-before.png" width="50px" height="60px">
+        [[${board.likeCnt}]]
+      </div>
+    </div>
+    <hr class="lh-lg"/>
+
+
+    <article class="mb-4">
+      <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+          <div class="col-md-10 col-lg-8 col-xl-7" th:utext="${board.content}">
+
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</div>
+<!-- Footer-->
+<footer class="border-top">
+  <div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <ul class="list-inline text-center">
+          <li class="list-inline-item">
+            <a href="#!">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fas fa-circle fa-stack-2x"></i>
+                                        <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                                    </span>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a href="#!">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fas fa-circle fa-stack-2x"></i>
+                                        <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+                                    </span>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a href="#!">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fas fa-circle fa-stack-2x"></i>
+                                        <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+            </a>
+          </li>
+        </ul>
+        <div class="small text-center text-muted fst-italic">Copyright &copy; Your Website 2022</div>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="../static/js/scripts.js"></script>
+<!-- 좋아요 JS -->
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script th:inline="javascript">
+  $(document).ready(function () {
+    let like_count = document.getElementById('like_count');
+    let likeval = [[${board.likeCnt}]];
+    const board_id = [[${board.id}]];
+    const member_id = [[${session.memberId}]]; // 세션에 로그인한 사용자 id
+    const likeimg = document.getElementById("likeimg")
+
+    if (likeval==true) {
+        likeimg.src="/assets/img/like-icon-file-after.png";
+    }
+
+    // 좋아요 버튼 클릭시 ajax
+    $(".likeimg").on("click",function() {
+      $.ajax({
+          method: "POST",
+          url: "/boards/like",
+          data: {'board_id':board_id,'member_id':member_id},
+        }).done(function(data) {
+          if (data==1) {
+            $(".likeimg").attr("src","/assets/img/like-icon-file-after.png");
+          } else {
+            $(".likeimg").attr("src","/assets/img/like-icon-file-before.png");
+          }
+        });
+    });
+
+
+
+  });
+</script>
+</body>
+</html>
