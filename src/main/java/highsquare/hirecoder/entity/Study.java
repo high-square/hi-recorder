@@ -2,6 +2,7 @@ package highsquare.hirecoder.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import static javax.persistence.FetchType.*;
 @Entity
 @NoArgsConstructor
 @Getter
+@Setter
 public class Study {
     @Id @GeneratedValue
     private Long id;
