@@ -1,6 +1,7 @@
 package highsquare.hirecoder.entity;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,6 +14,7 @@ import static javax.persistence.FetchType.*;
 @Entity
 @Getter
 @EntityListeners(AuditingEntityListener.class)
+@Setter
 public class Comment {
 
     @Id @GeneratedValue
