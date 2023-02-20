@@ -48,6 +48,9 @@ public class Board {
     // 좋아요 수
     private int likeCnt;
 
+    @Enumerated(value = EnumType.STRING)
+    private Kind kind;
+
     public void viewPlus() {
         viewCnt++;
     }
