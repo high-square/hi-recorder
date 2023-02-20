@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import highsquare.hirecoder.entity.StudyMember;
 
 import javax.persistence.EntityManager;
+import javax.validation.constraints.NotNull;
 
 import static highsquare.hirecoder.entity.QStudyMember.studyMember;
 
@@ -18,7 +19,7 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepositoryCustom {
     }
 
     @Override
-    public boolean doesMemberBelongToStudy(Long study_id, Long member_id) {
+    public boolean existsMemberAndStudy(Long study_id, Long member_id) {
         Long result = queryFactory.select(studyMember.id).from(studyMember)
                 .where(studyMember.study.id.eq(study_id),
                         studyMember.member.id.eq(member_id)).fetchFirst();

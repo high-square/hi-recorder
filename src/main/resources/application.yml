@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:h2:tcp://localhost/~/hisquare
     username: sa
-    password: 1234
+    password:
     driver-class-name: org.h2.Driver
 
   jpa:
@@ -13,6 +13,7 @@ spring:
         #        show_sql: true 시스템아웃을 통해 찍음
         format_sql: true
 #    open-in-view: false
+
 
 logging:
   level:

@@ -9,9 +9,12 @@
     <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
 
     <!--  커스텀 js  -->
-    <script src="../static/js/postEdit/markdown.js"></script>
-    <script src="../static/js/postEdit/tag.js"></script>
-    <script src="../static/js/postEdit/postEdit.js"></script>
+    <script src="../static/js/postEdit/markdown.js"
+            th:src="@{/js/postEdit/markdown.js}"></script>
+    <script src="../static/js/postEdit/tag.js"
+            th:src="@{/js/postEdit/tag.js}"></script>
+    <script src="../static/js/postEdit/postEdit.js"
+            th:src="@{/js/postEdit/postEdit.js}"></script>
 
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
@@ -19,11 +22,18 @@
     <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="../static/css/styles.css" rel="stylesheet" />
-    <link href="../static/css/postEdit/postEdit.css" rel="stylesheet">
-
+    <link href="../static/css/styles.css"
+          th:href="@{/css/styles.css}"
+          rel="stylesheet" />
+    <link href="../static/css/postEdit/postEdit.css"
+          th:href="@{/css/postEdit/postEdit.css}"
+          rel="stylesheet">
 </head>
 <body>
+
+<script th:if="${access}" th:inline="javascript">alert([[#{access}]]); history.back();</script>
+<script th:if="${not_member}" th:inline="javascript">alert(#{access.no_member}); history.back();</script>
+
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
     <div class="container px-4 px-lg-5">
@@ -43,7 +53,8 @@
     </div>
 </nav>
 <!-- Page Header-->
-<header class="masthead" style="background-image: url('../static/assets/img/post-bg.jpg')">
+<header class="masthead" style="background-image: url('../static/assets/img/post-bg.jpg')"
+        th:style="${'background-image: url(/assets/img/post-bg.jpg)'}">
     <div class="container position-relative px-1 px-lg-1">
         <div class="post-heading">
             <h1 style="text-align: center">게시글 작성</h1>
@@ -58,7 +69,7 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.7/marked.min.js"></script>
             <!-- 유틸리티 라이브러리 역할 : debounce -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
-            <form action="#" id="form">
+            <form action="#" th:action="@{#}" id="form" method="post">
                     <div class="container">
                     <div>
                         <input id="title" name="title" type="text" class="display-6 mb-2" style="border: none; background: transparent;"

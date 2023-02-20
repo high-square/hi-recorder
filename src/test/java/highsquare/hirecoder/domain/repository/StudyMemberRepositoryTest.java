@@ -58,17 +58,17 @@ class StudyMemberRepositoryTest {
 
         // then
 
-        assertThat(studyMemberRepository.doesMemberBelongToStudy(study1.getId(), member1.getId()))
+        assertThat(studyMemberRepository.existsMemberAndStudy(study1.getId(), member1.getId()))
                 .isTrue();
-        assertThat(studyMemberRepository.doesMemberBelongToStudy(study1.getId(), member2.getId()))
+        assertThat(studyMemberRepository.existsMemberAndStudy(study1.getId(), member2.getId()))
                 .isTrue();
-        assertThat(studyMemberRepository.doesMemberBelongToStudy(study1.getId(), member3.getId()))
+        assertThat(studyMemberRepository.existsMemberAndStudy(study1.getId(), member3.getId()))
                 .isFalse();
-        assertThat(studyMemberRepository.doesMemberBelongToStudy(study2.getId(), member1.getId()))
+        assertThat(studyMemberRepository.existsMemberAndStudy(study2.getId(), member1.getId()))
                 .isTrue();
-        assertThat(studyMemberRepository.doesMemberBelongToStudy(study2.getId(), member2.getId()))
+        assertThat(studyMemberRepository.existsMemberAndStudy(study2.getId(), member2.getId()))
                 .isFalse();
-        assertThat(studyMemberRepository.doesMemberBelongToStudy(study2.getId(), member3.getId()))
+        assertThat(studyMemberRepository.existsMemberAndStudy(study2.getId(), member3.getId()))
                 .isTrue();
     }
 
