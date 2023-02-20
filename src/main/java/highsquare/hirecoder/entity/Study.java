@@ -25,6 +25,7 @@ public class Study {
     private LocalDateTime studyStartDate;
     private LocalDateTime studyFinishDate;
     private Integer crewNumber;
+    @Enumerated(value = EnumType.STRING)
     private MeetingType meetingType;
 
     @OneToOne(fetch = LAZY)

@@ -7,6 +7,15 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
+import static highsquare.hirecoder.entity.ActivityState.진행전;
+import static highsquare.hirecoder.entity.ActivityState.진행중;
+import static highsquare.hirecoder.entity.Kind.CONTENT;
+import static highsquare.hirecoder.entity.Kind.RECRUIT;
+import static highsquare.hirecoder.entity.MeetingType.오프라인;
+import static highsquare.hirecoder.entity.MeetingType.온라인;
+import static highsquare.hirecoder.entity.RecruitState.모집완료;
+import static highsquare.hirecoder.entity.RecruitState.모집중;
+
 @Component
 @RequiredArgsConstructor
 public class InitData {
@@ -26,9 +35,9 @@ public class InitData {
         Member member3 = setMember("경림", "1234", "rim@naver.com");
         Member member4 = setMember("효진", "1234", "hyojin@naver.com");
 
-        // ----------------스터디-----------------
-        Study study1 = setStudy("백엔드1팀");
-        Study study2 = setStudy("백엔드2팀");
+            // ----------------스터디-----------------
+        Study study1 = setStudyData("백엔드1팀", member1, 4, 진행중, 모집완료, 오프라인);
+        Study study2 = setStudyData("백엔드1팀", member2, 5, 진행전, 모집중, 온라인);
 
 
         // ----------------스터디-멤버-----------------
@@ -60,10 +69,12 @@ public class InitData {
                 "              <a href=\"http://spaceipsum.com/\">Space Ipsum</a>\n" +
                 "              &middot; Images by\n" +
                 "              <a href=\"https://www.flickr.com/photos/nasacommons/\">NASA on The Commons</a>\n" +
-                "            </p>");
-        Board board2 = setBoard(member2, study1, "공부할사람 모집합니다 2", 3, 5,"반갑습니다 !!");
-        Board board3 = setBoard(member3, study2, "공부할사람 모집합니다 3", 3, 5,"반갑습니다 !!");
-        Board board4 = setBoard(member4, study2, "공부할사람 모집합니다 4", 3, 5,"반갑습니다 !!");
+                "            </p>", CONTENT);
+        Board board2 = setBoard(member2, study1, "공부할사람 모집합니다 2", 3, 5,"반갑습니다 !!", CONTENT);
+        Board board3 = setBoard(member3, study2, "공부할사람 모집합니다 3", 3, 5,"반갑습니다 !!", CONTENT);
+        Board board4 = setBoard(member4, study2, "공부할사람 모집합니다 4", 3, 5,"반갑습니다 !!", CONTENT);
+        Board board5 = setBoard(member1, study1, "인프런 김영한 강좌 자바 ORM 표준 JPA 프로그래밍 스터디", 5, 10,
+                "안녕하세요 오프라인 스터디 인원 구인합니다. 연락 주세요. </p>", RECRUIT);
 
 
 
@@ -83,7 +94,7 @@ public class InitData {
         persistMember(member1, member2, member3, member4);
         persistStudy(study1, study2);
         persistStudyMember(studyMember1, studyMember2, studyMember3, studyMember4);
-        persistBoard(board1, board2, board3, board4);
+        persistBoard(board1, board2, board3, board4, board5);
         persistComment(comment1, comment2, comment3, comment4, comment5, comment6, comment7, comment8);
     }
 
@@ -110,11 +121,12 @@ public class InitData {
         studyRepository.save(study2);
     }
 
-    private void persistBoard(Board board1, Board board2, Board board3, Board board4) {
+    private void persistBoard(Board board1, Board board2, Board board3, Board board4, Board board5) {
         boardRepository.save(board1);
         boardRepository.save(board2);
         boardRepository.save(board3);
         boardRepository.save(board4);
+        boardRepository.save(board5);
     }
 
     private void persistMember(Member member1, Member member2, Member member3, Member member4) {
@@ -140,7 +152,7 @@ public class InitData {
         return studyMember;
     }
 
-    private static Board setBoard(Member member1, Study study1, String title, int likeCnt, int viewCnt, String content) {
+    private static Board setBoard(Member member1, Study study1, String title, int likeCnt, int viewCnt, String content, Kind kind) {
         Board board = new Board();
         board.setMember(member1);
         board.setStudy(study1);
@@ -148,12 +160,19 @@ public class InitData {
         board.setLikeCnt(likeCnt);
         board.setViewCnt(viewCnt);
         board.setContent(content);
+        board.setKind(kind);
         return board;
     }
 
-    private static Study setStudy(String name) {
+    private static Study setStudyData(String name, Member managerId, int crewCnt, ActivityState activityState, RecruitState recruitState, MeetingType meetingType) {
         Study study = new Study();
         study.setName(name);
+        study.setManager(managerId);
+        study.setCrewNumber(crewCnt);
+        study.setActivityState(activityState);
+        study.setRecruitState(recruitState);
+        study.setMeetingType(meetingType);
+
         return study;
     }
 
