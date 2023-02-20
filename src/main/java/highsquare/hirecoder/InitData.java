@@ -37,7 +37,7 @@ public class InitData {
 
             // ----------------스터디-----------------
         Study study1 = setStudyData("백엔드1팀", member1, 4, 진행중, 모집완료, 오프라인);
-        Study study2 = setStudyData("백엔드1팀", member2, 5, 진행전, 모집중, 온라인);
+        Study study2 = setStudyData("백엔드2팀", member2, 5, 진행전, 모집중, 온라인);
 
 
         // ----------------스터디-멤버-----------------
