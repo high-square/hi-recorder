@@ -51,6 +51,8 @@
 <div class="container px-4 px-lg-5">
   <div class="row gx-4 gx-lg-5 justify-content-center">
     <h1 class="h1 text-center" th:text="${board.Title}"></h1>
+    <a class="col-xl-3"  th:if="${board.memberId==session.memberId}" href="javascript:openEdit()">수정하기</a>
+    <a class="col-xl-3"  th:if="${board.memberId==session.memberId}" href="javascript:openDelete()">삭제하기</a>
     <div class="row text-center" style="background-color:#0dcaf0">
       <div class="col-xl-7"></div>
       <div class="col-xl-3" style="color:white"><b>작성자 :</b></div>
@@ -65,8 +67,10 @@
       <div class="col-xl-7"></div>
       <div class="col-xl-3" style="color:white"><b>좋아요수 :</b></div>
       <div class="col-xl-1">
+      <img class="likeimg" id="likeimg" src="/assets/img/like-icon-file-before.png" width="50px" height="60px">
+      </div>
+      <div class="col-xl-1" id="boardLikeCnt">
         <input type="hidden" id="like_check" th:value="${likeCheck}">
-        <img class="likeimg" id="likeimg" src="/assets/img/like-icon-file-before.png" width="50px" height="60px">
         [[${board.likeCnt}]]
       </div>
     </div>
@@ -130,12 +134,12 @@
 <script th:inline="javascript">
   $(document).ready(function () {
     let like_count = document.getElementById('like_count');
-    let likeval = [[${board.likeCnt}]];
+    let likecheck = [[${likeCheck}]];
     const board_id = [[${board.id}]];
     const member_id = [[${session.memberId}]]; // 세션에 로그인한 사용자 id
     const likeimg = document.getElementById("likeimg")
 
-    if (likeval==true) {
+    if (likecheck==1) {
         likeimg.src="/assets/img/like-icon-file-after.png";
     }
 
@@ -146,17 +150,33 @@
           url: "/boards/like",
           data: {'board_id':board_id,'member_id':member_id},
         }).done(function(data) {
-          if (data==1) {
+          if (data[0].toString()==1) {
             $(".likeimg").attr("src","/assets/img/like-icon-file-after.png");
           } else {
             $(".likeimg").attr("src","/assets/img/like-icon-file-before.png");
           }
+            $("#boardLikeCnt").text(data[1]);
+          $()
         });
     });
 
-
-
   });
+
+  openEdit = function() {
+     var r = confirm("수정하시겠습니까?");
+     if (r==true) {
+       location.href='/boards/[[${board.id}]]/edit';
+     }
+  }
+
+  openDelete = function() {
+    var r = confirm("삭제하시겠습니까?");
+    if (r==true) {
+      location.href ='/boards/[[${board.id}]]/delete?studyId=[[${board.studyId}]]';
+    }
+  }
+
+
 </script>
 </body>
 </html>
