@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,7 +50,7 @@ public class BoardController {
         // board 엔티티를 boardForm으로 변환
         BoardSelectedForm boardForm =
                 new BoardSelectedForm(board.getId(),board.getMember().getId(),board.getMember().getName(),board.getStudy().getId(),board.getTitle(),
-                        board.getContent(),board.getFile(),board.getPublicYn(),board.getViewCnt(),board.getLikeCnt());
+                        board.getContent(),board.getFile(),board.getPublicYn(),board.getViewCnt(),board.getLikeCnt(),LocalDateTime.now(),LocalDateTime.now());
 
         // comment 엔티티를 commentForm으로 변환해서 List 저장
         List<CommentSelectedForm> commentsForm = comments.stream().map(o -> new CommentSelectedForm(o.getId(),

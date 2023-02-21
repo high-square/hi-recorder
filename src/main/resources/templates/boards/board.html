@@ -51,8 +51,7 @@
 <div class="container px-4 px-lg-5">
   <div class="row gx-4 gx-lg-5 justify-content-center">
     <h1 class="h1 text-center" th:text="${board.Title}"></h1>
-    <a class="col-xl-3"  th:if="${board.memberId==session.memberId}" href="javascript:openEdit()">수정하기</a>
-    <a class="col-xl-3"  th:if="${board.memberId==session.memberId}" href="javascript:openDelete()">삭제하기</a>
+
     <div class="row text-center" style="background-color:#0dcaf0">
       <div class="col-xl-7"></div>
       <div class="col-xl-3" style="color:white"><b>작성자 :</b></div>
@@ -63,7 +62,7 @@
       <div class="col-xl-3" style="color:white"><b>조회수 :</b></div>
       <div class="col-xl-1" th:text="${board.viewCnt}"></div>
     </div>
-    <div class="row text-center">
+    <div class="row text-center" style="background-color:#0dcaf0">
       <div class="col-xl-7"></div>
       <div class="col-xl-3" style="color:white"><b>좋아요수 :</b></div>
       <div class="col-xl-1">
@@ -74,6 +73,23 @@
         [[${board.likeCnt}]]
       </div>
     </div>
+    <div class="row text-center" style="background-color:#0dcaf0">
+      <div class="col-xl-7"></div>
+      <div class="col-xl-3" style="color:white"><b>전체공개여부 :</b></div>
+      <div class="col-xl-1" th:text="${board.publicYn}"></div>
+    </div>
+    <div class="row text-center" style="background-color:#0dcaf0">
+      <div class="col-xl-7"></div>
+      <div class="col-xl-3" style="color:white"><b>작성날짜 :</b></div>
+      <div class="col-xl-2" th:text="${#temporals.format(board.createdTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
+    </div>
+    <div class="row text-center" style="background-color:#0dcaf0">
+      <div class="col-xl-7"></div>
+      <div class="col-xl-3" style="color:white"><b>수정날짜 :</b></div>
+      <div class="col-xl-2" th:text="${#temporals.format(board.updatedTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
+    </div>
+    <a class="col-xl-3"  th:if="${board.memberId==session.memberId}" href="javascript:openEdit()">수정하기</a>
+    <a class="col-xl-3"  th:if="${board.memberId==session.memberId}" href="javascript:openDelete()">삭제하기</a>
     <hr class="lh-lg"/>
 
 
