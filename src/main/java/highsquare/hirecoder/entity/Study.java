@@ -18,13 +18,19 @@ public class Study {
     private Long id;
 
     private String name;
+
     @Enumerated(value = EnumType.STRING)
     private ActivityState activityState;
+
     @Enumerated(value = EnumType.STRING)
     private RecruitState recruitState;
+
     private LocalDateTime studyStartDate;
+
     private LocalDateTime studyFinishDate;
+
     private Integer crewNumber;
+
     @Enumerated(value = EnumType.STRING)
     private MeetingType meetingType;
 
