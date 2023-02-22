@@ -71,7 +71,7 @@ function render() {
 function makeTag(tagName) {
     return `
     <span class="tag">
-        <input type="text" class="tag-list" name="tag_list" size=${getTextLength(tagName)} readonly value='${tagName}' />
+        <input type="text" class="tag-list" name="tags" size=${getTextLength(tagName)} readonly value='${tagName}' />
         <span class="close">&times;</span>
     </span>`;
 }

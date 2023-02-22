@@ -71,5 +71,4 @@ class StudyMemberRepositoryTest {
         assertThat(studyMemberRepository.existsMemberAndStudy(study2.getId(), member3.getId()))
                 .isTrue();
     }
-
 }

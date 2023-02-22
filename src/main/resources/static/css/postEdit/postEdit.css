@@ -62,3 +62,17 @@ input:focus {outline: none;}
     background: transparent;
     color: white;
 }
+
+.field-error {
+    display: block;
+    color: red;
+    font-size: 1rem;
+}
+
+.field-input {
+    border: none; background: transparent;
+}
+
+.field-input-error {
+    border: solid red;
+}
