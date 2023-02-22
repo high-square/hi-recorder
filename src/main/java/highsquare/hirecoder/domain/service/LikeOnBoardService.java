@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +36,14 @@ public class LikeOnBoardService {
         }
 
         return findLike;
+    }
+
+    // 조회수를 클릭 or 취소할 때만 이 메소드가 호출되므로 여기 메소드에서 board의 likeCnt도 업데이트 하는 것이 좋아보임(팀원들의 의견 들어보기)
+    public Integer countLikeCnt(Long boardId, Long memberId) {
+        Integer likeCnt = likeOnBoardRepository.countLikeCnt(boardId, memberId);
+        Board findBoard = boardRepository.findById(boardId).get();
+        findBoard.setLikeCnt(likeCnt);
+        return likeCnt;
     }
 
     public LikeOnBoard getLikeOnBoard(Long boardId, Long memberId) {

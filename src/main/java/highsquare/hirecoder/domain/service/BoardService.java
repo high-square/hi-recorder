@@ -50,8 +50,12 @@ public class BoardService {
         // 받아온 board의 id가 Cookie에 저장되어 있는지 확인하는 로직
         if(!viewInspection(request,response,board.getId())) {
             board.viewPlus();
-        };
+        }
         return board;
+    }
+
+    public void deleteBoard(Long boardId) {
+        boardRepository.deleteById(boardId);
     }
 
     /**
