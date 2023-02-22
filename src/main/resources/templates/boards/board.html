@@ -97,12 +97,46 @@
       <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
           <div class="col-md-10 col-lg-8 col-xl-7" th:utext="${board.content}">
-
           </div>
         </div>
       </div>
     </article>
 
+    <!-- 댓글 작성 폼-->
+    <div class="row text-center">
+      <div class="col-xl-2">댓글작성하기</div>
+      <div class="col-xl-1">댓글수</div>
+    </div>
+    <div class="container px-4 px-lg-5">
+      <div class="col-12 mb-3" th:if="${session.memberId}==null" >
+        <textarea  id="notLogin" cols="30" rows="3" class="form-control"  placeholder="댓글을 작성하려면 로그인을 해주세요"></textarea>
+      </div>
+      <div class="col-12 mb-3" th:if="${session.memberId}!=null">
+        <textarea  id="newComment" cols="30" rows="3" class="form-control"  placeholder="악의적인 댓글을 마음의 상처가 될 수 있어요^^"></textarea>
+        <button type="button"  style="border: black;boarder-with: 1px" onclick="postNewComment()">등록</button>
+      </div>
+    </div>
+
+    <!-- 댓글 보기 -->
+<!--    Best 댓글, 작성날짜순 댓글로 보여줌-->
+    <div class="row text-center">
+      <button class="col-xl-2" id="bestComments" type="button" style="background: white;border: white;opacity: 0.4;">BEST댓글</button>
+      <button class="col-xl-1" id="allComments" type="button" style="background: white;border: white;opacity: 0.4;">전체댓글</button>
+    </div>
+    <div id="commentTable">
+      <div style="margin-top:3px" th:each="comment:${comments}">
+        <div>
+          <small th:text="${comment.memberId}" /></small>
+<!--          <small th:text="${comment.createdTime}"></small>-->
+        </div>
+        <div th:text="${comment.content}"></div>
+        <div th:if="${#strings.equals(comment.memberId,session.memberId)}">
+          <span ><input type="text"  th:class="${comment.id}"></span>
+          <span><input type="button" class="btn_updateComment" th:id="${comment.id}" value="수정"></span>
+          <span><input type="button" class="btn_deleteComment" th:id="${comment.id}" value="삭제"></span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <!-- Footer-->
@@ -144,11 +178,10 @@
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->
-<script src="../static/js/scripts.js"></script>
 <!-- 좋아요 JS -->
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script th:inline="javascript">
-  $(document).ready(function () {
+  $(document).ready(function() {
     let like_count = document.getElementById('like_count');
     let likecheck = [[${likeCheck}]];
     const board_id = [[${board.id}]];
@@ -156,33 +189,33 @@
     const likeimg = document.getElementById("likeimg")
 
     if (likecheck==1) {
-        likeimg.src="/assets/img/like-icon-file-after.png";
+      likeimg.src="/assets/img/like-icon-file-after.png";
     }
 
     // 좋아요 버튼 클릭시 ajax
     $(".likeimg").on("click",function() {
       $.ajax({
-          method: "POST",
-          url: "/boards/like",
-          data: {'board_id':board_id,'member_id':member_id},
-        }).done(function(data) {
-          if (data[0].toString()==1) {
-            $(".likeimg").attr("src","/assets/img/like-icon-file-after.png");
-          } else {
-            $(".likeimg").attr("src","/assets/img/like-icon-file-before.png");
-          }
-            $("#boardLikeCnt").text(data[1]);
-          $()
-        });
+        method: "POST",
+        url: "/boards/like",
+        data: {'board_id':board_id,'member_id':member_id},
+      }).done(function(data) {
+        if (data[0].toString()==1) {
+          $(".likeimg").attr("src","/assets/img/like-icon-file-after.png");
+        } else {
+          $(".likeimg").attr("src","/assets/img/like-icon-file-before.png");
+        }
+        $("#boardLikeCnt").text(data[1]);
+        $()
+      });
     });
 
   });
 
   openEdit = function() {
-     var r = confirm("수정하시겠습니까?");
-     if (r==true) {
-       location.href='/boards/[[${board.id}]]/edit';
-     }
+    var r = confirm("수정하시겠습니까?");
+    if (r==true) {
+      location.href='/boards/[[${board.id}]]/edit';
+    }
   }
 
   openDelete = function() {
@@ -192,7 +225,70 @@
     }
   }
 
+  // 댓글을 작성후 등록을 클릭할 시 동작함
+  // CommentController에 POST로 등록 요청
+  postNewComment = function() {
+    var content = document.getElementById("newComment").value;
+    console.log(content);
+    var r = confirm("등록하시겠습니까?");
+    if (r==true) {
+      param = JSON.stringify({"memberId": [[${session.memberId}]],
+        "boardId": [[${board.id}]],
+        "content": content});
+
+      $.ajax({
+        method:"POST",
+        url: "/comments",
+        headers: {"Content-type": "application/json"},
+        data: param,
+      }).done(function(fragment) {
+        turnAllComments();
+        document.getElementById("newComment").value = '';
+        $("#commentTable").replaceWith(fragment);
+      })
+    }
+  }
+
+  // 비로그인 시 댓글 작성하기 클릭 시 로그인 페이지로 이동하기
+  $("#notLogin").on("click", function() {
+    if ([[${session.memberId}]]==null) {
+      var r = confirm("로그인 페이지로 이동하시겠습니까?");
+      if(r==true) {
+        location.href = "/login";
+      }
+    }
+  })
+
+  // BEST 댓글 클릭 시 CommentController에 좋아요순으로 댓글 들고오기
+  // 페이징 없이 좋아요 높은 순으로 15개 들고오기
+  $("#bestComments").on("click", function() {
+    turnBestComments();
+
+
+  })
+
+  // 전체 댓글 클릭 시 CommentController에 해당 게시글에 대한 댓글 들고오기
+  // QueryDSL에 검색조건에 따라 들고올 수 있게 설정할지 고민, 우선 검색조건없이 들고오는 기능으로 구현함
+  $("#allComments").on("click", function() {
+    turnAllComments();
+
+
+  })
+
+  turnAllComments= function() {
+    $("#allComments").attr("style","background: white;border: white;opacity: 2;color:green;font-weight:bold");
+    $("#bestComments").attr("style","background: white;border: white;opacity: 0.4;");
+  }
+
+  turnBestComments= function() {
+    $("#bestComments").attr("style","background: white;border: white;opacity: 2;color:green;font-weight:bold");
+    $("#allComments").attr("style","background: white;border: white;opacity: 0.4;");
+  }
+
+
+
 
 </script>
+<script src="../static/js/scripts.js"></script>
 </body>
 </html>

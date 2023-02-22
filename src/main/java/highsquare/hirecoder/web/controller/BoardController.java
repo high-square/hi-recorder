@@ -36,14 +36,15 @@ public class BoardController {
     public String getBoard(@PathVariable("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response) {
         // DB에서 id에 해당하는 board를 꺼내옴
         Board board = boardService.getBoard(id,request,response);
-        // DB에서 board.id에 해당하는 List<Comment>를 꺼내옴
-        List<Comment> comments = commentService.findAllByBoardId(board.getId());
+
 
         // 세션에 저장된 member와 해당 게시글을 이용해서 LikeOnBoard 엔티티 가져오기
         // 원래라면 로그인 작업에서 session을 생성할텐데 지금 페이지가 없으므로 true를 넣어서 하나 생성해주겠음
         HttpSession session = request.getSession(true);
         // 현재 로그인에 관한 페이지가 없으므로 session 값에 강욱 멤버의 memberId를 임의로 넣어두겠음
+        // 현재 로그인한 멤버의 name도 넣어두겠음
         session.setAttribute("memberId",1L);
+        session.setAttribute("memberName", "강욱");
         LikeOnBoard likeOnBoard = likeOnBoardService.getLikeOnBoard(board.getId(), (Long)session.getAttribute("memberId"));
 
 
@@ -52,13 +53,10 @@ public class BoardController {
                 new BoardSelectedForm(board.getId(),board.getMember().getId(),board.getMember().getName(),board.getStudy().getId(),board.getTitle(),
                         board.getContent(),board.getFile(),board.getPublicYn(),board.getViewCnt(),board.getLikeCnt(),LocalDateTime.now(),LocalDateTime.now());
 
-        // comment 엔티티를 commentForm으로 변환해서 List 저장
-        List<CommentSelectedForm> commentsForm = comments.stream().map(o -> new CommentSelectedForm(o.getId(),
-                o.getContent(), o.getLikeCount(), o.getMember().getId(), o.getBoard().getId())).collect(Collectors.toList());
+
 
         // view로 전달
         model.addAttribute("board", boardForm);
-        model.addAttribute("comments", commentsForm);
         model.addAttribute("likeCheck", likeOnBoard.getLikeCheck());
 
         return "boards/board";

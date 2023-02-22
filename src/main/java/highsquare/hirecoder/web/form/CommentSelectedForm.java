@@ -20,10 +20,12 @@ public class CommentSelectedForm {
 
     private String content;
 
-
     private int likeCount;
 
     private Long memberId;
 
     private Long boardId;
+
+    public CommentSelectedForm() {
+    }
 }
