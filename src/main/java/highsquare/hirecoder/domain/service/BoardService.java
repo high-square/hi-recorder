@@ -1,10 +1,16 @@
 package highsquare.hirecoder.domain.service;
 
 import highsquare.hirecoder.domain.repository.BoardRepository;
+import highsquare.hirecoder.domain.repository.MemberRepository;
+import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.entity.Board;
+import highsquare.hirecoder.entity.Member;
+import highsquare.hirecoder.entity.Study;
+import highsquare.hirecoder.web.form.PostCreateForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
@@ -22,7 +28,21 @@ import static highsquare.hirecoder.constant.CookieConstant.*;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
+    private final StudyRepository studyRepository;
 
+    public Board createBoard(Long memberId, Long studyId, PostCreateForm postCreateForm) {
+
+        Member member = memberRepository.findById(memberId).get();
+
+        Study study = studyRepository.findById(studyId).get();
+
+        Board board = new Board(member, study, postCreateForm.getTitle(), postCreateForm.getContent(), null);
+
+        Board savedBoard = boardRepository.save(board);
+
+        return savedBoard;
+    }
 
     public Board getBoard(Long boardId, HttpServletRequest request,HttpServletResponse response) {
         Board board = boardRepository.findById(boardId).get();

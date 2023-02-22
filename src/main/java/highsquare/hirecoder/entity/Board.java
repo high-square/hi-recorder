@@ -1,6 +1,7 @@
 package highsquare.hirecoder.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 
 @Entity
 @Getter @Setter
+@NoArgsConstructor
 public class Board {
     // 게시글 아이디
     @Id @GeneratedValue()
@@ -50,6 +52,14 @@ public class Board {
 
     @Enumerated(value = EnumType.STRING)
     private Kind kind;
+
+    public Board(Member member, Study study, String title, String content, String file) {
+        this.member = member;
+        this.study = study;
+        this.title = title;
+        this.content = content;
+        this.file = file;
+    }
 
     public void viewPlus() {
         viewCnt++;
