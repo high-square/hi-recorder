@@ -4,6 +4,8 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+  messages:
+    basename: messages,errors
 
   jpa:
     hibernate:
@@ -13,6 +15,7 @@ spring:
         #        show_sql: true 시스템아웃을 통해 찍음
         format_sql: true
 #    open-in-view: false
+
 
 logging:
   level:
