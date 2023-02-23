@@ -2,6 +2,7 @@ package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
+import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.web.form.PostCreateForm;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpSession;
 public class StudyPostController {
     private final StudyMemberService studyMemberService;
     private final BoardService boardService;
+    private final TagService tagService;
 
     @GetMapping("/create")
     public String getPostCreatePage(@PathVariable(name="study_id") Long studyId,
@@ -89,7 +91,7 @@ public class StudyPostController {
 
         Board board = boardService.createBoard(memberId, studyId, postForm);
 
-        // tag 로직
+        tagService.registerTags(board, postForm.getTags());
 
         return String.format("redirect:/boards/content/%d/%d", studyId, board.getId());
     }

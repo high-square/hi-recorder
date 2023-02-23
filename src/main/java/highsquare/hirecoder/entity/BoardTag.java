@@ -1,6 +1,7 @@
 package highsquare.hirecoder.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class BoardTag {
 
     @Id @GeneratedValue
@@ -24,5 +26,8 @@ public class BoardTag {
     @JoinColumn(name="board_id")
     private Board board;
 
-
+    public BoardTag(Tag tag, Board board) {
+        this.tag = tag;
+        this.board = board;
+    }
 }
