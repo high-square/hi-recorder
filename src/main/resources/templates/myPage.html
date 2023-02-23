@@ -1,12 +1,12 @@
 <!-- 내 스터디 목록 -->
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Clean Blog - Start Bootstrap Theme</title>
+        <title>myStudy 목록</title>
         <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
         <!-- Font Awesome icons (free version)-->
         <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
@@ -52,6 +52,19 @@
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>스터디명</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="data : ${data}">
+                            <td class="post-title" th:text="${data.name}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
                     <!-- Post preview-->
                     <div class="post-preview">
                         <a href="myPostList.html">
@@ -60,16 +73,7 @@
                         </a>
                         <button>탈퇴</button>
                     </div>
-                    <!-- Divider-->
-                    <hr class="my-4" />
-                    <!-- Post preview-->
-                    <div class="post-preview">
-                        <a href="post.html">
-                            <h2 class="post-title">토스</h2>
-                            <h3 class="post-subtitle">토요일</h3>
-                        </a>
-                        <button>탈퇴</button>
-                    </div>
+
                     <!-- Divider-->
                     <hr class="my-4" />
                     <!-- Pager-->
