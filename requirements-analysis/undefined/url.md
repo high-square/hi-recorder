@@ -1,6 +1,6 @@
 # URL 경로 설계
 
-<figure><img src="../.gitbook/assets/url.jpg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/url.jpg" alt=""><figcaption></figcaption></figure>
 
 * **스터디 메인**\
   /
