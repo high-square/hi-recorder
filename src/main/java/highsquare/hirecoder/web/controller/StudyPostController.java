@@ -17,18 +17,18 @@ import javax.servlet.http.HttpSession;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/post")
+@RequestMapping("/boards/content/{study_id}")
 public class StudyPostController {
     private final StudyMemberService studyMemberService;
     private final BoardService boardService;
 
     @GetMapping("/create")
-    public String getPostCreatePage(HttpSession session, Model model) {
+    public String getPostCreatePage(@PathVariable(name="study_id") Long studyId,
+                                    HttpSession session, Model model) {
+
         // 테스트용 데이터
-        session.setAttribute("study_id", 5L);
         session.setAttribute("member_id", 1L);
 
-        Long studyId = (Long) session.getAttribute("study_id");
         Long memberId = (Long) session.getAttribute("member_id");
 
         if (isIdNull(studyId, memberId)) {
@@ -42,8 +42,9 @@ public class StudyPostController {
     }
 
     @PostMapping("/create")
-    public String createPost(@ModelAttribute PostCreateForm postForm, BindingResult bindingResult, HttpSession session, Model model) {
-        Long studyId = (Long) session.getAttribute("study_id");
+    public String createPost(@ModelAttribute PostCreateForm postForm, BindingResult bindingResult,
+                             @PathVariable(name = "study_id") Long studyId, HttpSession session) {
+
         Long memberId = (Long) session.getAttribute("member_id");
 
         if (!studyMemberService.doesMemberBelongToStudy(studyId, memberId)) {
@@ -90,7 +91,7 @@ public class StudyPostController {
 
         // tag 로직
 
-        return "redirect:/boards/" + board.getId();
+        return String.format("redirect:/boards/content/%d/%d", studyId, board.getId());
     }
 
 

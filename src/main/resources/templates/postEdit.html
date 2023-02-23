@@ -16,6 +16,9 @@
     <script src="../static/js/postEdit/postEdit.js"
             th:src="@{/js/postEdit/postEdit.js}"></script>
 
+    <script th:if="${access}" th:inline="javascript">alert([[#{access}]]); history.back();</script>
+    <script th:if="${not_member}" th:inline="javascript">alert([[#{access.not_member}]]); history.back();</script>
+
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
     <!-- Google fonts-->
@@ -31,8 +34,6 @@
 </head>
 <body>
 
-<script th:if="${access}" th:inline="javascript">alert([[#{access}]]); history.back();</script>
-<script th:if="${not_member}" th:inline="javascript">alert(#{access.no_member}); history.back();</script>
 
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
