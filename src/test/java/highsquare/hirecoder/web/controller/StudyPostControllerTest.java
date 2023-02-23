@@ -1,6 +1,8 @@
 package highsquare.hirecoder.web.controller;
 
+import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
+import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.web.form.PostCreateForm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,9 @@ class StudyPostControllerTest {
     @MockBean
     StudyMemberService studyMemberService;
 
+    @MockBean
+    BoardService boardService;
+
     @Test
     @DisplayName("게시글 생성 폼 접근 로직 테스트")
     public void getCreateFormTest() throws Exception {
@@ -36,31 +41,29 @@ class StudyPostControllerTest {
 
         // session에 정상적인 값이 있는 경우
         MockHttpSession session1 = new MockHttpSession();
-        session1.setAttribute("study_id", 1L);
         session1.setAttribute("member_id", 1L);
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(true);
 
         // session에 있는 값이 잘못된 경우
         MockHttpSession session2 = new MockHttpSession();
-        session2.setAttribute("study_id", 1L);
         session2.setAttribute("member_id", 2L);
         given(studyMemberService.doesMemberBelongToStudy(1L, 2L))
                 .willReturn(false);
 
         // session에 값이 없는 경우
         MockHttpSession session3 = new MockHttpSession();
-        given(studyMemberService.doesMemberBelongToStudy(null, null))
+        given(studyMemberService.doesMemberBelongToStudy(1L, null))
                 .willReturn(false);
 
         // when
-        ResultActions resultActions1 = mockMvc.perform(get("/post/create")
+        ResultActions resultActions1 = mockMvc.perform(get("/boards/content/1/create")
                 .session(session1));
 
-        ResultActions resultActions2 = mockMvc.perform(get("/post/create")
+        ResultActions resultActions2 = mockMvc.perform(get("/boards/content/1/create")
                 .session(session2));
 
-        ResultActions resultActions3 = mockMvc.perform(get("/post/create")
+        ResultActions resultActions3 = mockMvc.perform(get("/boards/content/1/create")
                 .session(session3));
 
         // then
@@ -79,26 +82,68 @@ class StudyPostControllerTest {
     }
 
     @Test
+    @DisplayName("폼 데이터 검증 로직(정상일때)")
+    public void postCreateFormValidate1() throws Exception {
+        // given
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("member_id", 1L);
+        given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
+                .willReturn(true);
+
+        PostCreateForm expectedCreateForm = new PostCreateForm(
+                "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo");
+
+        Board expectedBoard = new Board();
+        expectedBoard.setId(1L);
+        given(boardService.createBoard(1L, 1L, expectedCreateForm))
+                .willReturn(expectedBoard);
+
+        MultiValueMap<String, String> normalParams = new LinkedMultiValueMap<>();
+        normalParams.add("title", expectedCreateForm.getTitle());
+        normalParams.add("tags", expectedCreateForm.getTags().get(0));
+        normalParams.add("tags", expectedCreateForm.getTags().get(1));
+        normalParams.add("content", expectedCreateForm.getContent());
+
+        // when
+
+        ResultActions result = mockMvc.perform(post("/boards/content/1/create")
+                .session(session)
+                .params(normalParams));
+
+        // then
+
+        result.andExpect(view().name("redirect:/boards/content/1/1"));
+    }
+
+    @Test
     @DisplayName("폼 데이터 검증 로직(세션 이상)")
-    public void postCreateFormValidate0() throws Exception {
+    public void postCreateFormValidate2() throws Exception {
 
         // given
 
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute("study_id", 1L);
         session.setAttribute("member_id", 1L);
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(false);
 
+        PostCreateForm expectedCreateForm = new PostCreateForm(
+                "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo");
+
+        Board expectedBoard = new Board();
+        expectedBoard.setId(1L);
+        given(boardService.createBoard(1L, 1L, expectedCreateForm))
+                .willReturn(expectedBoard);
+
         MultiValueMap<String, String> normalParams = new LinkedMultiValueMap<>();
-        normalParams.add("title", "helloTitle");
-        normalParams.add("tags", "tag1");
-        normalParams.add("tags", "tag2");
-        normalParams.add("content", "# hello jaeDoo");
+        normalParams.add("title", expectedCreateForm.getTitle());
+        normalParams.add("tags", expectedCreateForm.getTags().get(0));
+        normalParams.add("tags", expectedCreateForm.getTags().get(1));
+        normalParams.add("content", expectedCreateForm.getContent());
 
         // when
 
-        ResultActions result = mockMvc.perform(post("/post/create")
+        ResultActions result = mockMvc.perform(post("/boards/content/1/create")
                 .session(session)
                 .params(normalParams));
 
@@ -110,40 +155,8 @@ class StudyPostControllerTest {
     }
 
     @Test
-    @DisplayName("폼 데이터 검증 로직(정상일때)")
-    public void postCreateFormValidate1() throws Exception {
-        // given
-
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("study_id", 1L);
-        session.setAttribute("member_id", 1L);
-        given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
-                .willReturn(true);
-
-        MultiValueMap<String, String> normalParams = new LinkedMultiValueMap<>();
-        normalParams.add("title", "helloTitle");
-        normalParams.add("tags", "tag1");
-        normalParams.add("tags", "tag2");
-        normalParams.add("content", "# hello jaeDoo");
-        PostCreateForm expectedForm =
-                new PostCreateForm("helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo");
-
-        // when
-
-        ResultActions result = mockMvc.perform(post("/post/create")
-                .session(session)
-                .params(normalParams));
-
-        // then
-
-        result.andExpect(view().name("post"))
-                .andExpect(model().attributeHasNoErrors("postCreateForm"))
-                .andExpect(model().attribute("postCreateForm", expectedForm));
-    }
-
-    @Test
     @DisplayName("폼 데이터 검증 로직 테스트(널일때)")
-    public void postCreateFormValidate2() throws Exception {
+    public void postCreateFormValidate3() throws Exception {
 
         // given
 
@@ -157,7 +170,7 @@ class StudyPostControllerTest {
 
         // when
 
-        ResultActions nullResult = mockMvc.perform(post("/post/create")
+        ResultActions nullResult = mockMvc.perform(post("/boards/content/1/create")
                 .session(session)
                 .params(nullParams));
 
