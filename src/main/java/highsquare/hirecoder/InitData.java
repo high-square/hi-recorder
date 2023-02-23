@@ -45,6 +45,7 @@ public class InitData {
         StudyMember studyMember2 = setStudy(member2, study1);
         StudyMember studyMember3 = setStudy(member3, study2);
         StudyMember studyMember4 = setStudy(member4, study2);
+        StudyMember studyMember5 = setStudy(member1, study2);
 
 
         // ----------------게시글-----------------
@@ -93,7 +94,7 @@ public class InitData {
         // ----------------DB 저장-----------------
         persistMember(member1, member2, member3, member4);
         persistStudy(study1, study2);
-        persistStudyMember(studyMember1, studyMember2, studyMember3, studyMember4);
+        persistStudyMember(studyMember1, studyMember2, studyMember3, studyMember4, studyMember5);
         persistBoard(board1, board2, board3, board4, board5);
         persistComment(comment1, comment2, comment3, comment4, comment5, comment6, comment7, comment8);
     }
@@ -109,11 +110,12 @@ public class InitData {
         commentRepository.save(comment8);
     }
 
-    private void persistStudyMember(StudyMember studyMember1, StudyMember studyMember2, StudyMember studyMember3, StudyMember studyMember4) {
+    private void persistStudyMember(StudyMember studyMember1, StudyMember studyMember2, StudyMember studyMember3, StudyMember studyMember4, StudyMember studyMember5) {
         studyMemberRepository.save(studyMember1);
         studyMemberRepository.save(studyMember2);
         studyMemberRepository.save(studyMember3);
         studyMemberRepository.save(studyMember4);
+        studyMemberRepository.save(studyMember5);
     }
 
     private void persistStudy(Study study1, Study study2) {
