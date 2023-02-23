@@ -24,3 +24,8 @@
         * [댓글 수정](requirements-analysis/undefined/undefined-2/use-case-1/uc-003/undefined-1.md)
         * [내가 쓴 댓글 조회](requirements-analysis/undefined/undefined-2/use-case-1/uc-003/undefined-2.md)
         * [댓글 삭제](requirements-analysis/undefined/undefined-2/use-case-1/uc-003/undefined-3.md)
+
+***
+
+* [설계](undefined/README.md)
+  * [URL 경로 설계](undefined/url.md)
