@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+    <form action="#" th:action id="form" th:object="${boardForm}" method="post">
+        <div class="container">
+
+            <!-- 제목 작성 -->
+            <div class="mb-4" th:fragment="titleInput">
+                <input id="title" name="title" type="text" class="display-6 field-input"
+                       th:field="*{title}"
+                       placeholder="제목을 입력하세요."/>
+                <span th:errors="*{title}" class="field-error">제목 오류</span>
+            </div>
+
+            <!-- 태그 작성 -->
+            <div class="mb-4" th:fragment="tagInput">
+                <span id="inner-tag-box"></span>
+                <input id="tag-typing" class="field-input" type="text"
+                       placeholder="태그를 입력하세요."/>
+                <script th:javascript th:each="tag : *{tags}">tags.push('[[${tag}]]');</script>
+                <span th:errors="*{tags}" class="field-error">태그 오류</span>
+            </div>
+
+            <!-- 마크다운 작성 -->
+            <div th:fragment="markdownInput">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a id="markdown-code-button" class="nav-link">Code</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="markdown-preview-button" class="nav-link">Preview</a>
+                    </li>
+                </ul>
+                <div id="editor" class="md-4">
+                                <textarea id="codeArea" name="content" th:field="*{content}"
+                                          placeholder="내용을 입력하세요."></textarea>
+                    <div class="mt-4" id="previewArea"></div>
+                    <span th:errors="*{content}" class="field-error">내용 오류</span>
+                </div>
+            </div>
+        </div>
+    </form>
+</html>
