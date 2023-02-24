@@ -1,22 +1,60 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <title>Form fragment</title>
+    <meta charset="utf-8" />
+
+    <!--  커스텀 js  -->
+    <script src="../../static/js/postEdit/markdown.js"
+            th:src="@{/js/postEdit/markdown.js}"></script>
+    <script src="../../static/js/postEdit/tag.js"
+            th:src="@{/js/postEdit/tag.js}"></script>
+    <script src="../../static/js/postEdit/postEdit.js"
+            th:src="@{/js/postEdit/postEdit.js}"></script>
+
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+
+    <link href="../../static/css/styles.css"
+          th:href="@{/css/styles.css}"
+          rel="stylesheet" />
+    <link href="../../static/css/postEdit/postEdit.css"
+          th:href="@{/css/postEdit/postEdit.css}"
+          rel="stylesheet">
+</head>
+<body>
 
     <form action="#" th:action id="form" th:object="${boardForm}" method="post">
         <div class="container">
 
             <!-- 제목 작성 -->
-            <div class="mb-4" th:fragment="titleInput">
+            <div class="mb-3 w-auto" th:fragment="titleInput">
                 <input id="title" name="title" type="text" class="display-6 field-input"
                        th:field="*{title}"
                        placeholder="제목을 입력하세요."/>
                 <span th:errors="*{title}" class="field-error">제목 오류</span>
             </div>
 
+            <!-- 스터디 셀렉트 리스트 작성 -->
+            <div class="mb-3" th:fragment="studySelect">
+                <select th:field="*{studyId}" class="form-select">
+                    <option value="">==스터디 선택==</option>
+                    <option th:each="study : ${studies}"
+                            th:value="${study.id}" th:text="${study.name}">
+                        스터디
+                    </option>
+                </select>
+            </div>
+
             <!-- 태그 작성 -->
-            <div class="mb-4" th:fragment="tagInput">
-                <span id="inner-tag-box"></span>
-                <input id="tag-typing" class="field-input" type="text"
+            <div class="mb-3" th:fragment="tagInput">
+
+                <input id="tag-typing" class="field-input w-100" type="text"
+                       th:placeholder="#{text.form.placeholder.tags}"
                        placeholder="태그를 입력하세요."/>
+                <span id="inner-tag-box"></span>
                 <script th:javascript th:each="tag : *{tags}">tags.push('[[${tag}]]');</script>
                 <span th:errors="*{tags}" class="field-error">태그 오류</span>
             </div>
@@ -38,6 +76,8 @@
                     <span th:errors="*{content}" class="field-error">내용 오류</span>
                 </div>
             </div>
+
         </div>
     </form>
+</body>
 </html>

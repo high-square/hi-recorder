@@ -6,7 +6,7 @@ import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Member;
 import highsquare.hirecoder.entity.Study;
-import highsquare.hirecoder.web.form.PostCreateForm;
+import highsquare.hirecoder.web.form.BoardForm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +40,11 @@ class BoardServiceTest {
         study.setName("ABC");
         Study savedStudy = studyRepository.save(study);
 
-        PostCreateForm postCreateForm = new PostCreateForm("Hello", null, "# hello JaeDoo");
+        BoardForm BoardForm = new BoardForm(null, "Hello", null, "# hello JaeDoo");
 
         // when
 
-        Board board = boardService.createBoard(member.getId(), study.getId(), postCreateForm);
+        Board board = boardService.createBoard(member.getId(), study.getId(), BoardForm);
 
         // then
 
@@ -54,8 +54,8 @@ class BoardServiceTest {
         assertThat(board.getStudy().getId()).isEqualTo(savedStudy.getId());
         assertThat(board.getStudy().getName()).isEqualTo(savedStudy.getName());
 
-        assertThat(board.getTitle()).isEqualTo(postCreateForm.getTitle());
-        assertThat(board.getContent()).isEqualTo(postCreateForm.getContent());
+        assertThat(board.getTitle()).isEqualTo(BoardForm.getTitle());
+        assertThat(board.getContent()).isEqualTo(BoardForm.getContent());
 
     }
 }

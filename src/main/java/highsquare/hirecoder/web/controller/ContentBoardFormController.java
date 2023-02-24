@@ -5,7 +5,7 @@ import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
-import highsquare.hirecoder.web.form.PostCreateForm;
+import highsquare.hirecoder.web.form.BoardForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -39,13 +39,13 @@ public class ContentBoardFormController {
         } else if (!studyMemberService.doesMemberBelongToStudy(studyId, memberId)) {
             model.addAttribute("not_member", true);
         }
-        model.addAttribute("postCreateForm", new PostCreateForm());
+        model.addAttribute("boardForm", new BoardForm());
 
         return "form/contentBoardCreateForm";
     }
 
     @PostMapping("/create")
-    public String createPost(@ModelAttribute PostCreateForm postForm, BindingResult bindingResult,
+    public String createPost(@ModelAttribute BoardForm postForm, BindingResult bindingResult,
                              @PathVariable(name = "study_id") Long studyId, HttpSession session) {
 
         Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
@@ -56,22 +56,22 @@ public class ContentBoardFormController {
 
         if (postForm.isTitleTooShort()) {
             bindingResult.rejectValue("title", "min.title",
-                    new Object[] {PostCreateForm.MIN_TITLE_LENGTH}, null);
+                    new Object[] {BoardForm.MIN_TITLE_LENGTH}, null);
         } else if (postForm.isTitleTooLong()) {
             bindingResult.rejectValue("title", "max.title",
-                    new Object[]{PostCreateForm.MAX_TITLE_LENGTH}, null);
+                    new Object[]{BoardForm.MAX_TITLE_LENGTH}, null);
         }
 
         if (postForm.isContentTooShort()) {
             bindingResult.rejectValue("content", "min.content",
-                    new Object[]{PostCreateForm.MIN_CONTENT_LENGTH}, null);
+                    new Object[]{BoardForm.MIN_CONTENT_LENGTH}, null);
         } else if (postForm.isContentTooLong()) {
             bindingResult.rejectValue("content", "max.content");
         }
 
         if (postForm.AreTooManyTags()) {
             bindingResult.rejectValue("tags", "max.tags_length",
-                    new Object[]{PostCreateForm.MAX_TAGS_COUNT}, null);
+                    new Object[]{BoardForm.MAX_TAGS_COUNT}, null);
         } else if (postForm.AreAnyTagsTooLong()) {
             bindingResult.rejectValue("tags", "max.tag_length");
         }

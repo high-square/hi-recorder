@@ -6,6 +6,7 @@ import highsquare.hirecoder.entity.StudyMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -22,8 +23,11 @@ public class StudyMemberService {
 
     public List<Study> getAllMembersStudy(Long memberId) {
 
-        List<StudyMember> allMembersStudy = studyMemberRepository.getAllMembersStudy(memberId);
+        List<StudyMember> allMembersStudy = new ArrayList<>();
 
+        if (memberId != null) {
+            allMembersStudy = studyMemberRepository.getAllMembersStudy(memberId);
+        }
         return allMembersStudy.stream().map(StudyMember::getStudy).collect(Collectors.toList());
     }
 
