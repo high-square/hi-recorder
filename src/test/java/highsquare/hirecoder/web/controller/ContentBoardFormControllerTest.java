@@ -5,7 +5,7 @@ import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
-import highsquare.hirecoder.web.form.PostCreateForm;
+import highsquare.hirecoder.web.form.BoardForm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +93,7 @@ class ContentBoardFormControllerTest {
 
     @Test
     @DisplayName("폼 데이터 검증 로직(정상일때)")
-    public void postCreateFormValidate1() throws Exception {
+    public void BoardFormValidate1() throws Exception {
         // given
 
         MockHttpSession session = new MockHttpSession();
@@ -101,7 +101,7 @@ class ContentBoardFormControllerTest {
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(true);
 
-        PostCreateForm expectedCreateForm = new PostCreateForm(
+        BoardForm expectedCreateForm = new BoardForm(null,
                 "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo");
 
         Board expectedBoard = new Board();
@@ -128,7 +128,7 @@ class ContentBoardFormControllerTest {
 
     @Test
     @DisplayName("폼 데이터 검증 로직(세션 이상)")
-    public void postCreateFormValidate2() throws Exception {
+    public void BoardFormValidate2() throws Exception {
 
         // given
 
@@ -137,7 +137,7 @@ class ContentBoardFormControllerTest {
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(false);
 
-        PostCreateForm expectedCreateForm = new PostCreateForm(
+        BoardForm expectedCreateForm = new BoardForm(null,
                 "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo");
 
         Board expectedBoard = new Board();
@@ -160,13 +160,13 @@ class ContentBoardFormControllerTest {
         // then
 
         result.andExpect(view().name("form/contentBoardCreateForm"))
-                .andExpect(model().attributeHasErrors("postCreateForm"));
+                .andExpect(model().attributeHasErrors("boardForm"));
 
     }
 
     @Test
     @DisplayName("폼 데이터 검증 로직 테스트(널일때)")
-    public void postCreateFormValidate3() throws Exception {
+    public void BoardFormValidate3() throws Exception {
 
         // given
 
@@ -187,7 +187,7 @@ class ContentBoardFormControllerTest {
         // then
 
         nullResult.andExpect(view().name("form/contentBoardCreateForm"))
-                .andExpect(model().attributeHasFieldErrors("postCreateForm", "title", "content"));
+                .andExpect(model().attributeHasFieldErrors("boardForm", "title", "content"));
     }
 
 

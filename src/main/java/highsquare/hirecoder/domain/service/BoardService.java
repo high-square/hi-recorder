@@ -6,7 +6,7 @@ import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Member;
 import highsquare.hirecoder.entity.Study;
-import highsquare.hirecoder.web.form.PostCreateForm;
+import highsquare.hirecoder.web.form.BoardForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,13 +31,13 @@ public class BoardService {
     private final MemberRepository memberRepository;
     private final StudyRepository studyRepository;
 
-    public Board createBoard(Long memberId, Long studyId, PostCreateForm postCreateForm) {
+    public Board createBoard(Long memberId, Long studyId, BoardForm BoardForm) {
 
         Member member = memberRepository.findById(memberId).get();
 
         Study study = studyRepository.findById(studyId).get();
 
-        Board board = new Board(member, study, postCreateForm.getTitle(), postCreateForm.getContent(), null);
+        Board board = new Board(member, study, BoardForm.getTitle(), BoardForm.getContent(), null);
 
         Board savedBoard = boardRepository.save(board);
 
