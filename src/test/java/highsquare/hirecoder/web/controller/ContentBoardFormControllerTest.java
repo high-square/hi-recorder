@@ -2,6 +2,7 @@ package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
+import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.web.form.PostCreateForm;
 import org.junit.jupiter.api.DisplayName;
@@ -12,8 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -24,8 +23,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(StudyPostController.class)
-class StudyPostControllerTest {
+@WebMvcTest(ContentBoardFormController.class)
+class ContentBoardFormControllerTest {
     @Autowired
     MockMvc mockMvc;
     @MockBean
@@ -33,6 +32,9 @@ class StudyPostControllerTest {
 
     @MockBean
     BoardService boardService;
+
+    @MockBean
+    TagService tagService;
 
     @Test
     @DisplayName("게시글 생성 폼 접근 로직 테스트")
@@ -68,15 +70,15 @@ class StudyPostControllerTest {
 
         // then
         resultActions1
-                .andExpect(view().name("postEdit"))
+                .andExpect(view().name("form/contentBoardCreateForm"))
                 .andExpect(model().attributeDoesNotExist("access", "not_member"));
 
         resultActions2
-                .andExpect(view().name("postEdit"))
+                .andExpect(view().name("form/contentBoardCreateForm"))
                 .andExpect(model().attribute("not_member", true));
 
         resultActions3
-                .andExpect(view().name("postEdit"))
+                .andExpect(view().name("form/contentBoardCreateForm"))
                 .andExpect(model().attribute("access", true));
 
     }
@@ -149,7 +151,7 @@ class StudyPostControllerTest {
 
         // then
 
-        result.andExpect(view().name("postEdit"))
+        result.andExpect(view().name("form/contentBoardCreateForm"))
                 .andExpect(model().attributeHasErrors("postCreateForm"));
 
     }
@@ -176,7 +178,7 @@ class StudyPostControllerTest {
 
         // then
 
-        nullResult.andExpect(view().name("postEdit"))
+        nullResult.andExpect(view().name("form/contentBoardCreateForm"))
                 .andExpect(model().attributeHasFieldErrors("postCreateForm", "title", "content"));
     }
 
