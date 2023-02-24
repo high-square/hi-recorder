@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/boards/content/{study_id}")
-public class StudyPostController {
+public class ContentBoardFormController {
     private final StudyMemberService studyMemberService;
     private final BoardService boardService;
     private final TagService tagService;
@@ -29,7 +29,7 @@ public class StudyPostController {
                                     HttpSession session, Model model) {
 
         // 테스트용 데이터
-        session.setAttribute("member_id", 1L);
+//        session.setAttribute("member_id", 1L);
 
         Long memberId = (Long) session.getAttribute("member_id");
 
@@ -40,7 +40,7 @@ public class StudyPostController {
         }
         model.addAttribute("postCreateForm", new PostCreateForm());
 
-        return "postEdit";
+        return "form/contentBoardCreateForm";
     }
 
     @PostMapping("/create")
@@ -80,7 +80,7 @@ public class StudyPostController {
         }
 
         if (bindingResult.hasErrors()) {
-            return "postEdit";
+            return "form/contentBoardCreateForm";
         }
         // <----- 검증 로직 종료
 
