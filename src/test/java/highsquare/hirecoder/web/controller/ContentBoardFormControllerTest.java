@@ -1,5 +1,6 @@
 package highsquare.hirecoder.web.controller;
 
+import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.TagService;
@@ -13,9 +14,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
@@ -43,13 +46,13 @@ class ContentBoardFormControllerTest {
 
         // session에 정상적인 값이 있는 경우
         MockHttpSession session1 = new MockHttpSession();
-        session1.setAttribute("member_id", 1L);
+        session1.setAttribute(SessionConstant.MEMBER_ID, 1L);
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(true);
 
         // session에 있는 값이 잘못된 경우
         MockHttpSession session2 = new MockHttpSession();
-        session2.setAttribute("member_id", 2L);
+        session2.setAttribute(SessionConstant.MEMBER_ID, 2L);
         given(studyMemberService.doesMemberBelongToStudy(1L, 2L))
                 .willReturn(false);
 
@@ -73,6 +76,11 @@ class ContentBoardFormControllerTest {
                 .andExpect(view().name("form/contentBoardCreateForm"))
                 .andExpect(model().attributeDoesNotExist("access", "not_member"));
 
+        /**
+         * 통합 테스트를 위해 컨트롤러에서 세션에 멤버 아이디를 넣어줄 경우
+         * 테스트가 실패할 수 있다.
+         * {@link ContentBoardFormController#getPostCreatePage(Long, HttpSession, Model)}
+         */
         resultActions2
                 .andExpect(view().name("form/contentBoardCreateForm"))
                 .andExpect(model().attribute("not_member", true));
@@ -89,7 +97,7 @@ class ContentBoardFormControllerTest {
         // given
 
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute("member_id", 1L);
+        session.setAttribute(SessionConstant.MEMBER_ID, 1L);
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(true);
 
@@ -125,7 +133,7 @@ class ContentBoardFormControllerTest {
         // given
 
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute("member_id", 1L);
+        session.setAttribute(SessionConstant.MEMBER_ID, 1L);
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(false);
 
@@ -164,7 +172,7 @@ class ContentBoardFormControllerTest {
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("study_id", 1L);
-        session.setAttribute("member_id", 1L);
+        session.setAttribute(SessionConstant.MEMBER_ID, 1L);
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(true);
 

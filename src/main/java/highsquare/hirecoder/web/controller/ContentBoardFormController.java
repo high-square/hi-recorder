@@ -1,5 +1,6 @@
 package highsquare.hirecoder.web.controller;
 
+import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.TagService;
@@ -25,13 +26,13 @@ public class ContentBoardFormController {
     private final TagService tagService;
 
     @GetMapping("/create")
-    public String getPostCreatePage(@PathVariable(name="study_id") Long studyId,
+    public String getContentBoardCreatePage(@PathVariable(name="study_id") Long studyId,
                                     HttpSession session, Model model) {
 
         // 테스트용 데이터
-//        session.setAttribute("member_id", 1L);
+        session.setAttribute(SessionConstant.MEMBER_ID, 1L);
 
-        Long memberId = (Long) session.getAttribute("member_id");
+        Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
 
         if (isIdNull(studyId, memberId)) {
             model.addAttribute("access", true);
@@ -47,7 +48,7 @@ public class ContentBoardFormController {
     public String createPost(@ModelAttribute PostCreateForm postForm, BindingResult bindingResult,
                              @PathVariable(name = "study_id") Long studyId, HttpSession session) {
 
-        Long memberId = (Long) session.getAttribute("member_id");
+        Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
 
         if (!studyMemberService.doesMemberBelongToStudy(studyId, memberId)) {
             bindingResult.reject("access.not_member");
