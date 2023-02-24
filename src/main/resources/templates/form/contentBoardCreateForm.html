@@ -3,9 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Clean Blog - Start Bootstrap Theme</title>
+    <title th:text="#{text.form.title}">title</title>
     <link rel="icon" type="image/x-icon" href="../../static/assets/favicon.ico" th:href="@{/assets/favicon.ico}" />
 
     <!--  커스텀 js  -->
@@ -18,6 +16,7 @@
 
     <script th:if="${access}" th:inline="javascript">alert([[#{access}]]); history.back();</script>
     <script th:if="${not_member}" th:inline="javascript">alert([[#{access.not_member}]]); history.back();</script>
+    <script th:if="${unsociable}" th:inline="javascript">alert([[#{access.unsociable}]]); history.back();</script>
 
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
@@ -45,7 +44,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="../index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="../index.html">스터디 메인</a></li>
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="../about.html">About</a></li>
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="../post.html">Sample Post</a></li>
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="../contact.html">Contact</a></li>
@@ -70,37 +69,19 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.7/marked.min.js"></script>
             <!-- 유틸리티 라이브러리 역할 : debounce -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
-            <form action="#" th:action id="form" th:object="${postCreateForm}" method="post">
-                    <div class="container">
-                    <div class="mb-4">
-                        <input id="title" name="title" type="text" class="display-6 field-input"
-                               th:field="*{title}"
-                        placeholder="제목을 입력하세요."/>
-                        <span th:errors="*{title}" class="field-error">제목 오류</span>
-                    </div>
-                    <div class="mb-4">
-                        <span id="inner-tag-box"></span>
-                        <input id="tag-typing" class="field-input" type="text"
-                        placeholder="태그를 입력하세요."/>
-                        <script th:javascript th:each="tag : *{tags}">tags.push('[[${tag}]]');</script>
-                        <span th:errors="*{tags}" class="field-error">태그 오류</span>
-                    </div>
+            <form action="#" th:action id="form" th:object="${boardForm}" method="post">
+                <div class="container">
 
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a id="markdown-code-button" class="nav-link">Code</a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="markdown-preview-button" class="nav-link">Preview</a>
-                        </li>
-                    </ul>
-                    <div id="editor" class="md-4">
-                        <textarea id="codeArea" name="content" th:field="*{content}"
-                                  placeholder="내용을 입력하세요."></textarea>
-                        <div class="mt-4" id="previewArea"></div>
-                        <span th:errors="*{content}" class="field-error">내용 오류</span>
-                    </div>
+                    <!-- 제목 작성 -->
+                    <div th:replace="/form/formFragment :: titleInput"></div>
 
+                    <!-- 태그 작성 -->
+                    <div th:replace="/form/formFragment :: tagInput"></div>
+
+                    <!-- 마크다운 작성 -->
+                    <div th:replace="/form/formFragment :: markdownInput"></div>
+
+                    <!-- 버튼 작성 -->
                     <div class="mt-5 row">
                         <div class="col">
                             <button class="w-100 btn btn-primary btn-lg" id="submit">제출</button>
