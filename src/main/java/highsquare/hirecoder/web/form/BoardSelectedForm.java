@@ -41,6 +41,4 @@ public class BoardSelectedForm {
     private LocalDateTime updatedTime;
 
 
-
-
 }

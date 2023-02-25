@@ -13,7 +13,8 @@
     <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="../static/css/styles.css" rel="stylesheet" />
+    <link th:href="@{/css/styles.css}"
+          href="../../static/css/styles.css" rel="stylesheet" />
 </head>
 <body>
 <!-- Navigation-->
@@ -58,7 +59,7 @@
         <div class="col-md-10 col-lg-8 col-xl-7">
             <!-- Post preview-->
             <div class="post-preview">
-                <a href=".html">
+                <a th:href="@{/boards/content/5/16}">
                     <h2 class="post-title">JPA 어렵다</h2>
                     <h3 class="post-subtitle">미리보기</h3>
                 </a>

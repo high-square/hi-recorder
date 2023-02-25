@@ -63,6 +63,7 @@
                             <th>스터디원 수</th>
                             <th>탈퇴 버튼</th>
                             <th>팀 페이지</th>
+                            <th>내가 쓴 글 모아보기</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -77,6 +78,9 @@
                             </td>
                             <td>
                                 <a th:href="@{/study/{id}(id=${data.id})}">스터디 페이지</a>
+                            </td>
+                            <td>
+                                <a th:href="@{/study/{studyId}/{memberId}(studyId=${data.id}, memberId=${memberId})}">스터디 페이지</a>
                             </td>
                         </tr>
                         </tbody>
