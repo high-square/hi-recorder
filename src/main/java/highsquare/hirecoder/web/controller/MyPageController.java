@@ -2,6 +2,7 @@ package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.domain.service.MyPageService;
 import highsquare.hirecoder.entity.*;
+import highsquare.hirecoder.web.form.BoardListForm;
 import highsquare.hirecoder.web.form.CommentSelectedForm;
 import highsquare.hirecoder.web.form.MyStudyForm;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,6 @@ public class MyPageController {
             System.out.println("study.getName() = " + study.getName());
 //            study.getName() = 백엔드1팀
 //            study.getName() = 백엔드2팀
-
         }
 
         // Study 엔티티를 form으로 변환
@@ -59,8 +59,13 @@ public class MyPageController {
         // 현재 로그인에 관한 페이지가 없으므로 session 값에 강욱 멤버의 memberId와 memberName을 임의로 넣어둔다.
         session.setAttribute("memberId",1L);
         session.setAttribute("memberName", "강욱");
+
+        model.addAttribute("memberName", "강욱");
+
         // session에 studyId도 넣어준다.
         session.setAttribute("studyId", 5L);
+
+        model.addAttribute("studyId", 5L);
 
         // db에서 memberId와 studyId가 일치하는 board를 찾는다. -> list
         List<Board> myPosts = myPageService.findMyPosts((Long) session.getAttribute("studyId"), (Long) session.getAttribute("memberId"));
@@ -69,8 +74,10 @@ public class MyPageController {
         }
         
         // dto로 변환
+        List<BoardListForm> boardListFormList = myPosts.stream().map(o -> new BoardListForm(o.getId(), o.getTitle()))
+                .collect(Collectors.toList());
 
-
+        model.addAttribute("data", boardListFormList);
 
         return "myPostList";
     }
