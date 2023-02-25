@@ -20,9 +20,6 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
 
-    public List<Comment> findAllByBoardId(Long boardId) {
-        return commentRepository.findAllByBoardId(boardId);
-    }
 
     public Long addComment(Comment comment) {
         Comment newComment = commentRepository.save(comment);
@@ -49,15 +46,16 @@ public class CommentService {
 
 
     /**
-     * 엔티티를 Form 객체로 변환하는 작업
+     * Comment 엔티티를 Form 객체로 변환하는 작업
      */
     private CommentSelectedForm entityToDto(Comment entity) {
         CommentSelectedForm form = new CommentSelectedForm();
         form.setId(entity.getId());
+        form.setMemberName(entity.getMember().getName());
         form.setContent(entity.getContent());
         form.setBoardId(entity.getBoard().getId());
         form.setMemberId(entity.getMember().getId());
-        form.setLikeCount(entity.getLikeCount());
+        form.setLikeCount(entity.getLikeCnt());
         return form;
     }
 

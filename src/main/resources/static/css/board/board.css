@@ -1,0 +1,22 @@
+.btn-third {
+    color: #fff;
+    background-color: #6f42c1;
+    border-color: #6c757d;
+}
+
+.btn-fourth {
+    color: #fff;
+    background-color: #212529;
+    border-color: #6c757d;
+}
+
+.card-comment {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #198754;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}

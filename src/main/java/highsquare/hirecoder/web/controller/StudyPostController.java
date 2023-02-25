@@ -2,6 +2,7 @@ package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
+import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.web.form.PostCreateForm;
 import lombok.RequiredArgsConstructor;
@@ -17,18 +18,19 @@ import javax.servlet.http.HttpSession;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/post")
+@RequestMapping("/boards/content/{study_id}")
 public class StudyPostController {
     private final StudyMemberService studyMemberService;
     private final BoardService boardService;
+    private final TagService tagService;
 
     @GetMapping("/create")
-    public String getPostCreatePage(HttpSession session, Model model) {
+    public String getPostCreatePage(@PathVariable(name="study_id") Long studyId,
+                                    HttpSession session, Model model) {
+
         // 테스트용 데이터
-        session.setAttribute("study_id", 5L);
         session.setAttribute("member_id", 1L);
 
-        Long studyId = (Long) session.getAttribute("study_id");
         Long memberId = (Long) session.getAttribute("member_id");
 
         if (isIdNull(studyId, memberId)) {
@@ -42,8 +44,9 @@ public class StudyPostController {
     }
 
     @PostMapping("/create")
-    public String createPost(@ModelAttribute PostCreateForm postForm, BindingResult bindingResult, HttpSession session, Model model) {
-        Long studyId = (Long) session.getAttribute("study_id");
+    public String createPost(@ModelAttribute PostCreateForm postForm, BindingResult bindingResult,
+                             @PathVariable(name = "study_id") Long studyId, HttpSession session) {
+
         Long memberId = (Long) session.getAttribute("member_id");
 
         if (!studyMemberService.doesMemberBelongToStudy(studyId, memberId)) {
@@ -88,9 +91,9 @@ public class StudyPostController {
 
         Board board = boardService.createBoard(memberId, studyId, postForm);
 
-        // tag 로직
+        tagService.registerTags(board, postForm.getTags());
 
-        return "redirect:/boards/" + board.getId();
+        return String.format("redirect:/boards/content/%d/%d", studyId, board.getId());
     }
 
 

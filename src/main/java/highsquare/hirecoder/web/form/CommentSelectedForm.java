@@ -24,6 +24,8 @@ public class CommentSelectedForm {
 
     private Long memberId;
 
+    private String memberName;
+
     private Long boardId;
 
     public CommentSelectedForm() {
