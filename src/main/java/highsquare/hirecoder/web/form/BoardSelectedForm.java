@@ -24,6 +24,8 @@ public class BoardSelectedForm {
 
     private Long studyId;
 
+    private String studyName;
+
     private String title;
 
     private String content;

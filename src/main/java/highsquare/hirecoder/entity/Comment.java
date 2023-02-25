@@ -29,7 +29,7 @@ public class Comment {
     @LastModifiedDate
     private LocalDateTime modifiedTime;
 
-    private int likeCount;
+    private int likeCnt;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name="member_id")
