@@ -1,10 +1,7 @@
 package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.domain.service.MyPageService;
-import highsquare.hirecoder.entity.Comment;
-import highsquare.hirecoder.entity.LikeOnBoard;
-import highsquare.hirecoder.entity.Member;
-import highsquare.hirecoder.entity.Study;
+import highsquare.hirecoder.entity.*;
 import highsquare.hirecoder.web.form.CommentSelectedForm;
 import highsquare.hirecoder.web.form.MyStudyForm;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +46,7 @@ public class MyPageController {
                 .collect(Collectors.toList());
 
         model.addAttribute("data", myStudyFormList);
+        model.addAttribute("memberId", (Long) session.getAttribute("memberId"));
 
         return "myPage";
     }
@@ -65,10 +63,14 @@ public class MyPageController {
         session.setAttribute("studyId", 5L);
 
         // db에서 memberId와 studyId가 일치하는 board를 찾는다. -> list
+        List<Board> myPosts = myPageService.findMyPosts((Long) session.getAttribute("studyId"), (Long) session.getAttribute("memberId"));
+        for (Board myPost : myPosts) {
+            System.out.println("myPost.getTitle() = " + myPost.getTitle());
+        }
+        
+        // dto로 변환
 
 
-
-        model.addAttribute("memberId", 1L);
 
         return "myPostList";
     }
