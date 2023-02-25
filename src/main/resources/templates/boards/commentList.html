@@ -1,0 +1,19 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<link href="../static/css/board/board.css" th:href="@{/css/board/board.css}" rel="stylesheet">
+<th:block th:fragment="commentContent(contents)">
+  <section class="mb-5" th:each="content : ${contents}">
+    <div class="card-comment bg-light">
+        <div class="card-body">
+            <h4 class="card-title">
+                [[${content.memberName}]]
+                <img class="commentLikeImg" id="commentLikeImg"
+                     style="margin-left:1000px" src="/assets/img/comment-like-before.png" width="50px" height="40px">
+                <span  class="sidebar-box" th:text="${content.likeCount}"></span>
+            </h4>
+            <p class="card-text fw-bold" th:text="${content.content}"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</th:block>
+

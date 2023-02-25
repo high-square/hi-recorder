@@ -138,12 +138,12 @@ public class InitData {
         memberRepository.save(member4);
     }
 
-    private static Comment setComment(Member member1, Board board2, String content, int likeCount) {
+    private static Comment setComment(Member member1, Board board2, String content, int likeCnt) {
         Comment comment = new Comment();
         comment.setMember(member1);
         comment.setBoard(board2);
         comment.setContent(content);
-        comment.setLikeCount(likeCount);
+        comment.setLikeCnt(likeCnt);
         return comment;
     }
 

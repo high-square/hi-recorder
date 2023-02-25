@@ -6,6 +6,8 @@ import highsquare.hirecoder.domain.service.LikeOnBoardService;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Comment;
 import highsquare.hirecoder.entity.LikeOnBoard;
+import highsquare.hirecoder.page.PageRequestDto;
+import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.web.form.BoardSelectedForm;
 import highsquare.hirecoder.web.form.CommentSelectedForm;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,8 @@ import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static highsquare.hirecoder.constant.PageConstant.*;
 
 @Controller
 @RequestMapping("/boards")
@@ -32,10 +35,13 @@ public class BoardController {
 
     private final LikeOnBoardService likeOnBoardService;
 
-    @GetMapping("/{id}")
-    public String getBoard(@PathVariable("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response) {
+
+    @GetMapping("/content/{study_id}/{board_id}")
+    public String getBoard(@PathVariable("study_id") Long studyId,
+                           @PathVariable("board_id") Long boardId, Model model,
+                           HttpServletRequest request, HttpServletResponse response) {
         // DB에서 id에 해당하는 board를 꺼내옴
-        Board board = boardService.getBoard(id,request,response);
+        Board board = boardService.getBoard(boardId,request,response);
 
 
         // 세션에 저장된 member와 해당 게시글을 이용해서 LikeOnBoard 엔티티 가져오기
@@ -47,41 +53,53 @@ public class BoardController {
         session.setAttribute("memberName", "강욱");
         LikeOnBoard likeOnBoard = likeOnBoardService.getLikeOnBoard(board.getId(), (Long)session.getAttribute("memberId"));
 
-
         // board 엔티티를 boardForm으로 변환
-        BoardSelectedForm boardForm =
-                new BoardSelectedForm(board.getId(),board.getMember().getId(),board.getMember().getName(),board.getStudy().getId(),board.getTitle(),
-                        board.getContent(),board.getFile(),board.getPublicYn(),board.getViewCnt(),board.getLikeCnt(),LocalDateTime.now(),LocalDateTime.now());
+        BoardSelectedForm boardForm = turnBoardEntityToForm(board);
 
+
+        // 댓글 가져오기 작업
+        // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
+        PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, 2);
+
+        // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
+        PageResultDto<CommentSelectedForm, Comment> allComments =
+                commentService.pagingAllComments(boardId, pageRequestDto);
 
 
         // view로 전달
         model.addAttribute("board", boardForm);
         model.addAttribute("likeCheck", likeOnBoard.getLikeCheck());
+        model.addAttribute("studyId", studyId);
+        model.addAttribute("comments", allComments);
 
         return "boards/board";
     }
 
     // 수정하기를 누르면 수정하기 폼 화면으로 가게 설정
-    @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable("id") Long boardId, Model model) {
+
+    @GetMapping("/content/{study_id}/{board_id}/edit")
+    public String editForm(@PathVariable("study_id") Long studyId,
+                           @PathVariable("board_id") Long boardId, Model model) {
         model.addAttribute("boardId", boardId);
-        return "boards/editForm";
+        model.addAttribute("studyId", studyId);
+        return "study/postEdit";
     }
 
     // 삭제하기를 누르면 해당 게시글을 삭제하고 그 게시글이 속했던 스터디 게시글 페이지로 이동하게 했음
     // 삭제 시 foreignKey 제약조건으로 인해 삭제가 안됨 -- 설정해야함
-    @GetMapping("/{id}/delete")
-    public String deleteBoard(@PathVariable("id") Long boardId, @RequestParam Long studyId, RedirectAttributes redirectAttributes) {
+
+    @GetMapping("/content/{study_id}/{board_id}/delete")
+    public String deleteBoard(@PathVariable("study_id") Long studyId,
+                              @PathVariable("board_id") Long boardId, RedirectAttributes redirectAttributes) {
         boardService.deleteBoard(boardId);
         redirectAttributes.addAttribute("studyId", studyId);
-        return "redirect:/study/{studyId}/boards";
+        return "redirect:/study/{studyId}";
     }
 
-
-    @PostMapping("/like")
+    // 게시글의 좋아요 클릭 시 작업
+    @PostMapping("/like/board")
     @ResponseBody
-    public List<Object> likeProcess(@RequestParam(name="board_id") Long boardId,
+    public List<Object> boardLikeProcess(@RequestParam(name="board_id") Long boardId,
                               @RequestParam(name="member_id") Long memberId) {
         LikeOnBoard likeOnBoard = likeOnBoardService.updateLike(boardId, memberId);
         Integer likeCnt = likeOnBoardService.countLikeCnt(boardId, memberId);
@@ -91,4 +109,18 @@ public class BoardController {
         return data;
     }
 
+
+
+
+    /**
+     * Board 엔티티를 BoardSelectedForm으로 변환하는 작업
+     */
+    private static BoardSelectedForm turnBoardEntityToForm(Board board) {
+        BoardSelectedForm boardForm =
+                new BoardSelectedForm(board.getId(), board.getMember().getId(), board.getMember().getName(),
+                        board.getStudy().getId(), board.getStudy().getName(), board.getTitle(),
+                        board.getContent(), board.getFile(), board.getPublicYn(), board.getViewCnt(), board.getLikeCnt(),
+                        LocalDateTime.now(),LocalDateTime.now());
+        return boardForm;
+    }
 }
