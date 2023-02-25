@@ -14,6 +14,7 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
   <!-- Core theme CSS (includes Bootstrap)-->
   <link href="/css/styles.css" rel="stylesheet" />
+  <link href="../static/css/board/board.css" th:href="@{/css/board/board.css}" rel="stylesheet">
 </head>
 <body>
 <!-- Navigation-->
@@ -40,8 +41,8 @@
     <div class="row gx-4 gx-lg-5 justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-7">
         <div class="site-heading">
-          <h1>Clean Blog</h1>
-          <span class="subheading">A Blog Theme by Start Bootstrap</span>
+          <h1 th:text="|${board.studyName} 게시판|">Clean Blog</h1>
+          <span class="subheading">환영합니다</span>
         </div>
       </div>
     </div>
@@ -66,7 +67,7 @@
       <div class="col-xl-7"></div>
       <div class="col-xl-3" style="color:white"><b>좋아요수 :</b></div>
       <div class="col-xl-1">
-      <img class="likeimg" id="likeimg" src="/assets/img/like-icon-file-before.png" width="50px" height="60px">
+      <img class="boardLikeImg" id="boardLikeImg" src="/assets/img/like-icon-file-before.png" width="50px" height="60px">
       </div>
       <div class="col-xl-1" id="boardLikeCnt">
         <input type="hidden" id="like_check" th:value="${likeCheck}">
@@ -88,9 +89,17 @@
       <div class="col-xl-3" style="color:white"><b>수정날짜 :</b></div>
       <div class="col-xl-2" th:text="${#temporals.format(board.updatedTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
     </div>
-    <a class="col-xl-3"  th:if="${board.memberId==session.memberId}" href="javascript:openEdit()">수정하기</a>
-    <a class="col-xl-3"  th:if="${board.memberId==session.memberId}" href="javascript:openDelete()">삭제하기</a>
-    <hr class="lh-lg"/>
+    <div class="mt-5 row">
+      <span class="col-xl-3" style="margin-left:600px">
+        <input type="button" class="w-100 btn btn-third btn-lg" th:if="${board.memberId==session.memberId}"
+                onclick="openEdit()" value="수정하기">
+      </span>
+      <span class="col-xl-3">
+        <input type="button" class="w-100 btn btn-fourth btn-lg" th:if="${board.memberId==session.memberId}"
+               onclick="openDelete()" value="삭제하기">
+      </span>
+    </div>
+    <hr class="lh-lg" style="margin-top: 50px"/>
 
 
     <article class="mb-4">
@@ -105,7 +114,7 @@
     <!-- 댓글 작성 폼-->
     <div class="row text-center">
       <div class="col-xl-2">댓글작성하기</div>
-      <div class="col-xl-1">댓글수</div>
+      <div class="col-xl-1" id="commentCount">댓글수</div>
     </div>
     <div class="container px-4 px-lg-5">
       <div class="col-12 mb-3" th:if="${session.memberId}==null" >
@@ -123,19 +132,55 @@
       <button class="col-xl-2" id="bestComments" type="button" style="background: white;border: white;opacity: 0.4;">BEST댓글</button>
       <button class="col-xl-1" id="allComments" type="button" style="background: white;border: white;opacity: 0.4;">전체댓글</button>
     </div>
-    <div id="commentTable">
-      <div style="margin-top:3px" th:each="comment:${comments}">
-        <div>
-          <small th:text="${comment.memberId}" /></small>
-<!--          <small th:text="${comment.createdTime}"></small>-->
-        </div>
-        <div th:text="${comment.content}"></div>
-        <div th:if="${#strings.equals(comment.memberId,session.memberId)}">
-          <span ><input type="text"  th:class="${comment.id}"></span>
-          <span><input type="button" class="btn_updateComment" th:id="${comment.id}" value="수정"></span>
-          <span><input type="button" class="btn_deleteComment" th:id="${comment.id}" value="삭제"></span>
-        </div>
-      </div>
+    <div id="commentTable" th:if="${comments.isNotEmpty()}">
+      <nav
+              th:with="
+                pageNumber = ${comments.page},
+                pageSize = ${comments.size},
+                totalPages = ${comments.totalPages},
+                startPage = ${comments.start},
+                endPage = ${comments.end}"
+              aria-label="Page navigation"
+      >
+
+        <div th:replace="boards/commentList :: commentContent(${comments.dtoList})"></div>
+
+        <ul class="pagination ">
+
+          <li th:classappend="${comments.first} ? 'disabled'" class="page-item">
+            <a class="page-link" th:href="@{/comments(page=1,boardId=${board.id})}">
+              <span>&laquo;</span>
+              <span class="sr-only">First</span>
+            </a>
+          </li>
+
+          <li th:classappend="${comments.first} ? 'disabled'" class="page-item">
+            <a class="page-link" th:href="${comments.first} ? '#': @{/comments(page=${#numbers.formatDecimal(startPage - pageSize, 0, -1)},boardId=${board.id})}" aria-label="Previous">
+              <span aria-hidden="true">&lt;</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+
+          <li th:each="page: ${comments.pageList}" th:classappend="${page == pageNumber} ? 'active'" class="page-item">
+            <a th:text="${page}" class="page-link" th:href="@{/comments(page=${page},boardId=${board.id})}"></a>
+          </li>
+
+          <li th:classappend="${comments.last} ? 'disabled'" class="page-item">
+            <a class="page-link" th:href="${comments.last} ? '#' : @{/comments(page=${#numbers.formatDecimal(startPage + pageSize, 0, -1)},boardId=${board.id})}" aria-label="Next">
+              <span aria-hidden="true">&gt;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+
+          <li th:classappend=" ${comments.last} ? 'disabled'" class="page-item">
+            <a class="page-link" th:href="@{/comments(page=${totalPages},boardId=${board.id})}">
+              <span>&raquo;</span>
+              <span class="sr-only">First</span>
+            </a>
+          </li>
+
+        </ul>
+      </nav>
     </div>
   </div>
 </div>
@@ -186,42 +231,46 @@
     let likecheck = [[${likeCheck}]];
     const board_id = [[${board.id}]];
     const member_id = [[${session.memberId}]]; // 세션에 로그인한 사용자 id
-    const likeimg = document.getElementById("likeimg")
+    const boardLikeImg = document.getElementById("boardLikeImg")
 
     if (likecheck==1) {
-      likeimg.src="/assets/img/like-icon-file-after.png";
+      boardLikeImg.src="/assets/img/like-icon-file-after.png";
     }
 
     // 좋아요 버튼 클릭시 ajax
-    $(".likeimg").on("click",function() {
+    $(".boardLikeImg").on("click",function() {
       $.ajax({
         method: "POST",
         url: "/boards/like",
         data: {'board_id':board_id,'member_id':member_id},
       }).done(function(data) {
         if (data[0].toString()==1) {
-          $(".likeimg").attr("src","/assets/img/like-icon-file-after.png");
+          $(".boardLikeImg").attr("src","/assets/img/like-icon-file-after.png");
         } else {
-          $(".likeimg").attr("src","/assets/img/like-icon-file-before.png");
+          $(".boardLikeImg").attr("src","/assets/img/like-icon-file-before.png");
         }
         $("#boardLikeCnt").text(data[1]);
         $()
       });
     });
 
+
+
+
+
   });
 
   openEdit = function() {
     var r = confirm("수정하시겠습니까?");
     if (r==true) {
-      location.href='/boards/[[${board.id}]]/edit';
+      location.href='/boards/[[${studyId}]]/[[${board.id}]]/edit';
     }
   }
 
   openDelete = function() {
     var r = confirm("삭제하시겠습니까?");
     if (r==true) {
-      location.href ='/boards/[[${board.id}]]/delete?studyId=[[${board.studyId}]]';
+      location.href ='/boards/[[${studyId}]]/[[${board.id}]]/delete';
     }
   }
 
@@ -229,7 +278,6 @@
   // CommentController에 POST로 등록 요청
   postNewComment = function() {
     var content = document.getElementById("newComment").value;
-    console.log(content);
     var r = confirm("등록하시겠습니까?");
     if (r==true) {
       param = JSON.stringify({"memberId": [[${session.memberId}]],
