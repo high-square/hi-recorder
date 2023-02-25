@@ -13,8 +13,11 @@
         <!-- Google fonts-->
         <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+
         <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="../static/css/styles.css" rel="stylesheet" />
+        <link th:href="@{/css/styles.css}"
+              href="../../static/css/styles.css" rel="stylesheet" />
+
     </head>
     <body>
         <!-- Navigation-->
@@ -56,23 +59,38 @@
                         <thead>
                         <tr>
                             <th>스터디명</th>
+                            <th>모임 유형</th>
+                            <th>스터디원 수</th>
+                            <th>탈퇴 버튼</th>
+                            <th>팀 페이지</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="data : ${data}">
-                            <td class="post-title" th:text="${data.name}"></td>
+                            <td th:text="${data.name}">
+                                <a th:href="@{/study/{id}(id=${study[0].id})}">스터디 페이지</a>
+                            </td>
+                            <td th:text="${data.meetingType}"></td>
+                            <td th:text="${data.crewNumber}"></td>
+                            <td>
+                                <button>탈퇴</button>
+                            </td>
+                            <td>
+                                <a th:href="@{/study/{id}(id=${data.id})}">스터디 페이지</a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
 
+
                     <!-- Post preview-->
-                    <div class="post-preview">
-                        <a href="myPostList.html">
-                            <h2 class="post-title">JPA 스터디</h2>
-                            <h3 class="post-subtitle">수, 일</h3>
-                        </a>
-                        <button>탈퇴</button>
-                    </div>
+<!--                    <div class="post-preview">-->
+<!--                        <a th:href="@{/study/${date[0].id}">-->
+<!--                            <h2 class="post-title">[[${data[0].name}]]</h2>-->
+<!--                            <h3 class="post-subtitle">세부 정보</h3>-->
+<!--                        </a>-->
+<!--                        <button>탈퇴</button>-->
+<!--                    </div>-->
 
                     <!-- Divider-->
                     <hr class="my-4" />

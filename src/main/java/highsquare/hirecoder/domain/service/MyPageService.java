@@ -35,9 +35,9 @@ public class MyPageService {
      * 거기서 내가 쓴 글 조회
      * studyMember.study.id == board.study.id
      */
-//    public List<Board> findMyPosts(StudyMember studyMember) {
-//
-//    }
+    public List<Board> findMyPosts(Long studyId, Long memberId) {
+        return studyMemberRepository.findAllBoardByStudyIdAndMemberId(studyId, memberId);
+    }
 
     /**
      * 스터디 탈퇴
