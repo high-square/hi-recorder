@@ -16,7 +16,7 @@
 
     <script th:if="${access}" th:inline="javascript">alert([[#{access.form}]]); history.back();</script>
     <script th:if="${not_member}" th:inline="javascript">alert([[#{access.form.not_member}]]); history.back();</script>
-    <script th:if="${unsociable}" th:inline="javascript">alert([[#{access.form.unsociable}]]); history.back();</script>
+    <script th:if="${max_study}" th:inline="javascript">alert([[#{access.form.max_study}]]); history.back();</script>
 
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
@@ -69,22 +69,27 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.7/marked.min.js"></script>
             <!-- 유틸리티 라이브러리 역할 : debounce -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
-            <form action="#" th:action id="form" th:object="${boardForm}" method="post">
+            <form action="#" th:action id="form" th:object="${studyCreationForm}" method="post">
                 <div class="container">
 
+                    <h1 class="my-4 display-4">스터디 생성</h1>
+                    <hr class="my-3" />
+
                     <!-- 스터디 이름 작성 -->
-                    <div class="mb-1 w-auto" th:fragment="studyNameInput">
+                    <div class="mb-3 w-auto" th:fragment="studyNameInput">
                         <input id="title" name="title" type="text" class="display-6 field-input"
                                th:field="*{studyName}"
-                               placeholder="스터디 이름"/>
+                               placeholder="스터디 이름을 입력하세요."/>
                         <span th:errors="*{studyName}" class="field-error">스터디 이름 오류</span>
                     </div>
 
-                    <div class="mb-3 row">
+                    <script th:inline="javascript" th:each="err : ${#fields.globalErrors()}">alert([[${err}]])</script>
+
+                    <div class="mb-3 row" th:classappend="${#fields.hasGlobalErrors()} ? 'border border-danger'">
 
                         <div class="col" th:fragment="">
                             <p class="mb-0">시작일</p>
-                            <input type="date" class="form-control" placeholder="시작일">
+                            <input type="date" class="form-control" th:field="*{startDate}" placeholder="시작일">
                         </div>
 
                         <div class="col" th:fragment="">
@@ -92,21 +97,21 @@
                             <input type="date" class="form-control" placeholder="종료일">
                         </div>
 
-                        <div class="col" th:fragment="">
+                        <div class="col">
                             <p class="mb-0">스터디 인원</p>
                             <input  type="number" class="form-control" placeholder="1~100">
                         </div>
 
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-5 row">
 
                         <!-- 진행상태 셀렉트 리스트 작성 -->
                         <div class="col" th:fragment="activitySelect">
-                            <select th:field="*{studyId}" class="form-select">
+                            <select th:field="*{activityState}" class="form-select">
                                 <option value="">==진행상태 선택==</option>
-                                <option th:each="study : ${studies}"
-                                        th:value="${study.id}" th:text="${study.name}">
+                                <option th:each="activity : *{activityState.values()}"
+                                        th:value="${activity}" th:text="${activity.name()}">
                                     진행중
                                 </option>
                             </select>
@@ -114,10 +119,10 @@
 
                         <!-- 모집상태 셀렉트 리스트 작성 -->
                         <div class="col" th:fragment="recruitSelect">
-                            <select th:field="*{studyId}" class="form-select">
+                            <select th:field="*{recruitState}" class="form-select">
                                 <option value="">==모집상태 선택==</option>
-                                <option th:each="study : ${studies}"
-                                        th:value="${study.id}" th:text="${study.name}">
+                                <option th:each="recruit : *{recruitState.values()}"
+                                        th:value="${recruit}" th:text="${recruit.name()}">
                                     모집중
                                 </option>
                             </select>
@@ -125,10 +130,10 @@
 
                         <!-- 모임방법 셀렉트 리스트 작성 -->
                         <div class="col" th:fragment="meetingTypeSelect">
-                            <select th:field="*{studyId}" class="form-select">
+                            <select th:field="*{meetingType}" class="form-select">
                                 <option value="">==모임방법 선택==</option>
-                                <option th:each="study : ${studies}"
-                                        th:value="${study.id}" th:text="${study.name}">
+                                <option th:each="meet : *{meetingType.values()}"
+                                        th:value="${meet}" th:text="${meet.name()}">
                                     오프라인
                                 </option>
                             </select>
@@ -136,11 +141,12 @@
 
                     </div>
 
+
+                    <h1 class="my-4 display-4">스터디 소개글</h1>
+                    <hr class="my-3" />
+
                     <!-- 제목 작성 -->
                     <div th:replace="/form/formFragment :: titleInput"></div>
-
-                    <!-- 스터디 셀렉트 리스트 작성 -->
-                    <div th:replace="/form/formFragment :: studySelect"></div>
 
                     <!-- 태그 작성 -->
                     <div th:replace="/form/formFragment :: tagInput"></div>

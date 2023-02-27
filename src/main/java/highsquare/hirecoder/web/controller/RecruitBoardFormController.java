@@ -8,6 +8,7 @@ import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Study;
 import highsquare.hirecoder.web.form.BoardForm;
+import highsquare.hirecoder.web.form.StudyCreationForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -40,14 +41,8 @@ public class RecruitBoardFormController {
 
         Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
 
-        List<Study> studies = studyMemberService.getAllMembersStudy(memberId);
+        model.addAttribute("studyCreationForm", new StudyCreationForm());
 
-        model.addAttribute("studies", studies);
-        model.addAttribute("boardForm", new BoardForm());
-
-        if (studies.isEmpty()) {
-            model.addAttribute("unsociable", true);
-        }
 
         return "form/recruitBoardCreateForm";
     }
@@ -56,11 +51,8 @@ public class RecruitBoardFormController {
     public String postRecruitBoardCreateForm(@ModelAttribute BoardForm boardForm, BindingResult bindingResult, HttpSession session) {
 
         Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
-        Long studyId = boardForm.getStudyId();
 
-        if (!studyMemberService.doesMemberBelongToStudy(studyId, memberId)) {
-            bindingResult.reject("access.not_member");
-        }
+
 
         // title 검증
         if (!boardForm.isTitleTooShort(bindingResult))
@@ -87,10 +79,9 @@ public class RecruitBoardFormController {
         assert boardForm.getTitle() != null;
         assert boardForm.getContent() != null;
 
-        Board board = boardService.createBoard(memberId, studyId, Kind.RECRUIT, boardForm);
 
-        tagService.registerTags(board, boardForm.getTags());
+        tagService.registerTags(null, boardForm.getTags());
 
-        return String.format("redirect:/boards/recruit/%d/%d", boardForm.getStudyId(), board.getId());
+        return String.format("redirect:/boards/recruit/%d/%d", 0,1);
     }
 }

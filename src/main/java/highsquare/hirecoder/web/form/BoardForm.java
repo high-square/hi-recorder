@@ -19,13 +19,11 @@ public class BoardForm {
     public static final int MIN_CONTENT_LENGTH = 10;
     public static final int MAX_CONTENT_LENGTH = 10000;
 
-    private Long studyId;
-    private String title;
-    private List<String> tags = new ArrayList<>();
-    private String content;
+    protected String title;
+    protected List<String> tags = new ArrayList<>();
+    protected String content;
 
     // 폼 검증 로직
-    public boolean isStudyIdNull() { return studyId == null; }
     public boolean isTitleTooShort() {
         return title == null || title.length() < MIN_TITLE_LENGTH;
     }
@@ -46,15 +44,6 @@ public class BoardForm {
     }
 
     // BindingResult 유틸
-    public boolean isStudyIdNull(BindingResult bindingResult) {
-        boolean isStudyIdNull = isStudyIdNull();
-
-        if (isStudyIdNull) {
-            bindingResult.rejectValue("studyId", "null.form.studyId");
-        }
-
-        return isStudyIdNull;
-    }
     public boolean isTitleTooShort(BindingResult bindingResult) {
         boolean isTitleTooShort = isTitleTooShort();
 
