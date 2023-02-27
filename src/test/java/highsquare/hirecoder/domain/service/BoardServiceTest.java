@@ -4,6 +4,7 @@ import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.entity.Board;
+import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Member;
 import highsquare.hirecoder.entity.Study;
 import highsquare.hirecoder.web.form.BoardForm;
@@ -44,7 +45,7 @@ class BoardServiceTest {
 
         // when
 
-        Board board = boardService.createBoard(member.getId(), study.getId(), BoardForm);
+        Board board = boardService.createBoard(member.getId(), study.getId(), Kind.CONTENT, BoardForm);
 
         // then
 

@@ -3,9 +3,9 @@ package highsquare.hirecoder.web.form;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -22,19 +22,20 @@ public class BoardForm {
     private Long studyId;
     private String title;
     private List<String> tags = new ArrayList<>();
-    private String content = "";
+    private String content;
 
     // 폼 검증 로직
+    public boolean isStudyIdNull() { return studyId == null; }
     public boolean isTitleTooShort() {
         return title == null || title.length() < MIN_TITLE_LENGTH;
     }
     public boolean isTitleTooLong() {
         return title != null && title.length() > MAX_TITLE_LENGTH;
     }
-    public boolean AreTooManyTags() {
+    public boolean areTooManyTags() {
         return tags != null && tags.size() > MAX_TAGS_COUNT;
     }
-    public boolean AreAnyTagsTooLong() {
+    public boolean areAnyTagsTooLong() {
         return tags != null && tags.stream().anyMatch((tag)-> tag.length() > 20);
     }
     public boolean isContentTooShort() {
@@ -42,6 +43,77 @@ public class BoardForm {
     }
     public boolean isContentTooLong() {
         return content != null && content.length() > MAX_CONTENT_LENGTH;
+    }
+
+    // BindingResult 유틸
+    public boolean isStudyIdNull(BindingResult bindingResult) {
+        boolean isStudyIdNull = isStudyIdNull();
+
+        if (isStudyIdNull) {
+            bindingResult.rejectValue("studyId", "null.form.studyId");
+        }
+
+        return isStudyIdNull;
+    }
+    public boolean isTitleTooShort(BindingResult bindingResult) {
+        boolean isTitleTooShort = isTitleTooShort();
+
+        if (isTitleTooShort) {
+            bindingResult.rejectValue("title", "min.form.title",
+                    new Object[] {MIN_TITLE_LENGTH}, null);
+        }
+
+        return isTitleTooShort;
+    }
+    public boolean isTitleTooLong(BindingResult bindingResult) {
+        boolean isTitleTooLong = isTitleTooLong();
+
+        if (isTitleTooLong) {
+            bindingResult.rejectValue("title", "max.form.title",
+                    new Object[] {MAX_TITLE_LENGTH}, null);
+        }
+
+        return isTitleTooLong;
+    }
+    public boolean areTooManyTags(BindingResult bindingResult) {
+        boolean areTooManyTags = areTooManyTags();
+
+        if (areTooManyTags) {
+            bindingResult.rejectValue("tags", "max.form.tags_length",
+                    new Object[] {MAX_TAGS_COUNT}, null);
+        }
+
+        return areTooManyTags;
+    }
+    public boolean areAnyTagsTooLong(BindingResult bindingResult) {
+        boolean areAnyTagsTooLong = areAnyTagsTooLong();
+
+        if (areAnyTagsTooLong) {
+            bindingResult.rejectValue("tags", "max.form.tag_length",
+                    new Object[] {MAX_TAG_LENGTH}, null);
+        }
+
+        return areAnyTagsTooLong;
+    }
+    public boolean isContentTooShort(BindingResult bindingResult) {
+        boolean isContentTooShort = isContentTooShort();
+
+        if (isContentTooShort) {
+            bindingResult.rejectValue("content", "min.form.content",
+                    new Object[] {MIN_CONTENT_LENGTH}, null);
+        }
+
+        return isContentTooShort;
+    }
+    public boolean isContentTooLong(BindingResult bindingResult) {
+        boolean isContentTooLong = isContentTooLong();
+
+        if (isContentTooLong) {
+            bindingResult.rejectValue("content", "min.form.content",
+                    new Object[] {MAX_CONTENT_LENGTH}, null);
+        }
+
+        return isContentTooLong;
     }
 
 }
