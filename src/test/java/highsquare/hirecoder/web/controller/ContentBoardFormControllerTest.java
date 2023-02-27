@@ -1,9 +1,12 @@
 package highsquare.hirecoder.web.controller;
 
+import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
+import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
-import highsquare.hirecoder.web.form.PostCreateForm;
+import highsquare.hirecoder.entity.Kind;
+import highsquare.hirecoder.web.form.BoardForm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +15,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
@@ -24,8 +27,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(StudyPostController.class)
-class StudyPostControllerTest {
+@WebMvcTest(ContentBoardFormController.class)
+class ContentBoardFormControllerTest {
     @Autowired
     MockMvc mockMvc;
     @MockBean
@@ -34,6 +37,9 @@ class StudyPostControllerTest {
     @MockBean
     BoardService boardService;
 
+    @MockBean
+    TagService tagService;
+
     @Test
     @DisplayName("게시글 생성 폼 접근 로직 테스트")
     public void getCreateFormTest() throws Exception {
@@ -41,13 +47,13 @@ class StudyPostControllerTest {
 
         // session에 정상적인 값이 있는 경우
         MockHttpSession session1 = new MockHttpSession();
-        session1.setAttribute("member_id", 1L);
+        session1.setAttribute(SessionConstant.MEMBER_ID, 1L);
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(true);
 
         // session에 있는 값이 잘못된 경우
         MockHttpSession session2 = new MockHttpSession();
-        session2.setAttribute("member_id", 2L);
+        session2.setAttribute(SessionConstant.MEMBER_ID, 2L);
         given(studyMemberService.doesMemberBelongToStudy(1L, 2L))
                 .willReturn(false);
 
@@ -68,35 +74,40 @@ class StudyPostControllerTest {
 
         // then
         resultActions1
-                .andExpect(view().name("postEdit"))
+                .andExpect(view().name("form/contentBoardCreateForm"))
                 .andExpect(model().attributeDoesNotExist("access", "not_member"));
 
+        /**
+         * 통합 테스트를 위해 컨트롤러에서 세션에 멤버 아이디를 넣어줄 경우
+         * 테스트가 실패할 수 있다.
+         * {@link ContentBoardFormController#getPostCreatePage(Long, HttpSession, Model)}
+         */
         resultActions2
-                .andExpect(view().name("postEdit"))
+                .andExpect(view().name("form/contentBoardCreateForm"))
                 .andExpect(model().attribute("not_member", true));
 
         resultActions3
-                .andExpect(view().name("postEdit"))
+                .andExpect(view().name("form/contentBoardCreateForm"))
                 .andExpect(model().attribute("access", true));
 
     }
 
     @Test
     @DisplayName("폼 데이터 검증 로직(정상일때)")
-    public void postCreateFormValidate1() throws Exception {
+    public void BoardFormValidate1() throws Exception {
         // given
 
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute("member_id", 1L);
+        session.setAttribute(SessionConstant.MEMBER_ID, 1L);
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(true);
 
-        PostCreateForm expectedCreateForm = new PostCreateForm(
+        BoardForm expectedCreateForm = new BoardForm(null,
                 "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo");
 
         Board expectedBoard = new Board();
         expectedBoard.setId(1L);
-        given(boardService.createBoard(1L, 1L, expectedCreateForm))
+        given(boardService.createBoard(1L, 1L, Kind.CONTENT, expectedCreateForm))
                 .willReturn(expectedBoard);
 
         MultiValueMap<String, String> normalParams = new LinkedMultiValueMap<>();
@@ -118,21 +129,21 @@ class StudyPostControllerTest {
 
     @Test
     @DisplayName("폼 데이터 검증 로직(세션 이상)")
-    public void postCreateFormValidate2() throws Exception {
+    public void BoardFormValidate2() throws Exception {
 
         // given
 
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute("member_id", 1L);
+        session.setAttribute(SessionConstant.MEMBER_ID, 1L);
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(false);
 
-        PostCreateForm expectedCreateForm = new PostCreateForm(
+        BoardForm expectedCreateForm = new BoardForm(null,
                 "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo");
 
         Board expectedBoard = new Board();
         expectedBoard.setId(1L);
-        given(boardService.createBoard(1L, 1L, expectedCreateForm))
+        given(boardService.createBoard(1L, 1L, Kind.CONTENT, expectedCreateForm))
                 .willReturn(expectedBoard);
 
         MultiValueMap<String, String> normalParams = new LinkedMultiValueMap<>();
@@ -149,20 +160,20 @@ class StudyPostControllerTest {
 
         // then
 
-        result.andExpect(view().name("postEdit"))
-                .andExpect(model().attributeHasErrors("postCreateForm"));
+        result.andExpect(view().name("form/contentBoardCreateForm"))
+                .andExpect(model().attributeHasErrors("boardForm"));
 
     }
 
     @Test
     @DisplayName("폼 데이터 검증 로직 테스트(널일때)")
-    public void postCreateFormValidate3() throws Exception {
+    public void BoardFormValidate3() throws Exception {
 
         // given
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("study_id", 1L);
-        session.setAttribute("member_id", 1L);
+        session.setAttribute(SessionConstant.MEMBER_ID, 1L);
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(true);
 
@@ -176,8 +187,8 @@ class StudyPostControllerTest {
 
         // then
 
-        nullResult.andExpect(view().name("postEdit"))
-                .andExpect(model().attributeHasFieldErrors("postCreateForm", "title", "content"));
+        nullResult.andExpect(view().name("form/contentBoardCreateForm"))
+                .andExpect(model().attributeHasFieldErrors("boardForm", "title", "content"));
     }
 
 

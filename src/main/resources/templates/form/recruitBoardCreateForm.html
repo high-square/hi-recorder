@@ -3,21 +3,20 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Clean Blog - Start Bootstrap Theme</title>
-    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
+    <title th:text="#{text.form.title}">title</title>
+    <link rel="icon" type="image/x-icon" href="../../static/assets/favicon.ico" th:href="@{/assets/favicon.ico}" />
 
     <!--  커스텀 js  -->
-    <script src="../static/js/postEdit/markdown.js"
+    <script src="../../static/js/postEdit/markdown.js"
             th:src="@{/js/postEdit/markdown.js}"></script>
-    <script src="../static/js/postEdit/tag.js"
+    <script src="../../static/js/postEdit/tag.js"
             th:src="@{/js/postEdit/tag.js}"></script>
-    <script src="../static/js/postEdit/postEdit.js"
+    <script src="../../static/js/postEdit/postEdit.js"
             th:src="@{/js/postEdit/postEdit.js}"></script>
 
-    <script th:if="${access}" th:inline="javascript">alert([[#{access}]]); history.back();</script>
-    <script th:if="${not_member}" th:inline="javascript">alert([[#{access.not_member}]]); history.back();</script>
+    <script th:if="${access}" th:inline="javascript">alert([[#{access.form}]]); history.back();</script>
+    <script th:if="${not_member}" th:inline="javascript">alert([[#{access.form.not_member}]]); history.back();</script>
+    <script th:if="${unsociable}" th:inline="javascript">alert([[#{access.form.unsociable}]]); history.back();</script>
 
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
@@ -25,10 +24,10 @@
     <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="../static/css/styles.css"
+    <link href="../../static/css/styles.css"
           th:href="@{/css/styles.css}"
           rel="stylesheet" />
-    <link href="../static/css/postEdit/postEdit.css"
+    <link href="../../static/css/postEdit/postEdit.css"
           th:href="@{/css/postEdit/postEdit.css}"
           rel="stylesheet">
 </head>
@@ -38,23 +37,23 @@
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
     <div class="container px-4 px-lg-5">
-        <a class="navbar-brand" href="index.html">Start Bootstrap</a>
+        <a class="navbar-brand" href="../index.html">Start Bootstrap</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             Menu
             <i class="fas fa-bars"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">About</a></li>
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="post.html">Sample Post</a></li>
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="../index.html">스터디 메인</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="../about.html">About</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="../post.html">Sample Post</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="../contact.html">Contact</a></li>
             </ul>
         </div>
     </div>
 </nav>
 <!-- Page Header-->
-<header class="masthead" style="background-image: url('../static/assets/img/post-bg.jpg')"
+<header class="masthead" style="background-image: url('../../static/assets/img/post-bg.jpg')"
         th:style="${'background-image: url(/assets/img/post-bg.jpg)'}">
     <div class="container position-relative px-1 px-lg-1">
         <div class="post-heading">
@@ -70,37 +69,22 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.7/marked.min.js"></script>
             <!-- 유틸리티 라이브러리 역할 : debounce -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
-            <form action="#" th:action id="form" th:object="${postCreateForm}" method="post">
-                    <div class="container">
-                    <div class="mb-4">
-                        <input id="title" name="title" type="text" class="display-6 field-input"
-                               th:field="*{title}"
-                        placeholder="제목을 입력하세요."/>
-                        <span th:errors="*{title}" class="field-error">제목 오류</span>
-                    </div>
-                    <div class="mb-4">
-                        <span id="inner-tag-box"></span>
-                        <input id="tag-typing" class="field-input" type="text"
-                        placeholder="태그를 입력하세요."/>
-                        <script th:javascript th:each="tag : *{tags}">tags.push('[[${tag}]]');</script>
-                        <span th:errors="*{tags}" class="field-error">태그 오류</span>
-                    </div>
+            <form action="#" th:action id="form" th:object="${boardForm}" method="post">
+                <div class="container">
 
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a id="markdown-code-button" class="nav-link">Code</a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="markdown-preview-button" class="nav-link">Preview</a>
-                        </li>
-                    </ul>
-                    <div id="editor" class="md-4">
-                        <textarea id="codeArea" name="content" th:field="*{content}"
-                                  placeholder="내용을 입력하세요."></textarea>
-                        <div class="mt-4" id="previewArea"></div>
-                        <span th:errors="*{content}" class="field-error">내용 오류</span>
-                    </div>
+                    <!-- 제목 작성 -->
+                    <div th:replace="/form/formFragment :: titleInput"></div>
 
+                    <!-- 스터디 셀렉트 리스트 작성 -->
+                    <div th:replace="/form/formFragment :: studySelect"></div>
+
+                    <!-- 태그 작성 -->
+                    <div th:replace="/form/formFragment :: tagInput"></div>
+
+                    <!-- 마크다운 작성 -->
+                    <div th:replace="/form/formFragment :: markdownInput"></div>
+
+                    <!-- 버튼 작성 -->
                     <div class="mt-5 row">
                         <div class="col">
                             <button class="w-100 btn btn-primary btn-lg" id="submit">제출</button>
@@ -156,7 +140,7 @@
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->
-<script src="../static/js/scripts.js"
+<script src="../../static/js/scripts.js"
         th:src="@{/js/scripts.js}"></script>
 </body>
 </html>
