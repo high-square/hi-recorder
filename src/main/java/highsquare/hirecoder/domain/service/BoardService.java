@@ -4,6 +4,7 @@ import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.entity.Board;
+import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Member;
 import highsquare.hirecoder.entity.Study;
 import highsquare.hirecoder.web.form.BoardForm;
@@ -30,13 +31,13 @@ public class BoardService {
     private final MemberRepository memberRepository;
     private final StudyRepository studyRepository;
 
-    public Board createBoard(Long memberId, Long studyId, BoardForm BoardForm) {
+    public Board createBoard(Long memberId, Long studyId, Kind kind, BoardForm BoardForm) {
 
         Member member = memberRepository.findById(memberId).get();
 
         Study study = studyRepository.findById(studyId).get();
 
-        Board board = new Board(member, study, BoardForm.getTitle(), BoardForm.getContent(), null);
+        Board board = new Board(member, study, BoardForm.getTitle(), BoardForm.getContent(), kind, null);
 
         Board savedBoard = boardRepository.save(board);
 

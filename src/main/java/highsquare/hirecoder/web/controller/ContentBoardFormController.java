@@ -5,6 +5,7 @@ import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
+import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.web.form.BoardForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +27,8 @@ public class ContentBoardFormController {
     private final TagService tagService;
 
     @GetMapping("/create")
-    public String getContentBoardCreatePage(@PathVariable(name="study_id") Long studyId,
-                                    HttpSession session, Model model) {
+    public String getContentBoardCreateForm(@PathVariable(name="study_id") Long studyId,
+                                            HttpSession session, Model model) {
 
         // 테스트용 데이터
         session.setAttribute(SessionConstant.MEMBER_ID, 1L);
@@ -45,7 +46,7 @@ public class ContentBoardFormController {
     }
 
     @PostMapping("/create")
-    public String createPost(@ModelAttribute BoardForm postForm, BindingResult bindingResult,
+    public String postContentBoardCreateForm(@ModelAttribute BoardForm boardForm, BindingResult bindingResult,
                              @PathVariable(name = "study_id") Long studyId, HttpSession session) {
 
         Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
@@ -54,30 +55,20 @@ public class ContentBoardFormController {
             bindingResult.reject("access.not_member");
         }
 
-        if (postForm.isTitleTooShort()) {
-            bindingResult.rejectValue("title", "min.title",
-                    new Object[] {BoardForm.MIN_TITLE_LENGTH}, null);
-        } else if (postForm.isTitleTooLong()) {
-            bindingResult.rejectValue("title", "max.title",
-                    new Object[]{BoardForm.MAX_TITLE_LENGTH}, null);
-        }
+        // title 검증
+        if (!boardForm.isTitleTooShort(bindingResult))
+            boardForm.isTitleTooLong(bindingResult);
 
-        if (postForm.isContentTooShort()) {
-            bindingResult.rejectValue("content", "min.content",
-                    new Object[]{BoardForm.MIN_CONTENT_LENGTH}, null);
-        } else if (postForm.isContentTooLong()) {
-            bindingResult.rejectValue("content", "max.content");
-        }
+        // content 검증
+        if (!boardForm.isContentTooShort(bindingResult))
+            boardForm.isContentTooLong(bindingResult);
 
-        if (postForm.AreTooManyTags()) {
-            bindingResult.rejectValue("tags", "max.tags_length",
-                    new Object[]{BoardForm.MAX_TAGS_COUNT}, null);
-        } else if (postForm.AreAnyTagsTooLong()) {
-            bindingResult.rejectValue("tags", "max.tag_length");
-        }
+        // tags 검증
+        if (!boardForm.areTooManyTags(bindingResult))
+            boardForm.areAnyTagsTooLong(bindingResult);
 
         for (ObjectError error : bindingResult.getAllErrors()) {
-            log.warn(error.toString());
+            log.warn("{}", error.toString());
         }
 
         if (bindingResult.hasErrors()) {
@@ -87,12 +78,12 @@ public class ContentBoardFormController {
 
         // title, content는 널이 아님을 보장
         // tags는 비었을 때 널이다.
-        assert postForm.getTitle() != null;
-        assert postForm.getContent() != null;
+        assert boardForm.getTitle() != null;
+        assert boardForm.getContent() != null;
 
-        Board board = boardService.createBoard(memberId, studyId, postForm);
+        Board board = boardService.createBoard(memberId, studyId, Kind.CONTENT, boardForm);
 
-        tagService.registerTags(board, postForm.getTags());
+        tagService.registerTags(board, boardForm.getTags());
 
         return String.format("redirect:/boards/content/%d/%d", studyId, board.getId());
     }
