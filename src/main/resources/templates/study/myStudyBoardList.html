@@ -54,9 +54,6 @@
 <!-- Main Content-->
 <div class="container px-4 px-lg-5">
     <div class="section search-result-wrap">
-        <div class="container-sm">
-            <button class="btn btn-outline-secondary">스터디 모집 생성</button>
-        </div>
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -67,27 +64,25 @@
             </div>
             <div class="row posts-entry">
                 <div class="col-lg-8">
-                    <div th:each="studyLists : ${studies}" class="blog-entry d-flex blog-entry-search-item">
-                        <div class="img-wrapper me-4">
-                            <a href="post.html">
-                                <img th:src="@{/images/kyh_jsp.png}" alt="Image" class="img-fluid">
-                            </a>
-                        </div>
-                        <div class="content-wrapper">
-                            <div>
-                                <span class="date">Apr. 14th, 2023 &bullet; <a href="#">Java</a></span>
-                                <hidden th:text="${studyLists.id}"></hidden>
-                                <h2><a href="post.html" th:text="${studyLists.title}">인프런 김영한 강좌 자바 ORM 표준 JPA 프로그래밍 스터디</a></h2>
-                                <p>완강을 목표로 하는 스터디입니다.</p>
-                                <span>
-                                    <ul class="tags">
-                                      <li><a href="#" th:text="${studyLists.study.recruitState}"></a></li>
-                                      <li><a href="#" th:text="${studyLists.study.meetingType}"></a></li>
-                                      <li><a href="#">나와라</a></li>
-                                      <li><a href="#" th:text="${studyLists.study.crewNumber}"></a></li>
-                                    </ul>
-                                  </span>
-                            </div>
+                    <div  class="blog-entry d-flex blog-entry-search-item">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">제목</th>
+                                <th scope="col">작성자</th>
+                                <th scope="col">조회수</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="studyBoardList : ${studyBoardList}">
+                                <th scope="row" th:text="${studyBoardList.id}"></th>
+                                <td th:text="${studyBoardList.title}"></td>
+                                <td th:text="${studyBoardList.member.name}"></td>
+                                <td th:text="${studyBoardList.viewCnt}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
                         </div>
                     </div>
 

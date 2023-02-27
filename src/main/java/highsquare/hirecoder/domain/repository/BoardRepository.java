@@ -10,8 +10,10 @@ import java.util.List;
 
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
-    // 게시글 분류가
+    // kind가 RECRUIT일 때 OR CONTENT 일 때
     @Query("select b from Board b join fetch b.study s where b.kind = :kind")
     List<Board> findStudyAll(@Param("kind") Kind kind);
+
+    List<Board> findByMemberIdInAndStudyIdAndKind(List<Long> memberIds, Long studyId, Kind kind);
 
 }
