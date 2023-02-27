@@ -102,7 +102,7 @@ class ContentBoardFormControllerTest {
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(true);
 
-        BoardForm expectedCreateForm = new BoardForm(null,
+        BoardForm expectedCreateForm = new BoardForm(
                 "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo");
 
         Board expectedBoard = new Board();
@@ -138,7 +138,7 @@ class ContentBoardFormControllerTest {
         given(studyMemberService.doesMemberBelongToStudy(1L, 1L))
                 .willReturn(false);
 
-        BoardForm expectedCreateForm = new BoardForm(null,
+        BoardForm expectedCreateForm = new BoardForm(
                 "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo");
 
         Board expectedBoard = new Board();

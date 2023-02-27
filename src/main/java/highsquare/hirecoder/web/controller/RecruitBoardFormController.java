@@ -1,6 +1,7 @@
 package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.constant.SessionConstant;
+import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.TagService;
@@ -8,6 +9,7 @@ import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Study;
 import highsquare.hirecoder.web.form.BoardForm;
+import highsquare.hirecoder.web.form.StudyCreationForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -27,27 +29,27 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/boards/recruit")
 public class RecruitBoardFormController {
+    private static final int MAX_STUDY_COUNT = 5;
 
-    private final StudyMemberService studyMemberService;
-    private final BoardService boardService;
+    private final StudyRepository studyRepository;
     private final TagService tagService;
 
     @GetMapping("/create")
     public String getRecruitBoardCreateForm(HttpSession session, Model model) {
 
         // 테스트용 데이터
-        session.setAttribute(SessionConstant.MEMBER_ID, 1L);
+//        session.setAttribute(SessionConstant.MEMBER_ID, 1L);
 
         Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
 
-        List<Study> studies = studyMemberService.getAllMembersStudy(memberId);
+        List<Study> managedStudies = studyRepository.findAllByManager_Id(memberId);
 
-        model.addAttribute("studies", studies);
-        model.addAttribute("boardForm", new BoardForm());
-
-        if (studies.isEmpty()) {
-            model.addAttribute("unsociable", true);
+        if (managedStudies.size() >= MAX_STUDY_COUNT) {
+            model.addAttribute("max_study", true);
         }
+
+        model.addAttribute("studyCreationForm", new StudyCreationForm());
+
 
         return "form/recruitBoardCreateForm";
     }
@@ -56,11 +58,10 @@ public class RecruitBoardFormController {
     public String postRecruitBoardCreateForm(@ModelAttribute BoardForm boardForm, BindingResult bindingResult, HttpSession session) {
 
         Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
-        Long studyId = boardForm.getStudyId();
 
-        if (!studyMemberService.doesMemberBelongToStudy(studyId, memberId)) {
-            bindingResult.reject("access.not_member");
-        }
+        // 스터디 생성 로직
+
+
 
         // title 검증
         if (!boardForm.isTitleTooShort(bindingResult))
@@ -87,10 +88,9 @@ public class RecruitBoardFormController {
         assert boardForm.getTitle() != null;
         assert boardForm.getContent() != null;
 
-        Board board = boardService.createBoard(memberId, studyId, Kind.RECRUIT, boardForm);
 
-        tagService.registerTags(board, boardForm.getTags());
+        tagService.registerTags(null, boardForm.getTags());
 
-        return String.format("redirect:/boards/recruit/%d/%d", boardForm.getStudyId(), board.getId());
+        return String.format("redirect:/boards/recruit/%d/%d", 0,1);
     }
 }
