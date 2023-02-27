@@ -42,7 +42,9 @@ public class MyPageService {
     /**
      * 스터디 탈퇴
      */
-    public void deleteStudy(StudyMember studyMember) {
+    @Transactional
+    public void leaveStudy(Long studyId, Long memberId) {
+        StudyMember studyMember = studyMemberRepository.findStudyMemberByStudyIdAndMemberId(studyId, memberId);
         studyMemberRepository.delete(studyMember);
     }
 
