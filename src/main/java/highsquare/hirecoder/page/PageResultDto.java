@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static highsquare.hirecoder.constant.PageConstant.DEFAULT_PAGE_SIZE;
+import static highsquare.hirecoder.constant.PageConstant.*;
 
 @Data
 @Slf4j
@@ -21,7 +21,9 @@ public class PageResultDto<DTO, EN> {
 
     private int page; //현재 페이지 번호
 
-    private int size; //페이지 당 사이즈
+    private int pageSize; //페이지 크기
+
+    private int size; //페이지 당 엔티티 갯수
 
     private int start, end; //시작, 끝 페이지
 
@@ -38,7 +40,6 @@ public class PageResultDto<DTO, EN> {
 
     public PageResultDto(Page<EN> result, Function<EN,DTO> fn) {
         dtoList = result.stream().map(fn).collect(Collectors.toList());
-        log.info("dtoList type={}", dtoList.getClass());
         totalPages = result.getTotalPages();
         makePageList(result.getPageable());
     }
@@ -47,14 +48,15 @@ public class PageResultDto<DTO, EN> {
 
         this.page = pageable.getPageNumber() + 1; //0부터 시작하므로 1을 추가
         this.size = pageable.getPageSize();
+        this.pageSize = DEFAULT_PAGE_SIZE;
 
         int tempEnd = (int)(Math.ceil(page/(float)DEFAULT_PAGE_SIZE)) * DEFAULT_PAGE_SIZE;
 
-        start = tempEnd - 9;
+        start = tempEnd - (DEFAULT_PAGE_SIZE-1);
 
         prev = start > 1;
 
-        first =(page+1<=size+1);
+        first =(page<=DEFAULT_PAGE_SIZE);
 
         last =(Math.floor(totalPages/DEFAULT_PAGE_SIZE)*DEFAULT_PAGE_SIZE<=start);
 
