@@ -2,7 +2,16 @@ package highsquare.hirecoder.domain.repository;
 
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Member;
+import highsquare.hirecoder.entity.Study;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
+
+    @Query("select sm.member from StudyMember sm where sm.study.id = :studyId")
+    List<Member> findByStudyId(Long studyId);
+
 }
