@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,8 +32,8 @@ public class MyPageController {
         // session에서 member 꺼내옴
 
         // 현재 로그인에 관한 페이지가 없으므로 session 값에 강욱 멤버의 memberId와 memberName을 임의로 넣어둔다.
-        session.setAttribute("memberId",1L);
-        session.setAttribute("memberName", "강욱");
+        session.setAttribute("memberId",1L);//////////////로그인 구현 후 수정
+        session.setAttribute("memberName", "강욱");////////로그인 구현 후 수정
 
         // db에서 memberId로 내 스터디 목록 저장
         List<Study> myStudyList = myPageService.findMyStudy((Long) session.getAttribute("memberId"));
@@ -52,18 +54,22 @@ public class MyPageController {
     }
 
     @GetMapping("/{studyId}/{memberId}")
-    public String myStudyPostList(Model model, HttpSession session) {
+    public String myStudyPostList(@PathVariable(value="studyId") String studyId,
+                                  @PathVariable(value="memberId") String memberId,
+                                  Model model, HttpSession session) {
+        // session에 넣는 것?
 
-        // session에서 member 꺼내옴
+        // session에서 studyMember 꺼내옴
 
         // 현재 로그인에 관한 페이지가 없으므로 session 값에 강욱 멤버의 memberId와 memberName을 임의로 넣어둔다.
-        session.setAttribute("memberId",1L);
+//        session.setAttribute("memberId",1L);
+        session.setAttribute("memberId", Long.parseLong(memberId));
         session.setAttribute("memberName", "강욱");
 
         model.addAttribute("memberName", "강욱");
 
         // session에 studyId도 넣어준다.
-        session.setAttribute("studyId", 5L);
+        session.setAttribute("studyId", Long.parseLong(studyId));
 
         model.addAttribute("studyId", 5L);
 
@@ -82,4 +88,11 @@ public class MyPageController {
         return "myPostList";
     }
 
+    @PostMapping("/leave/{studyId}/{memberId}")
+    public String leaveStudy(@PathVariable(value="studyId") String studyId,
+                             @PathVariable(value="memberId") String memberId) {
+        // leaveStudy 호출
+        myPageService.leaveStudy(Long.parseLong(studyId), Long.parseLong(memberId));
+        return "redirect:/study/myStudy";
+    }
 }
