@@ -1,5 +1,6 @@
+<!-- 특정 스터디에서 내가 쓴 글 목록 -->
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -41,7 +42,7 @@
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
                 <div class="post-heading">
-                    <h1>JPA 스터디에서 내가 쓴 글</h1>
+                    <h1>[[${studyId}]] 스터디에서 [[${memberName}]] 님이 쓴 글</h1>
                     <h2 class="subheading">Problems look mighty small from 150 miles up</h2>
                     <span class="meta">
                                 Posted by
@@ -57,29 +58,49 @@
 <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 justify-content-center">
         <div class="col-md-10 col-lg-8 col-xl-7">
+
+            <table>
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>제목</th>
+                    <th>글 보기</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data : ${data}">
+                    <td th:text="${data.id}"></td>
+                    <td th:text="${data.title}"></td>
+                    <td>
+                        <a th:href="@{/boards/content/{studyId}/{boardId}(studyId=${studyId}, boardId=${data.id})}">스터디 페이지</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
             <!-- Post preview-->
-            <div class="post-preview">
-                <a th:href="@{/boards/content/5/16}">
-                    <h2 class="post-title">JPA 어렵다</h2>
-                    <h3 class="post-subtitle">미리보기</h3>
-                </a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">박경림</a>
-                    2023-02-20
-                </p>
-            </div>
-            <!-- Divider-->
-            <hr class="my-4" />
-            <!-- Post preview-->
-            <div class="post-preview">
-                <a href="post.html"><h2 class="post-title">I believe every human has a finite number of heartbeats. I don't intend to waste any of mine.</h2></a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">Start Bootstrap</a>
-                    on September 18, 2022
-                </p>
-            </div>
+<!--            <div class="post-preview">-->
+<!--                <a th:href="@{/boards/content/5/16}">-->
+<!--                    <h2 class="post-title">JPA 어렵다</h2>-->
+<!--                    <h3 class="post-subtitle">미리보기</h3>-->
+<!--                </a>-->
+<!--                <p class="post-meta">-->
+<!--                    Posted by-->
+<!--                    <a href="#!">박경림</a>-->
+<!--                    2023-02-20-->
+<!--                </p>-->
+<!--            </div>-->
+<!--            &lt;!&ndash; Divider&ndash;&gt;-->
+<!--            <hr class="my-4" />-->
+<!--            &lt;!&ndash; Post preview&ndash;&gt;-->
+<!--            <div class="post-preview">-->
+<!--                <a href="post.html"><h2 class="post-title">I believe every human has a finite number of heartbeats. I don't intend to waste any of mine.</h2></a>-->
+<!--                <p class="post-meta">-->
+<!--                    Posted by-->
+<!--                    <a href="#!">Start Bootstrap</a>-->
+<!--                    on September 18, 2022-->
+<!--                </p>-->
+<!--            </div>-->
             <!-- Divider-->
             <hr class="my-4" />
             <!-- Pager-->
