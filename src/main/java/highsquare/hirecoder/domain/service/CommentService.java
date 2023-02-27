@@ -27,7 +27,7 @@ public class CommentService {
     }
 
     public PageResultDto<CommentSelectedForm, Comment> pagingAllComments(Long boardId,PageRequestDto requestDto) {
-        Pageable pageable = requestDto.getPageable(Sort.by("createdTime").ascending());
+        Pageable pageable = requestDto.getPageable(Sort.by("createdTime").descending());
         Page<Comment> result = commentRepository.findAllComments(boardId, pageable);
 
         Function<Comment, CommentSelectedForm> fn = (entity -> entityToDto(entity));

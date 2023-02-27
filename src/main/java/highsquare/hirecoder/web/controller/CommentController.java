@@ -1,20 +1,15 @@
 package highsquare.hirecoder.web.controller;
 
-import highsquare.hirecoder.constant.PageConstant;
 import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.service.CommentService;
 import highsquare.hirecoder.domain.service.LikeOnCommentService;
 import highsquare.hirecoder.entity.Comment;
-import highsquare.hirecoder.entity.LikeOnBoard;
 import highsquare.hirecoder.entity.LikeOnComment;
 import highsquare.hirecoder.page.PageRequestDto;
 import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.web.form.CommentSelectedForm;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -66,6 +61,7 @@ public class CommentController {
                 commentService.pagingAllComments(boardId, pageRequestDto);
 
         model.addAttribute("comments", allComments);
+        model.addAttribute("boardId", boardId);
 
         return "boards/board :: #commentTable";
     }

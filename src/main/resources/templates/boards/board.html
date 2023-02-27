@@ -1,224 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <meta name="description" content="" />
-  <meta name="author" content="" />
-  <title>Clean Blog - Start Bootstrap Theme</title>
-  <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
-  <!-- Font Awesome icons (free version)-->
-  <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
-  <!-- Google fonts-->
-  <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
-  <!-- Core theme CSS (includes Bootstrap)-->
-  <link href="/css/styles.css" rel="stylesheet" />
-  <link href="../static/css/board/board.css" th:href="@{/css/board/board.css}" rel="stylesheet">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Clean Blog - Start Bootstrap Theme</title>
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico"/>
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
+          rel="stylesheet" type="text/css"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="/css/styles.css" rel="stylesheet"/>
+    <link href="../static/css/board/board.css" th:href="@{/css/board/board.css}" rel="stylesheet">
 </head>
 <body>
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
-  <div class="container px-4 px-lg-5">
-    <a class="navbar-brand" href="index.html">Start Bootstrap</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-      Menu
-      <i class="fas fa-bars"></i>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav ms-auto py-4 py-lg-0">
-        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
-        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">About</a></li>
-        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="post.html">Sample Post</a></li>
-        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>
-      </ul>
+    <div class="container px-4 px-lg-5">
+        <a class="navbar-brand" href="index.html">Start Bootstrap</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">About</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="post.html">Sample Post</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>
+            </ul>
+        </div>
     </div>
-  </div>
 </nav>
 <!-- Page Header-->
 <header class="masthead" style="background-image: url('/assets/img/home-bg.jpg')">
-  <div class="container position-relative px-4 px-lg-5">
-    <div class="row gx-4 gx-lg-5 justify-content-center">
-      <div class="col-md-10 col-lg-8 col-xl-7">
-        <div class="site-heading">
-          <h1 th:text="|${board.studyName} 게시판|">Clean Blog</h1>
-          <span class="subheading">환영합니다</span>
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading">
+                    <h1 th:text="|${board.studyName} 게시판|">Clean Blog</h1>
+                    <span class="subheading">환영합니다</span>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </header>
 <!-- Main Content-->
 <div class="container px-4 px-lg-5">
-  <div class="row gx-4 gx-lg-5 justify-content-center">
-    <h1 class="h1 text-center" th:text="${board.Title}"></h1>
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <h1 class="h1 text-center" th:text="${board.Title}"></h1>
 
-    <div class="row text-center" style="background-color:#0dcaf0">
-      <div class="col-xl-7"></div>
-      <div class="col-xl-3" style="color:white"><b>작성자 :</b></div>
-      <div class="col-xl-1" th:text="${board.memberName}"></div>
-    </div>
-    <div class="row text-center" style="background-color:#0dcaf0">
-      <div class="col-xl-7"></div>
-      <div class="col-xl-3" style="color:white"><b>조회수 :</b></div>
-      <div class="col-xl-1" th:text="${board.viewCnt}"></div>
-    </div>
-    <div class="row text-center" style="background-color:#0dcaf0">
-      <div class="col-xl-7"></div>
-      <div class="col-xl-3" style="color:white"><b>좋아요수 :</b></div>
-      <div class="col-xl-1">
-      <img class="boardLikeImg" id="boardLikeImg" src="/assets/img/like-icon-file-before.png" width="50px" height="60px">
-      </div>
-      <div class="col-xl-1" id="boardLikeCnt">
-        <input type="hidden" id="like_check" th:value="${likeCheck}">
-        [[${board.likeCnt}]]
-      </div>
-    </div>
-    <div class="row text-center" style="background-color:#0dcaf0">
-      <div class="col-xl-7"></div>
-      <div class="col-xl-3" style="color:white"><b>전체공개여부 :</b></div>
-      <div class="col-xl-1" th:text="${board.publicYn}"></div>
-    </div>
-    <div class="row text-center" style="background-color:#0dcaf0">
-      <div class="col-xl-7"></div>
-      <div class="col-xl-3" style="color:white"><b>작성날짜 :</b></div>
-      <div class="col-xl-2" th:text="${#temporals.format(board.createdTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
-    </div>
-    <div class="row text-center" style="background-color:#0dcaf0">
-      <div class="col-xl-7"></div>
-      <div class="col-xl-3" style="color:white"><b>수정날짜 :</b></div>
-      <div class="col-xl-2" th:text="${#temporals.format(board.updatedTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
-    </div>
-    <div class="mt-5 row">
+        <div class="row text-center" style="background-color:#0dcaf0">
+            <div class="col-xl-7"></div>
+            <div class="col-xl-3" style="color:white"><b>작성자 :</b></div>
+            <div class="col-xl-1" th:text="${board.memberName}"></div>
+        </div>
+        <div class="row text-center" style="background-color:#0dcaf0">
+            <div class="col-xl-7"></div>
+            <div class="col-xl-3" style="color:white"><b>조회수 :</b></div>
+            <div class="col-xl-1" th:text="${board.viewCnt}"></div>
+        </div>
+        <div class="row text-center" style="background-color:#0dcaf0">
+            <div class="col-xl-7"></div>
+            <div class="col-xl-3" style="color:white"><b>좋아요수 :</b></div>
+            <div class="col-xl-1">
+                <img class="boardLikeImg" id="boardLikeImg" src="/assets/img/like-icon-file-before.png" width="50px"
+                     height="60px">
+            </div>
+            <div class="col-xl-1" id="boardLikeCnt">
+                <input type="hidden" id="like_check" th:value="${likeCheck}">
+                [[${board.likeCnt}]]
+            </div>
+        </div>
+        <div class="row text-center" style="background-color:#0dcaf0">
+            <div class="col-xl-7"></div>
+            <div class="col-xl-3" style="color:white"><b>전체공개여부 :</b></div>
+            <div class="col-xl-1" th:text="${board.publicYn}"></div>
+        </div>
+        <div class="row text-center" style="background-color:#0dcaf0">
+            <div class="col-xl-7"></div>
+            <div class="col-xl-3" style="color:white"><b>작성날짜 :</b></div>
+            <div class="col-xl-2" th:text="${#temporals.format(board.createdTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
+        </div>
+        <div class="row text-center" style="background-color:#0dcaf0">
+            <div class="col-xl-7"></div>
+            <div class="col-xl-3" style="color:white"><b>수정날짜 :</b></div>
+            <div class="col-xl-2" th:text="${#temporals.format(board.updatedTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
+        </div>
+        <div class="mt-5 row">
       <span class="col-xl-3" style="margin-left:600px">
         <input type="button" class="w-100 btn btn-third btn-lg" th:if="${board.memberId==session.memberId}"
-                onclick="openEdit()" value="수정하기">
+               onclick="openEdit()" value="수정하기">
       </span>
-      <span class="col-xl-3">
+            <span class="col-xl-3">
         <input type="button" class="w-100 btn btn-fourth btn-lg" th:if="${board.memberId==session.memberId}"
                onclick="openDelete()" value="삭제하기">
       </span>
-    </div>
-    <hr class="lh-lg" style="margin-top: 50px"/>
-
-
-    <article class="mb-4">
-      <div class="container px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-          <div class="col-md-10 col-lg-8 col-xl-7" th:utext="${board.content}">
-          </div>
         </div>
-      </div>
-    </article>
+        <hr class="lh-lg" style="margin-top: 50px"/>
 
-    <!-- 댓글 작성 폼-->
-    <div class="row text-center">
-      <div class="col-xl-2">댓글작성하기</div>
-      <div class="col-xl-1" id="commentCount">댓글수</div>
-    </div>
-    <div class="container px-4 px-lg-5">
-      <div class="col-12 mb-3" th:if="${session.memberId}==null" >
-        <textarea  id="notLogin" cols="30" rows="3" class="form-control"  placeholder="댓글을 작성하려면 로그인을 해주세요"></textarea>
-      </div>
-      <div class="col-12 mb-3" th:if="${session.memberId}!=null">
-        <textarea  id="newComment" cols="30" rows="3" class="form-control"  placeholder="악의적인 댓글을 마음의 상처가 될 수 있어요^^"></textarea>
-        <button type="button"  style="border: black;boarder-with: 1px" onclick="postNewComment()">등록</button>
-      </div>
-    </div>
 
-    <!-- 댓글 보기 -->
-<!--    Best 댓글, 작성날짜순 댓글로 보여줌-->
-    <div class="row text-center">
-      <button class="col-xl-2" id="bestComments" type="button" style="background: white;border: white;opacity: 0.4;">BEST댓글</button>
-      <button class="col-xl-1" id="allComments" type="button" style="background: white;border: white;opacity: 0.4;">전체댓글</button>
-    </div>
-    <div id="commentTable" th:if="${comments.isNotEmpty()}">
-      <nav
-              th:with="
+        <article class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7" th:utext="${board.content}">
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- 댓글 작성 폼-->
+        <div class="row text-center">
+            <div class="col-xl-2">댓글작성하기</div>
+            <div class="col-xl-1" id="commentCount">댓글수</div>
+        </div>
+        <div class="container px-4 px-lg-5">
+            <div class="col-12 mb-3" th:if="${session.memberId}==null">
+                <textarea id="notLogin" cols="30" rows="3" class="form-control"
+                          placeholder="댓글을 작성하려면 로그인을 해주세요"></textarea>
+            </div>
+            <div class="col-12 mb-3" th:if="${session.memberId}!=null">
+                <textarea id="newComment" cols="30" rows="3" class="form-control"
+                          placeholder="악의적인 댓글을 마음의 상처가 될 수 있어요^^"></textarea>
+                <button type="button" style="border: black;boarder-with: 1px" onclick="postNewComment()">등록</button>
+            </div>
+        </div>
+
+        <!-- 댓글 보기 -->
+        <!--    Best 댓글, 작성날짜순 댓글로 보여줌-->
+        <div class="row text-center">
+            <button class="col-xl-2" id="bestComments" type="button"
+                    style="background: white;border: white;opacity: 0.4;">BEST댓글
+            </button>
+            <button class="col-xl-1" id="allComments" type="button"
+                    style="background: white;border: white;opacity: 0.4;">전체댓글
+            </button>
+        </div>
+        <div id="commentTable" th:if="${comments.isNotEmpty()}">
+            <nav
+                    th:with="
                 pageNumber = ${comments.page},
-                pageSize = ${comments.size},
+                pageDefaultSize=${comments.pageSize},
                 totalPages = ${comments.totalPages},
                 startPage = ${comments.start},
                 endPage = ${comments.end}"
-              aria-label="Page navigation"
-      >
+                    aria-label="Page navigation"
+            >
+                <section class="mb-5" th:each="content : ${comments.dtoList}">
+                    <div class="card-comment bg-light">
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                [[${content.memberName}]]
+                                <img class="commentLikeImg" id="commentLikeImg"
+                                     style="margin-left:1000px" src="/assets/img/comment-like-before.png" width="50px"
+                                     height="40px">
+                                <span class="sidebar-box" th:text="${content.likeCount}"></span>
+                            </h4>
+                            <p class="card-text fw-bold" th:text="${content.content}"></p>
+                        </div>
+                    </div>
+                </section>
+                <ul class="pagination ">
 
-        <div th:replace="boards/commentList :: commentContent(${comments.dtoList})"></div>
+                    <li th:classappend="${comments.first} ? 'disabled'" class="page-item">
+                        <a class="page-link" th:href="|javascript:page('1')|">
+                            <span>&laquo;</span>
+                            <span class="sr-only">First</span>
+                        </a>
+                    </li>
 
-        <ul class="pagination ">
+                    <li th:classappend="${comments.first} ? 'disabled'" class="page-item">
+                        <a class="page-link"
+                           th:if="${comments.first}" th:href="'#'" aria-label="Previous">
+                            <span aria-hidden="true"><</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="page-link"
+                           th:unless="${comments.first}" th:onclick="|javascript:page('${startPage - pageDefaultSize}')|" aria-label="Previous">
+                            <span aria-hidden="true"><</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
 
-          <li th:classappend="${comments.first} ? 'disabled'" class="page-item">
-            <a class="page-link" th:href="@{/comments(page=1,boardId=${board.id})}">
-              <span>&laquo;</span>
-              <span class="sr-only">First</span>
-            </a>
-          </li>
+                    <li th:each="page: ${comments.pageList}" th:classappend="${page == pageNumber} ? 'active'"
+                        class="page-item">
+                        <a th:text="${page}" class="page-link" th:onclick="|javascript:page('${page}')|"></a>
+                    </li>
 
-          <li th:classappend="${comments.first} ? 'disabled'" class="page-item">
-            <a class="page-link" th:href="${comments.first} ? '#': @{/comments(page=${#numbers.formatDecimal(startPage - pageSize, 0, -1)},boardId=${board.id})}" aria-label="Previous">
-              <span aria-hidden="true">&lt;</span>
-              <span class="sr-only">Previous</span>
-            </a>
-          </li>
+                    <li th:classappend="${comments.last} ? 'disabled'" class="page-item">
+                        <a class="page-link"
+                           th:if="${comments.last}" th:href="'#'" aria-label="Next">
+                            <span aria-hidden="true">&gt;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                        <a class="page-link"
+                           th:unless="${comments.last}" th:onclick="|javascript:page('${startPage + pageDefaultSize}')|" aria-label="Next">
+                            <span aria-hidden="true">&gt;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
 
-          <li th:each="page: ${comments.pageList}" th:classappend="${page == pageNumber} ? 'active'" class="page-item">
-            <a th:text="${page}" class="page-link" th:href="@{/comments(page=${page},boardId=${board.id})}"></a>
-          </li>
+                    <li th:classappend=" ${comments.last} ? 'disabled'" class="page-item">
+                        <a class="page-link" th:onclick="|javascript:page('${totalPages}')|">
+                            <span>&raquo;</span>
+                            <span class="sr-only">First</span>
+                        </a>
+                    </li>
 
-          <li th:classappend="${comments.last} ? 'disabled'" class="page-item">
-            <a class="page-link" th:href="${comments.last} ? '#' : @{/comments(page=${#numbers.formatDecimal(startPage + pageSize, 0, -1)},boardId=${board.id})}" aria-label="Next">
-              <span aria-hidden="true">&gt;</span>
-              <span class="sr-only">Next</span>
-            </a>
-          </li>
-
-          <li th:classappend=" ${comments.last} ? 'disabled'" class="page-item">
-            <a class="page-link" th:href="@{/comments(page=${totalPages},boardId=${board.id})}">
-              <span>&raquo;</span>
-              <span class="sr-only">First</span>
-            </a>
-          </li>
-
-        </ul>
-      </nav>
+                </ul>
+            </nav>
+        </div>
     </div>
-  </div>
 </div>
 <!-- Footer-->
 <footer class="border-top">
-  <div class="container px-4 px-lg-5">
-    <div class="row gx-4 gx-lg-5 justify-content-center">
-      <div class="col-md-10 col-lg-8 col-xl-7">
-        <ul class="list-inline text-center">
-          <li class="list-inline-item">
-            <a href="#!">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <ul class="list-inline text-center">
+                    <li class="list-inline-item">
+                        <a href="#!">
                                     <span class="fa-stack fa-lg">
                                         <i class="fas fa-circle fa-stack-2x"></i>
                                         <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
                                     </span>
-            </a>
-          </li>
-          <li class="list-inline-item">
-            <a href="#!">
+                        </a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="#!">
                                     <span class="fa-stack fa-lg">
                                         <i class="fas fa-circle fa-stack-2x"></i>
                                         <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
                                     </span>
-            </a>
-          </li>
-          <li class="list-inline-item">
-            <a href="#!">
+                        </a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="#!">
                                     <span class="fa-stack fa-lg">
                                         <i class="fas fa-circle fa-stack-2x"></i>
                                         <i class="fab fa-github fa-stack-1x fa-inverse"></i>
                                     </span>
-            </a>
-          </li>
-        </ul>
-        <div class="small text-center text-muted fst-italic">Copyright &copy; Your Website 2022</div>
-      </div>
+                        </a>
+                    </li>
+                </ul>
+                <div class="small text-center text-muted fst-italic">Copyright &copy; Your Website 2022</div>
+            </div>
+        </div>
     </div>
-  </div>
 </footer>
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -226,117 +260,134 @@
 <!-- 좋아요 JS -->
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script th:inline="javascript">
-  $(document).ready(function() {
-    let like_count = document.getElementById('like_count');
-    let likecheck = [[${likeCheck}]];
-    const board_id = [[${board.id}]];
-    const member_id = [[${session.memberId}]]; // 세션에 로그인한 사용자 id
-    const boardLikeImg = document.getElementById("boardLikeImg")
+    $(document).ready(function () {
+        let like_count = document.getElementById('like_count');
+        let likecheck = [[${likeCheck}]];
+        const board_id = [[${board.id}]];
+        const member_id = [[${session.memberId}]]; // 세션에 로그인한 사용자 id
+        const boardLikeImg = document.getElementById("boardLikeImg")
 
-    if (likecheck==1) {
-      boardLikeImg.src="/assets/img/like-icon-file-after.png";
-    }
-
-    // 좋아요 버튼 클릭시 ajax
-    $(".boardLikeImg").on("click",function() {
-      $.ajax({
-        method: "POST",
-        url: "/boards/like",
-        data: {'board_id':board_id,'member_id':member_id},
-      }).done(function(data) {
-        if (data[0].toString()==1) {
-          $(".boardLikeImg").attr("src","/assets/img/like-icon-file-after.png");
-        } else {
-          $(".boardLikeImg").attr("src","/assets/img/like-icon-file-before.png");
+        if (likecheck == 1) {
+            boardLikeImg.src = "/assets/img/like-icon-file-after.png";
         }
-        $("#boardLikeCnt").text(data[1]);
-        $()
-      });
+
+        turnAllComments();
+
+        // 좋아요 버튼 클릭시 ajax
+        $(".boardLikeImg").on("click", function () {
+            $.ajax({
+                method: "POST",
+                url: "/boards/like/board",
+                data: {'board_id': board_id, 'member_id': member_id},
+            }).done(function (data) {
+                if (data[0].toString() == 1) {
+                    $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-after.png");
+                } else {
+                    $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-before.png");
+                }
+                $("#boardLikeCnt").text(data[1]);
+                $()
+            });
+        });
+
+
     });
 
-
-
-
-
-  });
-
-  openEdit = function() {
-    var r = confirm("수정하시겠습니까?");
-    if (r==true) {
-      location.href='/boards/[[${studyId}]]/[[${board.id}]]/edit';
+    openEdit = function () {
+        var r = confirm("수정하시겠습니까?");
+        if (r == true) {
+            location.href = '/boards/[[${studyId}]]/[[${board.id}]]/edit';
+        }
     }
-  }
 
-  openDelete = function() {
-    var r = confirm("삭제하시겠습니까?");
-    if (r==true) {
-      location.href ='/boards/[[${studyId}]]/[[${board.id}]]/delete';
+    openDelete = function () {
+        var r = confirm("삭제하시겠습니까?");
+        if (r == true) {
+            location.href = '/boards/[[${studyId}]]/[[${board.id}]]/delete';
+        }
     }
-  }
 
-  // 댓글을 작성후 등록을 클릭할 시 동작함
-  // CommentController에 POST로 등록 요청
-  postNewComment = function() {
-    var content = document.getElementById("newComment").value;
-    var r = confirm("등록하시겠습니까?");
-    if (r==true) {
-      param = JSON.stringify({"memberId": [[${session.memberId}]],
-        "boardId": [[${board.id}]],
-        "content": content});
+    // 댓글을 작성후 등록을 클릭할 시 동작함
+    // CommentController에 POST로 등록 요청
+    postNewComment = function () {
+        var content = document.getElementById("newComment").value;
+        var r = confirm("등록하시겠습니까?");
+        if (r == true) {
+            param = JSON.stringify({
+                "memberId": [[${session.memberId}]],
+                "boardId": [[${board.id}]],
+                "content": content
+            });
 
-      $.ajax({
-        method:"POST",
-        url: "/comments",
-        headers: {"Content-type": "application/json"},
-        data: param,
-      }).done(function(fragment) {
+            $.ajax({
+                method: "POST",
+                url: "/comments",
+                headers: {"Content-type": "application/json"},
+                data: param,
+            }).done(function (fragment) {
+                turnAllComments();
+                document.getElementById("newComment").value = '';
+                $("#commentTable").replaceWith(fragment);
+            })
+        }
+    }
+
+
+    // 비로그인 시 댓글 작성하기 클릭 시 로그인 페이지로 이동하기
+    $("#notLogin").on("click", function () {
+        if ([[${session.memberId}]] == null) {
+            var r = confirm("로그인 페이지로 이동하시겠습니까?");
+            if (r == true) {
+                location.href = "/login";
+            }
+        }
+    })
+
+    // BEST 댓글 클릭 시 CommentController에 좋아요순으로 댓글 들고오기
+    // 페이징 없이 좋아요 높은 순으로 15개 들고오기
+    $("#bestComments").on("click", function () {
+        turnBestComments();
+
+
+    })
+
+    // 전체 댓글 클릭 시 CommentController에 해당 게시글에 대한 댓글 들고오기
+    // QueryDSL에 검색조건에 따라 들고올 수 있게 설정할지 고민, 우선 검색조건없이 들고오는 기능으로 구현함
+    $("#allComments").on("click", function () {
         turnAllComments();
-        document.getElementById("newComment").value = '';
-        $("#commentTable").replaceWith(fragment);
-      })
+
+
+    })
+
+    // 댓글 페이징 ajax 날리기
+    // 파라미터로 받아온 페이지를 요청함
+    page = function (page) {
+        pageNumber = page;
+        boardId = [[${boardId}]];
+
+        $.ajax({
+            method: "GET",
+            url: "/comments",
+            data: {"page": pageNumber, "boardId": boardId},
+        }).done(function (fragment) {
+            $("#commentTable").replaceWith(fragment);
+        })
     }
-  }
 
-  // 비로그인 시 댓글 작성하기 클릭 시 로그인 페이지로 이동하기
-  $("#notLogin").on("click", function() {
-    if ([[${session.memberId}]]==null) {
-      var r = confirm("로그인 페이지로 이동하시겠습니까?");
-      if(r==true) {
-        location.href = "/login";
-      }
+    //전체 댓글 표시
+    turnAllComments = function () {
+        $("#allComments").attr("style", "background: white;border: white;opacity: 2;color:green;font-weight:bold");
+        $("#bestComments").attr("style", "background: white;border: white;opacity: 0.4;");
     }
-  })
 
-  // BEST 댓글 클릭 시 CommentController에 좋아요순으로 댓글 들고오기
-  // 페이징 없이 좋아요 높은 순으로 15개 들고오기
-  $("#bestComments").on("click", function() {
-    turnBestComments();
-
-
-  })
-
-  // 전체 댓글 클릭 시 CommentController에 해당 게시글에 대한 댓글 들고오기
-  // QueryDSL에 검색조건에 따라 들고올 수 있게 설정할지 고민, 우선 검색조건없이 들고오는 기능으로 구현함
-  $("#allComments").on("click", function() {
-    turnAllComments();
-
-
-  })
-
-  turnAllComments= function() {
-    $("#allComments").attr("style","background: white;border: white;opacity: 2;color:green;font-weight:bold");
-    $("#bestComments").attr("style","background: white;border: white;opacity: 0.4;");
-  }
-
-  turnBestComments= function() {
-    $("#bestComments").attr("style","background: white;border: white;opacity: 2;color:green;font-weight:bold");
-    $("#allComments").attr("style","background: white;border: white;opacity: 0.4;");
-  }
-
-
+    //BEST 댓글 표시
+    turnBestComments = function () {
+        $("#bestComments").attr("style", "background: white;border: white;opacity: 2;color:green;font-weight:bold");
+        $("#allComments").attr("style", "background: white;border: white;opacity: 0.4;");
+    }
 
 
 </script>
-<script src="../static/js/scripts.js"></script>
+<script src="/js/scripts.js"></script>
 </body>
 </html>

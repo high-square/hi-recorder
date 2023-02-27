@@ -59,7 +59,7 @@ public class BoardController {
 
         // 댓글 가져오기 작업
         // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
-        PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, 2);
+        PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, 1);
 
         // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
         PageResultDto<CommentSelectedForm, Comment> allComments =
@@ -68,6 +68,7 @@ public class BoardController {
 
         // view로 전달
         model.addAttribute("board", boardForm);
+        model.addAttribute("boardId", boardForm.getId());
         model.addAttribute("likeCheck", likeOnBoard.getLikeCheck());
         model.addAttribute("studyId", studyId);
         model.addAttribute("comments", allComments);
