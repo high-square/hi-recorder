@@ -28,6 +28,8 @@ public class CommentSelectedForm {
 
     private Long boardId;
 
+    private Integer likeCheckWithMember;
+
     public CommentSelectedForm() {
     }
 }

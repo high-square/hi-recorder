@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ public class CommentController {
 
         // CommentSelectedForm에서 boardId를 getAllComments에 넘겨줌
         redirectAttributes.addAttribute("boardId", commentForm.getBoardId());
+        redirectAttributes.addAttribute("memberId", commentForm.getMemberId());
 
 
         return "redirect:/comments";
@@ -50,7 +52,10 @@ public class CommentController {
     @GetMapping
     public String getAllComments(@RequestParam(defaultValue = ""+ DEFAULT_PAGE) int page,
                                  @RequestParam(defaultValue = ""+ DEFAULT_SIZE) int size,
-                                 @RequestParam("boardId") Long boardId, Model model) {
+                                 @RequestParam("boardId") Long boardId,
+                                 HttpSession session,
+                                 Model model) {
+
 
         // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
         PageRequestDto pageRequestDto = new PageRequestDto(page, size);
@@ -58,7 +63,7 @@ public class CommentController {
 
         // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
         PageResultDto<CommentSelectedForm, Comment> allComments =
-                commentService.pagingAllComments(boardId, pageRequestDto);
+                commentService.pagingAllComments(boardId,(Long)session.getAttribute("memberId"), pageRequestDto);
 
         model.addAttribute("comments", allComments);
         model.addAttribute("boardId", boardId);
@@ -79,14 +84,7 @@ public class CommentController {
         return data;
     }
 
-    /**
-     * DB에서 가져온 엔티티 List를 뷰에 전달하기위해 Form List 객체로 변환하는 작업
-     */
-    private static List<CommentSelectedForm> transformToFormList(List<Comment> comments) {
-        List<CommentSelectedForm> commentsForm = comments.stream().map(o -> new CommentSelectedForm(o.getId(),
-                o.getContent(), o.getLikeCnt(), o.getMember().getId(),o.getMember().getName(), o.getBoard().getId())).collect(Collectors.toList());
-        return commentsForm;
-    }
+
 
     /**
      * 뷰에서 받아온 Form 객체를 Entity로 등록하기 전에 데이터 옮기는 작업

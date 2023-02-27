@@ -2,9 +2,14 @@ package highsquare.hirecoder.domain.service;
 
 import highsquare.hirecoder.domain.repository.*;
 import highsquare.hirecoder.entity.*;
+import highsquare.hirecoder.web.form.LikeCheckDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +24,7 @@ public class LikeOnCommentService {
 
     public LikeOnComment updateLike(Long commentId, Long memberId) {
 
-        LikeOnComment findLike = likeOnCommentRepository.findLikeOnComment(commentId, memberId);
+        LikeOnComment findLike = getLikeOnComment(commentId, memberId);
 
         // 해당 LikeOnBoard의 LikeCheck가 0이면 좋아요 선택 X, 1이면 좋아요 선택 O이니 값을 변경해줌
         // 변경감지를 이용해서 update해줌
@@ -32,7 +37,6 @@ public class LikeOnCommentService {
         return findLike;
     }
 
-    // 조회수를 클릭 or 취소할 때만 이 메소드가 호출되므로 여기 메소드에서 board의 likeCnt도 업데이트 하는 것이 좋아보임(팀원들의 의견 들어보기)
     public Integer countLikeCnt(Long commentId, Long memberId) {
         Integer likeCnt = likeOnCommentRepository.countLikeCnt(commentId, memberId);
         Comment findComment = commentRepository.findById(commentId).get();
@@ -58,5 +62,15 @@ public class LikeOnCommentService {
         likeOnComment.setMember(member);
         likeOnComment.setComment(comment);
         return likeOnComment;
+    }
+
+    //로그인한 멤버가 해당 게시글의 댓글 중 좋아요를 누른 댓글 목록을 Map 형식으로 반환하는 작업
+    public Map<Long,Integer> commentWithLikeByMember(Long boardId, Long memberId) {
+        List<LikeCheckDto> likeCheck = likeOnCommentRepository.commentWithLikeByMember(boardId, memberId);
+        Map<Long, Integer> likeCheckMap = new HashMap<>();
+        for (LikeCheckDto likeCheckDto : likeCheck) {
+            likeCheckMap.put(likeCheckDto.getCommentId(), likeCheckDto.getLikeCheck());
+        }
+        return likeCheckMap;
     }
 }

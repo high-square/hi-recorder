@@ -74,7 +74,7 @@
                      height="60px">
             </div>
             <div class="col-xl-1" id="boardLikeCnt">
-                <input type="hidden" id="like_check" th:value="${likeCheck}">
+                <input type="hidden" id="like_check_board" th:value="${likeCheckBoard}">
                 [[${board.likeCnt}]]
             </div>
         </div>
@@ -109,8 +109,9 @@
         <article class="mb-4">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7" th:utext="${board.content}">
+                    <div class="col-md-10 col-lg-8 col-xl-7" th:id="content">
                     </div>
+
                 </div>
             </div>
         </article>
@@ -157,10 +158,13 @@
                         <div class="card-body">
                             <h4 class="card-title">
                                 [[${content.memberName}]]
-                                <img class="commentLikeImg" id="commentLikeImg"
+                                <img th:id="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==0||content.likeCheckWithMember==null}"
                                      style="margin-left:1000px" src="/assets/img/comment-like-before.png" width="50px"
-                                     height="40px">
-                                <span class="sidebar-box" th:text="${content.likeCount}"></span>
+                                     height="40px" th:onclick="|javascript:commentLike(${content.id})|">
+                                <img th:id="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==1}"
+                                     style="margin-left:1000px" src="/assets/img/comment-like-after.png" width="50px"
+                                     height="40px" th:onclick="|javascript:commentLike(${content.id})|">
+                                <span th:id="'commentCount'+${content.id}" class="sidebar-box" th:text="${content.likeCount}"></span>
                             </h4>
                             <p class="card-text fw-bold" th:text="${content.content}"></p>
                         </div>
@@ -182,7 +186,8 @@
                             <span class="sr-only">Previous</span>
                         </a>
                         <a class="page-link"
-                           th:unless="${comments.first}" th:onclick="|javascript:page('${startPage - pageDefaultSize}')|" aria-label="Previous">
+                           th:unless="${comments.first}"
+                           th:onclick="|javascript:page('${startPage - pageDefaultSize}')|" aria-label="Previous">
                             <span aria-hidden="true"><</span>
                             <span class="sr-only">Previous</span>
                         </a>
@@ -200,7 +205,8 @@
                             <span class="sr-only">Next</span>
                         </a>
                         <a class="page-link"
-                           th:unless="${comments.last}" th:onclick="|javascript:page('${startPage + pageDefaultSize}')|" aria-label="Next">
+                           th:unless="${comments.last}" th:onclick="|javascript:page('${startPage + pageDefaultSize}')|"
+                           aria-label="Next">
                             <span aria-hidden="true">&gt;</span>
                             <span class="sr-only">Next</span>
                         </a>
@@ -259,37 +265,80 @@
 <!-- Core theme JS-->
 <!-- 좋아요 JS -->
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
 <script th:inline="javascript">
+    // 마크다운 변환
     $(document).ready(function () {
-        let like_count = document.getElementById('like_count');
-        let likecheck = [[${likeCheck}]];
+        document.getElementById('content').innerHTML =
+            marked.parse([[${board.content}]]);
+
+
+        // 게시글의 좋아요 처리
+        let likeCheckBoard = [[${likeCheckBoard}]];
         const board_id = [[${board.id}]];
         const member_id = [[${session.memberId}]]; // 세션에 로그인한 사용자 id
         const boardLikeImg = document.getElementById("boardLikeImg")
 
-        if (likecheck == 1) {
+        if (likeCheckBoard == 1) {
             boardLikeImg.src = "/assets/img/like-icon-file-after.png";
         }
 
-        turnAllComments();
-
-        // 좋아요 버튼 클릭시 ajax
+        // 게시글 좋아요 버튼 클릭시 ajax
         $(".boardLikeImg").on("click", function () {
-            $.ajax({
-                method: "POST",
-                url: "/boards/like/board",
-                data: {'board_id': board_id, 'member_id': member_id},
-            }).done(function (data) {
-                if (data[0].toString() == 1) {
-                    $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-after.png");
-                } else {
-                    $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-before.png");
+            if (member_id == null) {
+                var r = confirm("로그인이 필요한 작업입니다. 로그인 페이지로 이동하시겠습니까?");
+                if (r == true) {
+                    location.href = '/login';
                 }
-                $("#boardLikeCnt").text(data[1]);
-                $()
-            });
+            } else {
+                $.ajax({
+                    method: "POST",
+                    url: "/boards/like",
+                    data: {'board_id': board_id, 'member_id': member_id},
+                }).done(function (data) {
+                    if (data[0].toString() == 1) {
+                        $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-after.png");
+                    } else {
+                        $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-before.png");
+                    }
+                    $("#boardLikeCnt").text(data[1]);
+                });
+            }
+
         });
 
+
+        turnAllComments();
+
+        //댓글의 좋아요 ajax
+        commentLike = function (commentId) {
+            var commentLikeImg = 'commentLikeImg'+commentId;
+            if (member_id == null) {
+                var r = confirm("로그인이 필요한 작업입니다. 로그인 페이지로 이동하시겠습니까?");
+                if (r == true) {
+                    location.href = '/login';
+                }
+            } else {
+                $.ajax({
+                    method: "POST",
+                    url: "/comments/like",
+                    data: {'comment_id': commentId, 'member_id': member_id},
+                }).done(function (data) {
+                    var commentLike = "#commentLikeImg"+commentId;
+                    var commentCount = "#commentCount"+commentId;
+                    if (data[0].toString() == 1) {
+                        console.log(data[0].toString());
+                        console.log(data[1].toString());
+                        $(commentLike).attr("src", "/assets/img/comment-like-after.png");
+                    } else {
+                        $(commentLike).attr("src", "/assets/img/comment-like-before.png");
+                    }
+                    $(commentCount).text(data[1]);
+                });
+
+            }
+        }
 
     });
 
@@ -355,7 +404,7 @@
     // QueryDSL에 검색조건에 따라 들고올 수 있게 설정할지 고민, 우선 검색조건없이 들고오는 기능으로 구현함
     $("#allComments").on("click", function () {
         turnAllComments();
-
+        page(1);
 
     })
 

@@ -59,17 +59,19 @@ public class BoardController {
 
         // 댓글 가져오기 작업
         // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
-        PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, 1);
+        PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, DEFAULT_SIZE);
 
         // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
         PageResultDto<CommentSelectedForm, Comment> allComments =
-                commentService.pagingAllComments(boardId, pageRequestDto);
+                commentService.pagingAllComments(boardId,
+                        (Long)session.getAttribute("memberId"),pageRequestDto);
+
 
 
         // view로 전달
         model.addAttribute("board", boardForm);
         model.addAttribute("boardId", boardForm.getId());
-        model.addAttribute("likeCheck", likeOnBoard.getLikeCheck());
+        model.addAttribute("likeCheckBoard", likeOnBoard.getLikeCheck());
         model.addAttribute("studyId", studyId);
         model.addAttribute("comments", allComments);
 
@@ -98,7 +100,7 @@ public class BoardController {
     }
 
     // 게시글의 좋아요 클릭 시 작업
-    @PostMapping("/like/board")
+    @PostMapping("/like")
     @ResponseBody
     public List<Object> boardLikeProcess(@RequestParam(name="board_id") Long boardId,
                               @RequestParam(name="member_id") Long memberId) {
