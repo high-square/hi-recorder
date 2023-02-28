@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudyService {
     private final StudyRepository studyRepository;
 
-
+    public boolean isTooManyToManage(Long memberId, int maxStudyCount) {
+        return studyRepository.findAllByManager_Id(memberId).size() >= maxStudyCount;
+    }
 
 }
 

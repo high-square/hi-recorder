@@ -4,6 +4,7 @@ import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
+import highsquare.hirecoder.domain.service.StudyService;
 import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Kind;
@@ -30,21 +31,20 @@ import java.util.List;
 @RequestMapping("/boards/recruit")
 public class RecruitBoardFormController {
     private static final int MAX_STUDY_COUNT = 5;
-
-    private final StudyRepository studyRepository;
+    private final StudyService studyService;
     private final TagService tagService;
 
     @GetMapping("/create")
     public String getRecruitBoardCreateForm(HttpSession session, Model model) {
 
         // 테스트용 데이터
-//        session.setAttribute(SessionConstant.MEMBER_ID, 1L);
+        session.setAttribute(SessionConstant.MEMBER_ID, 1L);
 
         Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
 
-        List<Study> managedStudies = studyRepository.findAllByManager_Id(memberId);
-
-        if (managedStudies.size() >= MAX_STUDY_COUNT) {
+        if (memberId == null) {
+            model.addAttribute("not_member", true);
+        } else if (studyService.isTooManyToManage(memberId, MAX_STUDY_COUNT)) {
             model.addAttribute("max_study", true);
         }
 
@@ -55,25 +55,41 @@ public class RecruitBoardFormController {
     }
 
     @PostMapping("/create")
-    public String postRecruitBoardCreateForm(@ModelAttribute BoardForm boardForm, BindingResult bindingResult, HttpSession session) {
+    public String postRecruitBoardCreateForm(@ModelAttribute StudyCreationForm studyCreationForm, BindingResult bindingResult, HttpSession session) {
 
         Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
 
-        // 스터디 생성 로직
+        if (memberId == null) {
+            bindingResult.reject("access.form.not_member");
+        } else if (studyService.isTooManyToManage(memberId, MAX_STUDY_COUNT)) {
+            bindingResult.reject("access.form.max_study", new Object[]{MAX_STUDY_COUNT}, null);
+        }
 
+        // studyName 검증
+        if (!studyCreationForm.isStudyNameTooShort(bindingResult))
+            studyCreationForm.isStudyNameTooLong(bindingResult);
 
+        // crewNumber 검증
+        if (!studyCreationForm.isCrewNumberTooSmall(bindingResult))
+            studyCreationForm.isCrewNumberTooBig(bindingResult);
+
+        // 시작일, 종료일 검증
+        studyCreationForm.isTimeValid(bindingResult);
+
+        // 셀렉트 리스트 검증
+        studyCreationForm.isSelectionValid(bindingResult);
 
         // title 검증
-        if (!boardForm.isTitleTooShort(bindingResult))
-            boardForm.isTitleTooLong(bindingResult);
+        if (!studyCreationForm.isTitleTooShort(bindingResult))
+            studyCreationForm.isTitleTooLong(bindingResult);
 
         // content 검증
-        if (!boardForm.isContentTooShort(bindingResult))
-            boardForm.isContentTooLong(bindingResult);
+        if (!studyCreationForm.isContentTooShort(bindingResult))
+            studyCreationForm.isContentTooLong(bindingResult);
 
         // tags 검증
-        if (!boardForm.areTooManyTags(bindingResult))
-            boardForm.areAnyTagsTooLong(bindingResult);
+        if (!studyCreationForm.areTooManyTags(bindingResult))
+            studyCreationForm.areAnyTagsTooLong(bindingResult);
 
         for (ObjectError error : bindingResult.getAllErrors()) {
             log.warn("{}", error.toString());
@@ -83,13 +99,13 @@ public class RecruitBoardFormController {
             return "form/recruitBoardCreateForm";
         }
 
-        // title, content는 널이 아님을 보장
+        // tags를 제외한 모두는 널이 아님을 보장
         // tags는 비었을 때 널이다.
-        assert boardForm.getTitle() != null;
-        assert boardForm.getContent() != null;
 
+        // 스터디 등록 로직
 
-        tagService.registerTags(null, boardForm.getTags());
+        // 소개글 등록 로직
+
 
         return String.format("redirect:/boards/recruit/%d/%d", 0,1);
     }

@@ -85,60 +85,63 @@
 
                     <script th:inline="javascript" th:each="err : ${#fields.globalErrors()}">alert([[${err}]])</script>
 
-                    <div class="mb-3 row" th:classappend="${#fields.hasGlobalErrors()} ? 'border border-danger'">
+                    <div th:classappend="${#fields.hasGlobalErrors()} ? 'border border-danger'">
+                        <div class="mb-3 row">
 
-                        <div class="col" th:fragment="">
-                            <p class="mb-0">시작일</p>
-                            <input type="date" class="form-control" th:field="*{startDate}" placeholder="시작일">
+                            <div class="col" th:fragment="">
+                                <p class="mb-0">시작일</p>
+                                <input type="date" class="form-control" th:field="*{startDate}" placeholder="시작일">
+                            </div>
+
+                            <div class="col" th:fragment="">
+                                <p class="mb-0">종료일</p>
+                                <input type="date" class="form-control" th:field="*{endDate}" placeholder="종료일">
+                            </div>
+
+                            <div class="col">
+                                <p class="mb-0">스터디 인원</p>
+                                <input  type="number" class="form-control" th:field="*{crewNumber}" th:errorclass="border-danger" placeholder="1~100">
+                            </div>
+
                         </div>
 
-                        <div class="col" th:fragment="">
-                            <p class="mb-0">종료일</p>
-                            <input type="date" class="form-control" placeholder="종료일">
-                        </div>
+                        <div class="mb-5 row">
 
-                        <div class="col">
-                            <p class="mb-0">스터디 인원</p>
-                            <input  type="number" class="form-control" placeholder="1~100">
-                        </div>
+                            <!-- 진행상태 셀렉트 리스트 작성 -->
+                            <div class="col" th:fragment="activitySelect">
+                                <select th:field="*{activityState}" class="form-select">
+                                    <option value="">==진행상태 선택==</option>
+                                    <option th:each="activity : ${T(highsquare.hirecoder.entity.ActivityState).values()}"
+                                            th:value="${activity}" th:text="${activity.name()}">
+                                        진행중
+                                    </option>
+                                </select>
+                            </div>
 
-                    </div>
+                            <!-- 모집상태 셀렉트 리스트 작성 -->
+                            <div class="col" th:fragment="recruitSelect">
+                                <select th:field="*{recruitState}" class="form-select">
+                                    <option value="">==모집상태 선택==</option>
+                                    <option th:each="recruit : ${T(highsquare.hirecoder.entity.RecruitState).values()}"
+                                            th:value="${recruit}" th:text="${recruit.name()}">
+                                        모집중
+                                    </option>
+                                </select>
+                            </div>
 
-                    <div class="mb-5 row">
 
-                        <!-- 진행상태 셀렉트 리스트 작성 -->
-                        <div class="col" th:fragment="activitySelect">
-                            <select th:field="*{activityState}" class="form-select">
-                                <option value="">==진행상태 선택==</option>
-                                <option th:each="activity : *{activityState.values()}"
-                                        th:value="${activity}" th:text="${activity.name()}">
-                                    진행중
-                                </option>
-                            </select>
-                        </div>
-
-                        <!-- 모집상태 셀렉트 리스트 작성 -->
-                        <div class="col" th:fragment="recruitSelect">
-                            <select th:field="*{recruitState}" class="form-select">
-                                <option value="">==모집상태 선택==</option>
-                                <option th:each="recruit : *{recruitState.values()}"
-                                        th:value="${recruit}" th:text="${recruit.name()}">
-                                    모집중
-                                </option>
-                            </select>
-                        </div>
 
                         <!-- 모임방법 셀렉트 리스트 작성 -->
                         <div class="col" th:fragment="meetingTypeSelect">
                             <select th:field="*{meetingType}" class="form-select">
                                 <option value="">==모임방법 선택==</option>
-                                <option th:each="meet : *{meetingType.values()}"
+                                <option th:each="meet : ${T(highsquare.hirecoder.entity.MeetingType).values()}"
                                         th:value="${meet}" th:text="${meet.name()}">
                                     오프라인
                                 </option>
                             </select>
                         </div>
-
+                        </div>
                     </div>
 
 
