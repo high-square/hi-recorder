@@ -40,4 +40,16 @@ public class TagService {
 
         return tagList;
     }
+
+    @Transactional
+    public List<Tag> getTags(Long boardId) {
+
+        List<Tag> tagsUsedInBoard = boardTagRepository.findTagByBoardId(boardId);
+
+        if (tagsUsedInBoard==null) {
+            tagsUsedInBoard = new ArrayList<>();
+        }
+
+        return tagsUsedInBoard;
+    }
 }

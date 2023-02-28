@@ -20,3 +20,23 @@
     background-clip: border-box;
     border: 1px solid rgba(0, 0, 0, 0.125);
 }
+
+.tags {
+    padding: 0;
+    margin: 0;
+    font-weight: 400; }
+.tags li {
+    padding: 0;
+    margin: 0 4px 4px 0;
+    float: left;
+    display: inline-block; }
+.tags li a {
+    float: left;
+    display: block;
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: gray;
+    background: #f2f2f2; }
+.tags li a:hover {
+    color: #fff;
+    background: #214252; }

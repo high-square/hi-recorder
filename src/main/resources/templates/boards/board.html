@@ -93,6 +93,14 @@
             <div class="col-xl-3" style="color:white"><b>수정날짜 :</b></div>
             <div class="col-xl-2" th:text="${#temporals.format(board.updatedTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
         </div>
+        <div>
+            <h3 class="heading" >Tags</h3>
+            <th:block th:if="${tags.isEmpty()!=null}" th:each="tag : ${tags}">
+                <ul class="tags">
+                    <li><a href="#" th:text="${tag.content}">tag</a></li>
+                </ul>
+            </th:block>
+        </div>
         <div class="mt-5 row">
       <span class="col-xl-3" style="margin-left:600px">
         <input type="button" class="w-100 btn btn-third btn-lg" th:if="${board.memberId==session.memberId}"
@@ -374,10 +382,11 @@
                 headers: {"Content-type": "application/json"},
                 data: param,
             }).done(function (fragment) {
-                turnAllComments();
-                document.getElementById("newComment").value = '';
                 $("#commentTable").replaceWith(fragment);
             })
+
+            turnAllComments();
+            document.getElementById("newComment").value = '';
         }
     }
 
