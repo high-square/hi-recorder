@@ -81,7 +81,7 @@
         <div class="row text-center" style="background-color:#0dcaf0">
             <div class="col-xl-7"></div>
             <div class="col-xl-3" style="color:white"><b>전체공개여부 :</b></div>
-            <div class="col-xl-1" th:text="${board.publicYn}"></div>
+            <div class="col-xl-1" th:text="${board.publicYn}=='y' ? '전체공개':'비공개'"></div>
         </div>
         <div class="row text-center" style="background-color:#0dcaf0">
             <div class="col-xl-7"></div>
