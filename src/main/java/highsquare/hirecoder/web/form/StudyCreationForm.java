@@ -3,12 +3,12 @@ package highsquare.hirecoder.web.form;
 import highsquare.hirecoder.entity.ActivityState;
 import highsquare.hirecoder.entity.MeetingType;
 import highsquare.hirecoder.entity.RecruitState;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.validation.BindingResult;
 
-import javax.swing.text.DateFormatter;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -59,8 +59,8 @@ public class StudyCreationForm extends BoardForm {
     }
 
     public boolean isTimeValid() {
-        boolean isStartDateEmpty = startDate == "";
-        boolean isEndDateEmpty = endDate == "";
+        boolean isStartDateEmpty = startDate == null || startDate == "";
+        boolean isEndDateEmpty = endDate == null || endDate == "";
 
         if (isStartDateEmpty || isEndDateEmpty) return false;
 

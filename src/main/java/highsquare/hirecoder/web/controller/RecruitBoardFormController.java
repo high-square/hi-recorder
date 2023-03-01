@@ -6,6 +6,7 @@ import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.StudyService;
 import highsquare.hirecoder.domain.service.TagService;
+import highsquare.hirecoder.dto.StudyCreationInfo;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Study;
@@ -32,6 +33,7 @@ import java.util.List;
 public class RecruitBoardFormController {
     private static final int MAX_STUDY_COUNT = 5;
     private final StudyService studyService;
+    private final BoardService boardService;
     private final TagService tagService;
 
     @GetMapping("/create")
@@ -102,11 +104,13 @@ public class RecruitBoardFormController {
         // tags를 제외한 모두는 널이 아님을 보장
         // tags는 비었을 때 널이다.
 
-        // 스터디 등록 로직
+        StudyCreationInfo info = new StudyCreationInfo(studyCreationForm, memberId);
+        Study study = studyService.createStudy(info);
 
-        // 소개글 등록 로직
+        Board board = boardService.createBoard(memberId, study.getId(), Kind.RECRUIT, studyCreationForm);
 
+        tagService.registerTags(board, studyCreationForm.getTags());
 
-        return String.format("redirect:/boards/recruit/%d/%d", 0,1);
+        return String.format("redirect:/boards/recruit/%d/%d", study.getId(), board.getId());
     }
 }

@@ -38,4 +38,14 @@ public class Study {
     @JoinColumn(name="manager_id")
     private Member manager;
 
+    public Study(String name, ActivityState activityState, RecruitState recruitState, LocalDateTime studyStartDate, LocalDateTime studyFinishDate, Integer crewNumber, MeetingType meetingType, Member manager) {
+        this.name = name;
+        this.activityState = activityState;
+        this.recruitState = recruitState;
+        this.studyStartDate = studyStartDate;
+        this.studyFinishDate = studyFinishDate;
+        this.crewNumber = crewNumber;
+        this.meetingType = meetingType;
+        this.manager = manager;
+    }
 }
