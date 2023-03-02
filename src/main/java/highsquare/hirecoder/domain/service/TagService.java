@@ -40,4 +40,8 @@ public class TagService {
 
         return tagList;
     }
+
+    public List<Tag> getTags(Long boardId) {
+        return tagRepository.getAllTagsByBoardId(boardId);
+    }
 }

@@ -78,16 +78,6 @@ public class BoardController {
         return "boards/board";
     }
 
-    // 수정하기를 누르면 수정하기 폼 화면으로 가게 설정
-
-    @GetMapping("/content/{study_id}/{board_id}/edit")
-    public String editForm(@PathVariable("study_id") Long studyId,
-                           @PathVariable("board_id") Long boardId, Model model) {
-        model.addAttribute("boardId", boardId);
-        model.addAttribute("studyId", studyId);
-        return "study/postEdit";
-    }
-
     // 삭제하기를 누르면 해당 게시글을 삭제하고 그 게시글이 속했던 스터디 게시글 페이지로 이동하게 했음
     // 삭제 시 foreignKey 제약조건으로 인해 삭제가 안됨 -- 설정해야함
 

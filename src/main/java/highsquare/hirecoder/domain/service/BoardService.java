@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import java.util.Optional;
 import java.util.UUID;
 
-import static highsquare.hirecoder.constant.CookieConstant.*;
+import static highsquare.hirecoder.constant.CookieConstant.COOKIE_VALID_TIME;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +44,11 @@ public class BoardService {
         return savedBoard;
     }
 
+    public Optional<Board> getBoard(Long boardId) {
+
+        return boardRepository.findById(boardId);
+    }
+
     public Board getBoard(Long boardId, HttpServletRequest request,HttpServletResponse response) {
         Board board = boardRepository.findById(boardId).get();
 
@@ -56,6 +61,10 @@ public class BoardService {
 
     public void deleteBoard(Long boardId) {
         boardRepository.deleteById(boardId);
+    }
+
+    public boolean isMemberWriter(Long memberId, Long boardId) {
+        return boardRepository.existsBoardWriter(boardId, memberId);
     }
 
     /**
