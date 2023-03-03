@@ -127,7 +127,7 @@
         <!-- 댓글 작성 폼-->
         <div class="row text-center">
             <div class="col-xl-2">댓글작성하기</div>
-            <div class="col-xl-1" id="commentCount">댓글수</div>
+            <div class="col-xl-2" id="commentsCount" th:text="|${commentsTotalCounts}개의 댓글|">0개의 댓글</div>
         </div>
         <div class="container px-4 px-lg-5">
             <div class="col-12 mb-3" th:if="${session.memberId}==null">
@@ -173,7 +173,7 @@
                                 <img th:id="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==1}"
                                      style="margin-left:1000px" src="/assets/img/comment-like-after.png" width="50px"
                                      height="40px" th:onclick="|javascript:commentLike(${content.id})|">
-                                <span th:id="'commentCount'+${content.id}" class="sidebar-box" th:text="${content.likeCount}"></span>
+                                <span th:id="'commentLikeCount'+${content.id}" class="sidebar-box" th:text="${content.likeCount}"></span>
                             </h4>
                             <p class="card-text fw-bold" th:text="${content.content}"></p>
                         </div>
@@ -335,7 +335,7 @@
                     data: {'comment_id': commentId, 'member_id': member_id},
                 }).done(function (data) {
                     var commentLike = "#commentLikeImg"+commentId;
-                    var commentCount = "#commentCount"+commentId;
+                    var commentLikeCount = "#commentLikeCount"+commentId;
                     if (data[0].toString() == 1) {
                         console.log(data[0].toString());
                         console.log(data[1].toString());
@@ -343,7 +343,7 @@
                     } else {
                         $(commentLike).attr("src", "/assets/img/comment-like-before.png");
                     }
-                    $(commentCount).text(data[1]);
+                    $(commentLikeCount).text(data[1]);
                 });
 
             }
@@ -381,12 +381,25 @@
                 method: "POST",
                 url: "/comments",
                 headers: {"Content-type": "application/json"},
+                // 비동기 처리이므로 실행순서를 보장하기 위해 async:false로 처리(기본값 true)
+                async:false,
                 data: param,
             }).done(function (fragment) {
                 $("#commentTable").replaceWith(fragment);
             })
 
+            // 댓글 등록 이후 전체 댓글 수 비동기로 가져오기 작업
+            $.ajax({
+                method: "GET",
+                url: "/comments/count",
+                data: {"board_id":[[${board.id}]]}
+            }).done(function (data) {
+                $("#commentsCount").text(data+'개의 댓글');
+            })
+
+            //전체댓글 색깔입히기
             turnAllComments();
+            //작성중이던 댓글내용 없애기
             document.getElementById("newComment").value = '';
         }
     }

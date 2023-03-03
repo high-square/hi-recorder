@@ -10,12 +10,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -74,6 +76,13 @@ public class CommentService {
 
 
         return form;
+    }
+
+    /**
+     * 게시물에 해당하는 댓글의 총 갯수 카운트
+     */
+    public Integer countComments(Long boardId) {
+        return commentRepository.countTotalComments(boardId);
     }
 
 

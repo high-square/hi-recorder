@@ -74,6 +74,9 @@ public class BoardController {
                 commentService.pagingAllComments(boardId,
                         (Long)session.getAttribute("memberId"),pageRequestDto);
 
+        //게시글에 해당하는 총 댓글수 체크
+        Integer commentsTotalCounts = commentService.countComments(boardId);
+
 
 
         // view로 전달
@@ -83,6 +86,7 @@ public class BoardController {
         model.addAttribute("studyId", studyId);
         model.addAttribute("comments", allComments);
         model.addAttribute("tags", tags);
+        model.addAttribute("commentsTotalCounts", commentsTotalCounts);
 
         return "boards/board";
     }

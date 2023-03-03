@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static highsquare.hirecoder.constant.PageConstant.*;
 
@@ -82,6 +81,12 @@ public class CommentController {
         data.add(String.valueOf(likeOnComment.getLikeCheck()));
         data.add(likeCnt);
         return data;
+    }
+
+    @GetMapping("/count")
+    @ResponseBody
+    public Integer commentsCountProcess(@RequestParam(name="board_id") Long boardId) {
+         return commentService.countComments(boardId);
     }
 
 
