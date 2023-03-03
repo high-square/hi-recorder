@@ -1,6 +1,5 @@
 package highsquare.hirecoder.web.controller;
 
-import highsquare.hirecoder.HiRecoderApplication;
 import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
@@ -29,9 +28,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ContentBoardFormController.class)
+@WebMvcTest(BoardFormController.class)
 @MockBean(JpaMetamodelMappingContext.class)
-class ContentBoardFormControllerTest {
+class BoardFormControllerTest {
     @Autowired
     MockMvc mockMvc;
     @MockBean
@@ -83,7 +82,7 @@ class ContentBoardFormControllerTest {
         /**
          * 통합 테스트를 위해 컨트롤러에서 세션에 멤버 아이디를 넣어줄 경우
          * 테스트가 실패할 수 있다.
-         * {@link ContentBoardFormController#getPostCreatePage(Long, HttpSession, Model)}
+         * {@link BoardFormController#getPostCreatePage(Long, HttpSession, Model)}
          */
         resultActions2
                 .andExpect(view().name("form/contentBoardCreateForm"))

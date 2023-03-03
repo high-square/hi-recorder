@@ -1,7 +1,7 @@
 package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.constant.SessionConstant;
-import highsquare.hirecoder.domain.repository.StudyRepository;
+import highsquare.hirecoder.domain.repository.StudyMemberRepository;
 import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.StudyService;
@@ -10,7 +10,6 @@ import highsquare.hirecoder.dto.StudyCreationInfo;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Study;
-import highsquare.hirecoder.web.form.BoardForm;
 import highsquare.hirecoder.web.form.StudyCreationForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,17 +23,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/boards/recruit")
-public class RecruitBoardFormController {
+public class StudyCreateFormController {
     private static final int MAX_STUDY_COUNT = 5;
     private final StudyService studyService;
     private final BoardService boardService;
     private final TagService tagService;
+    private final StudyMemberService studyMemberService;
 
     @GetMapping("/create")
     public String getRecruitBoardCreateForm(HttpSession session, Model model) {
@@ -106,6 +105,8 @@ public class RecruitBoardFormController {
 
         StudyCreationInfo info = new StudyCreationInfo(studyCreationForm, memberId);
         Study study = studyService.createStudy(info);
+
+        studyMemberService.registerMemberToStudy(study.getId(), memberId);
 
         Board board = boardService.createBoard(memberId, study.getId(), Kind.RECRUIT, studyCreationForm);
 
