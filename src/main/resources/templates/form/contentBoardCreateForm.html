@@ -15,6 +15,7 @@
             th:src="@{/js/postEdit/postEdit.js}"></script>
 
     <script th:if="${access}" th:inline="javascript">alert([[#{access.form}]]); history.back();</script>
+    <script th:if="${writer}" th:inline="javascript">alert([[#{access.form.writer}]]); history.back();</script>
     <script th:if="${not_member}" th:inline="javascript">alert([[#{access.form.not_member}]]); history.back();</script>
     <script th:if="${unsociable}" th:inline="javascript">alert([[#{access.form.unsociable}]]); history.back();</script>
 
@@ -69,6 +70,11 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.7/marked.min.js"></script>
             <!-- 유틸리티 라이브러리 역할 : debounce -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
+
+            <script th:each="error : ${#fields.globalErrors()}" th:inline="javascript">
+                alert([[${error}]]);
+            </script>
+
             <form action="#" th:action id="form" th:object="${boardForm}" method="post">
                 <div class="container">
 

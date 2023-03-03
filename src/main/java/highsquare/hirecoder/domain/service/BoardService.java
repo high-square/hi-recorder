@@ -108,4 +108,14 @@ public class BoardService {
 
 
     }
+
+    @Transactional
+    public Board updateBoard(Long boardId, String title, String content) {
+        Board board = boardRepository.findById(boardId).get();
+
+        board.setTitle(title);
+        board.setContent(content);
+
+        return board;
+    }
 }

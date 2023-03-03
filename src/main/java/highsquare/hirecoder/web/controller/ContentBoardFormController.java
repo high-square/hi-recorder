@@ -106,7 +106,7 @@ public class ContentBoardFormController {
             model.addAttribute("not_member", true);
         } else if (!boardService.isMemberWriter(memberId, boardId)) {
             log.warn("글쓴이가 아닙니다.");
-            model.addAttribute("access", true);
+            model.addAttribute("writer", true);
         }
 
         BoardForm boardForm = new BoardForm();
@@ -127,6 +127,46 @@ public class ContentBoardFormController {
         model.addAttribute("boardForm", boardForm);
 
         return "form/contentBoardCreateForm";
+    }
+
+    @PostMapping("/{board_id}/edit")
+    public String postContentBoardEditForm(@PathVariable("study_id") Long studyId, @PathVariable("board_id") Long boardId,
+                                           @ModelAttribute BoardForm boardForm, BindingResult bindingResult, HttpSession session) {
+
+        Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
+
+        if (!studyMemberService.doesMemberBelongToStudy(studyId, memberId)) {
+            bindingResult.reject("access.not_member");
+        }
+
+        if (!boardService.isMemberWriter(memberId, boardId)) {
+            bindingResult.reject("access.form.writer");
+        }
+
+        // title 검증
+        if (!boardForm.isTitleTooShort(bindingResult))
+            boardForm.isTitleTooLong(bindingResult);
+
+        // content 검증
+        if (!boardForm.isContentTooShort(bindingResult))
+            boardForm.isContentTooLong(bindingResult);
+
+        // tags 검증
+        if (!boardForm.areTooManyTags(bindingResult))
+            boardForm.areAnyTagsTooLong(bindingResult);
+
+        for (ObjectError error : bindingResult.getAllErrors()) {
+            log.warn("{}", error.toString());
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "form/contentBoardCreateForm";
+        }
+
+        Board board = boardService.updateBoard(boardId, boardForm.getTitle(), boardForm.getContent());
+        tagService.updateTags(board, boardForm.getTags());
+
+        return String.format("redirect:/boards/content/%d/%d", studyId, boardId);
     }
 
 

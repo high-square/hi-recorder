@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +42,19 @@ public class TagService {
         return tagList;
     }
 
+    @Transactional
     public List<Tag> getTags(Long boardId) {
         return tagRepository.getAllTagsByBoardId(boardId);
+    }
+
+    @Transactional
+    public void updateTags(Board board, List<String> tags) {
+        removeTags(board);
+        registerTags(board, tags);
+    }
+
+    @Transactional
+    public void removeTags(Board board) {
+        boardTagRepository.deleteByBoard(board);
     }
 }
