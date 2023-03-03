@@ -30,7 +30,10 @@ public class CommentService {
         return newComment.getId();
     }
 
-    //전체댓글 페이징 처리
+
+    /**
+     * 전체 댓글 페이징
+     */
     public PageResultDto<CommentSelectedForm, Comment> pagingAllComments(Long boardId,Long memberId, PageRequestDto requestDto) {
         Pageable pageable = requestDto.getPageable(Sort.by("createdTime").descending());
         Page<Comment> result = commentRepository.findAllComments(boardId,pageable);
@@ -86,4 +89,19 @@ public class CommentService {
     }
 
 
+    /**
+     * 댓글의 내용 수정하기 작업
+     * update 구문이 적용안됐다면 0을 리턴, 적용됐다면 변경된 commentId를 반환
+     */
+    public Long updateCommentContent(Long commentId, String commentContent) {
+        Integer resultCount = commentRepository.updateCommentContent(commentId, commentContent);
+        if (resultCount==0) {
+            return Long.valueOf(resultCount);
+        }
+        return commentId;
+    }
+
+    public void deleteComment(Long commentId) {
+        commentRepository.deleteComment(commentId);
+    }
 }

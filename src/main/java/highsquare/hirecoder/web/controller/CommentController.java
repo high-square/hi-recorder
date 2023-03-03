@@ -70,6 +70,27 @@ public class CommentController {
         return "boards/board :: #commentTable";
     }
 
+    // 댓글 수정 클릭 시 작업
+    @PatchMapping("/update/{commentId}")
+    @ResponseBody
+    public Long updateComment(@PathVariable("commentId") Long commentId,
+                              @RequestParam String commentContent) {
+        Long result = commentService.updateCommentContent(commentId, commentContent);
+        if(result==0) {
+            throw new IllegalArgumentException("해당 댓글이 존재하지 않습니다.");
+        } else {
+            return result;
+        }
+
+    }
+
+    // 댓글 삭제 클릭 시 작업
+    @DeleteMapping("/delete/{commentId}")
+    @ResponseBody
+    public void deleteComment(@PathVariable("commentId") Long commentId) {
+        commentService.deleteComment(commentId);
+    }
+
     // 댓글의 좋아요 클릭 시 작업
     @PostMapping("/like")
     @ResponseBody

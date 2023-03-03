@@ -176,6 +176,13 @@
                                 <span th:id="'commentLikeCount'+${content.id}" class="sidebar-box" th:text="${content.likeCount}"></span>
                             </h4>
                             <p class="card-text fw-bold" th:text="${content.content}"></p>
+                            <!--해당 댓글 작성자이면 보이는 수정, 삭제 버튼 구현 -->
+                            <th:block th:if="${session.memberId==content.memberId}">
+                                <textarea  th:id="'toBeComment'+${content.id}" cols="15" rows="2" class="form-control"
+                                          placeholder="수정 가능합니다."></textarea>
+                                <input type="button" class="updatebtn" th:onclick="|javascript:commentUpdate(${content.id})|" value="수정">
+                                <input type="button" class="deletebtn" th:onclick="|javascript:commentDelete(${content.id})|" value="삭제">
+                            </th:block>
                         </div>
                     </div>
                 </section>
@@ -337,8 +344,6 @@
                     var commentLike = "#commentLikeImg"+commentId;
                     var commentLikeCount = "#commentLikeCount"+commentId;
                     if (data[0].toString() == 1) {
-                        console.log(data[0].toString());
-                        console.log(data[1].toString());
                         $(commentLike).attr("src", "/assets/img/comment-like-after.png");
                     } else {
                         $(commentLike).attr("src", "/assets/img/comment-like-before.png");
@@ -434,8 +439,8 @@
     // 댓글 페이징 ajax 날리기
     // 파라미터로 받아온 페이지를 요청함
     page = function (page) {
-        pageNumber = page;
-        boardId = [[${boardId}]];
+       var pageNumber = page;
+       var boardId = [[${boardId}]];
 
         $.ajax({
             method: "GET",
@@ -456,6 +461,54 @@
     turnBestComments = function () {
         $("#bestComments").attr("style", "background: white;border: white;opacity: 2;color:green;font-weight:bold");
         $("#allComments").attr("style", "background: white;border: white;opacity: 0.4;");
+    }
+
+    //댓글 수정하기
+    commentUpdate = function(commentId) {
+        var commentId = commentId;
+        var toBeComment = 'toBeComment'+commentId;
+        var commentContent = document.getElementById(toBeComment).value;
+        var r=confirm("댓글을 수정하시겠습니까?");
+        if (r==true) {
+            $.ajax({
+                method: "PATCH",
+                url: "/comments/update/"+commentId,
+                data: {"commentContent":commentContent},
+                async:false,
+                success: function(data) {
+                    alert("댓글이 수정되었습니다!")
+                    turnAllComments();
+                    page(1);
+                },
+                error: function(error) {
+                    alert("오류가 발생했습니다!")
+                }
+            })
+
+        }
+
+    }
+
+    //댓글 삭제하기
+    commentDelete = function(commentId) {
+        var commentId = commentId;
+        var r=confirm("댓글을 삭제하시겠습니까?");
+        if (r==true) {
+            $.ajax({
+                method: "DELETE",
+                url: "/comments/delete/"+commentId,
+                async:false,
+                success: function(data) {
+                    alert("댓글이 삭제되었습니다!")
+                    turnAllComments();
+                    page(1);
+                },
+                error: function(error) {
+                    alert("오류가 발생했습니다!")
+                }
+            })
+
+        }
     }
 
 
