@@ -151,6 +151,7 @@
                     style="background: white;border: white;opacity: 0.4;">전체댓글
             </button>
         </div>
+        <div class="card-comment bg-light" th:unless="${comments.isNotEmpty()}">작성된 댓글이 없습니다.</div>
         <div id="commentTable" th:if="${comments.isNotEmpty()}">
             <nav
                     th:with="
