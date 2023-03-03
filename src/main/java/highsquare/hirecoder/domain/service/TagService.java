@@ -16,11 +16,11 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class TagService {
     private final TagRepository tagRepository;
     private final BoardTagRepository boardTagRepository;
 
-    @Transactional
     public List<Tag> registerTags(Board board, List<String> tags) {
 
         List<Tag> tagList = new ArrayList<>();
@@ -42,18 +42,15 @@ public class TagService {
         return tagList;
     }
 
-    @Transactional
     public List<Tag> getTags(Long boardId) {
         return tagRepository.getAllTagsByBoardId(boardId);
     }
 
-    @Transactional
     public void updateTags(Board board, List<String> tags) {
         removeTags(board);
         registerTags(board, tags);
     }
 
-    @Transactional
     public void removeTags(Board board) {
         boardTagRepository.deleteByBoard(board);
     }

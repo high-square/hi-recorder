@@ -10,13 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @DataJpaTest
-class TagRepositoryTest {
+class BoardTagRepositoryTest {
 
-    @Autowired TagRepository tagRepository;
+    @Autowired
+    TagRepository tagRepository;
     @Autowired BoardRepository boardRepository;
     @Autowired BoardTagRepository boardTagRepository;
 
@@ -51,22 +51,26 @@ class TagRepositoryTest {
     }
 
     @Test
-    @DisplayName("Board의 모든 태그를 가져오는 테스트")
-    void getAllTagsByBoardIdTest() throws Exception
-    {
+    @DisplayName("보드의 태그를 모두 지우는 로직 테스트")
+    public void removeTagsTest() {
+
         // given
+
 
         // when
 
-        List<Tag> foundTags1 = tagRepository.getAllTagsByBoardId(boards.get(0).getId());
-        List<Tag> foundTags2 = tagRepository.getAllTagsByBoardId(boards.get(1).getId());
-        List<Tag> foundTags3 = tagRepository.getAllTagsByBoardId(boards.get(2).getId());
+        boardTagRepository.deleteByBoard(boards.get(0));
+
+        List<Tag> all = tagRepository.findAll();
+        List<Tag> allTagsByBoardId1 = tagRepository.getAllTagsByBoardId(boards.get(0).getId());
+        List<Tag> allTagsByBoardId2 = tagRepository.getAllTagsByBoardId(boards.get(1).getId());
 
         // then
 
-        Assertions.assertThat(foundTags1).containsExactly(tags.get(0), tags.get(1),tags.get(2));
-        Assertions.assertThat(foundTags2).containsExactly(tags.get(2));
-        Assertions.assertThat(foundTags3.size()).isEqualTo(0);
+        Assertions.assertThat(all.size()).isEqualTo(3);
+        Assertions.assertThat(allTagsByBoardId1.size()).isEqualTo(0);
+        Assertions.assertThat(allTagsByBoardId2.size()).isEqualTo(1);
 
     }
+
 }
