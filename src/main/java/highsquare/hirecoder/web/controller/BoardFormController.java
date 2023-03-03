@@ -111,6 +111,8 @@ public class BoardFormController {
 
         BoardForm boardForm = new BoardForm();
 
+        model.addAttribute("edit", true);
+
         if (model.containsAttribute("access") ||
                 model.containsAttribute("not_member")) {
             model.addAttribute("boardForm", boardForm);
