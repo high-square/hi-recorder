@@ -55,6 +55,7 @@ public class CommentController {
                                  HttpSession session,
                                  Model model) {
 
+        // 페이지 검증로직이 필요함(페이지 수, 사이즈가 음수인지 아닌지, boardId가 들어왔는지)
 
         // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
         PageRequestDto pageRequestDto = new PageRequestDto(page, size);
@@ -68,6 +69,22 @@ public class CommentController {
         model.addAttribute("boardId", boardId);
 
         return "boards/board :: #commentTable";
+    }
+
+    @GetMapping("/BestComments")
+    public String getBestComments(@RequestParam("boardId") Long boardId, HttpSession session, Model model) {
+
+        // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
+        PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, BEST_DEFAULT_SIZE);
+
+        // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
+        PageResultDto<CommentSelectedForm, Comment> bestComments =
+                commentService.pagingBestComments(boardId,(Long)session.getAttribute("memberId"), pageRequestDto);
+
+        model.addAttribute("bestComments", bestComments);
+        model.addAttribute("boardId", boardId);
+
+        return "boards/board :: #bestCommentTable";
     }
 
     // 댓글 수정 클릭 시 작업

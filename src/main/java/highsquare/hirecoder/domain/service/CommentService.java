@@ -46,15 +46,21 @@ public class CommentService {
         return new PageResultDto<>(result, fn);
     }
 
-    //BEST댓글 페이징 처리
-//    public PageResultDto<CommentSelectedForm, Comment> pagingBestComments(Long boardId,PageRequestDto requestDto) {
-//        Pageable pageable = requestDto.getPageable(Sort.by("likeCount").descending());
-//        Page<Comment> result = commentRepository.findBestComments(boardId, pageable);
-//
-//        Function<Comment, CommentSelectedForm> fn = (entity -> entityToDto(entity));
-//
-//        return new PageResultDto<>(result, fn);
-//    }
+
+    /**
+     * Best 댓글 페이징
+     */
+    public PageResultDto<CommentSelectedForm, Comment> pagingBestComments(Long boardId,Long memberId,PageRequestDto requestDto) {
+        Pageable pageable = requestDto.getPageable(Sort.by("likeCnt").descending());
+        Page<Comment> result = commentRepository.findBestComments(boardId, pageable);
+
+        //해당 멤버가 클릭한 좋아요 확인 작업
+        Map<Long, Integer> commentLikeList = likeOnCommentService.commentWithLikeByMember(boardId,memberId);
+
+        Function<Comment, CommentSelectedForm> fn = (entity -> entityToDto(entity,commentLikeList));
+
+        return new PageResultDto<>(result, fn);
+    }
 
 
     /**

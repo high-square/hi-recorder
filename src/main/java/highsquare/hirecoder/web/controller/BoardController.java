@@ -74,6 +74,11 @@ public class BoardController {
                 commentService.pagingAllComments(boardId,
                         (Long)session.getAttribute("memberId"),pageRequestDto);
 
+        // DB에서 board.id에 해당하는 Best 댓글순으로 꺼내옴
+        PageResultDto<CommentSelectedForm, Comment> bestComments =
+                commentService.pagingBestComments(boardId,
+                        (Long)session.getAttribute("memberId"),pageRequestDto);
+
         //게시글에 해당하는 총 댓글수 체크
         Integer commentsTotalCounts = commentService.countComments(boardId);
 
@@ -87,6 +92,7 @@ public class BoardController {
         model.addAttribute("comments", allComments);
         model.addAttribute("tags", tags);
         model.addAttribute("commentsTotalCounts", commentsTotalCounts);
+        model.addAttribute("bestComments", bestComments);
 
         return "boards/board";
     }
