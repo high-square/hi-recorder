@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static highsquare.hirecoder.constant.LikeCheckConstant.Like_Checked_Board;
+import static highsquare.hirecoder.constant.LikeCheckConstant.Like_Unchecked_Board;
+
 
 @Service
 @RequiredArgsConstructor
@@ -29,10 +32,10 @@ public class LikeOnBoardService {
 
         // 해당 LikeOnBoard의 LikeCheck가 0이면 좋아요 선택 X, 1이면 좋아요 선택 O이니 값을 변경해줌
         // 변경감지를 이용해서 update해줌
-        if (findLike.getLikeCheck()==0) {
-            findLike.setLikeCheck(1);
+        if (findLike.getLikeCheck()==Like_Unchecked_Board) {
+            findLike.setLikeCheck(Like_Checked_Board);
         } else {
-            findLike.setLikeCheck(0);
+            findLike.setLikeCheck(Like_Unchecked_Board);
         }
 
         return findLike;

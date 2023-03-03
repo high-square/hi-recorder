@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Map;
 import java.util.function.Function;
 
+import static highsquare.hirecoder.constant.LikeCheckConstant.Like_Checked_Comment;
+import static highsquare.hirecoder.constant.LikeCheckConstant.Like_Unchecked_Comment;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -76,10 +79,10 @@ public class CommentService {
         form.setLikeCount(entity.getLikeCnt());
 
         //좋아요 체크 로직
-        if (commentLikeList.get(entity.getId())==null || commentLikeList.get(entity.getId())==0) {
-            form.setLikeCheckWithMember(0);
+        if (commentLikeList.get(entity.getId())==null || commentLikeList.get(entity.getId())==Like_Unchecked_Comment) {
+            form.setLikeCheckWithMember(Like_Unchecked_Comment);
         } else {
-            form.setLikeCheckWithMember(1);
+            form.setLikeCheckWithMember(Like_Checked_Comment);
         }
 
 
