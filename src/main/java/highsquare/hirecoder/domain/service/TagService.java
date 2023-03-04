@@ -42,9 +42,20 @@ public class TagService {
         return tagList;
     }
 
+
+    @Transactional
     public List<Tag> getTags(Long boardId) {
-        return tagRepository.getAllTagsByBoardId(boardId);
-    }
+
+        List<Tag> tagsUsedInBoard = boardTagRepository.findTagByBoardId(boardId);
+
+        if (tagsUsedInBoard==null) {
+            tagsUsedInBoard = new ArrayList<>();
+        }
+
+        return tagsUsedInBoard;
+    } 
+
+   
 
     public void updateTags(Board board, List<String> tags) {
         removeTags(board);
@@ -53,5 +64,6 @@ public class TagService {
 
     public void removeTags(Board board) {
         boardTagRepository.deleteByBoard(board);
+
     }
 }

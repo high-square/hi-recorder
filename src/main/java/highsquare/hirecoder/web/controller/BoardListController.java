@@ -21,6 +21,7 @@ import static highsquare.hirecoder.entity.Kind.RECRUIT;
 
 @Controller
 @RequestMapping("/")
+
 @RequiredArgsConstructor
 public class BoardListController {
     private final BoardRepository boardRepository;

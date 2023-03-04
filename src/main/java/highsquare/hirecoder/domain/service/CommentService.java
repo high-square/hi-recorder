@@ -10,13 +10,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import static highsquare.hirecoder.constant.LikeCheckConstant.Like_Checked_Comment;
+import static highsquare.hirecoder.constant.LikeCheckConstant.Like_Unchecked_Comment;
+
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -29,7 +33,10 @@ public class CommentService {
         return newComment.getId();
     }
 
-    //전체댓글 페이징 처리
+
+    /**
+     * 전체 댓글 페이징
+     */
     public PageResultDto<CommentSelectedForm, Comment> pagingAllComments(Long boardId,Long memberId, PageRequestDto requestDto) {
         Pageable pageable = requestDto.getPageable(Sort.by("createdTime").descending());
         Page<Comment> result = commentRepository.findAllComments(boardId,pageable);
@@ -42,15 +49,21 @@ public class CommentService {
         return new PageResultDto<>(result, fn);
     }
 
-    //BEST댓글 페이징 처리
-//    public PageResultDto<CommentSelectedForm, Comment> pagingBestComments(Long boardId,PageRequestDto requestDto) {
-//        Pageable pageable = requestDto.getPageable(Sort.by("likeCount").descending());
-//        Page<Comment> result = commentRepository.findBestComments(boardId, pageable);
-//
-//        Function<Comment, CommentSelectedForm> fn = (entity -> entityToDto(entity));
-//
-//        return new PageResultDto<>(result, fn);
-//    }
+
+    /**
+     * Best 댓글 페이징
+     */
+    public PageResultDto<CommentSelectedForm, Comment> pagingBestComments(Long boardId,Long memberId,PageRequestDto requestDto) {
+        Pageable pageable = requestDto.getPageable(Sort.by("likeCnt").descending());
+        Page<Comment> result = commentRepository.findBestComments(boardId, pageable);
+
+        //해당 멤버가 클릭한 좋아요 확인 작업
+        Map<Long, Integer> commentLikeList = likeOnCommentService.commentWithLikeByMember(boardId,memberId);
+
+        Function<Comment, CommentSelectedForm> fn = (entity -> entityToDto(entity,commentLikeList));
+
+        return new PageResultDto<>(result, fn);
+    }
 
 
     /**
@@ -66,10 +79,10 @@ public class CommentService {
         form.setLikeCount(entity.getLikeCnt());
 
         //좋아요 체크 로직
-        if (commentLikeList.get(entity.getId())==null || commentLikeList.get(entity.getId())==0) {
-            form.setLikeCheckWithMember(0);
+        if (commentLikeList.get(entity.getId())==null || commentLikeList.get(entity.getId())==Like_Unchecked_Comment) {
+            form.setLikeCheckWithMember(Like_Unchecked_Comment);
         } else {
-            form.setLikeCheckWithMember(1);
+            form.setLikeCheckWithMember(Like_Checked_Comment);
         }
 
 
@@ -77,5 +90,27 @@ public class CommentService {
         return form;
     }
 
+    /**
+     * 게시물에 해당하는 댓글의 총 갯수 카운트
+     */
+    public Integer countComments(Long boardId) {
+        return commentRepository.countTotalComments(boardId);
+    }
 
+
+    /**
+     * 댓글의 내용 수정하기 작업
+     * update 구문이 적용안됐다면 0을 리턴, 적용됐다면 변경된 commentId를 반환
+     */
+    public Long updateCommentContent(Long commentId, String commentContent) {
+        Integer resultCount = commentRepository.updateCommentContent(commentId, commentContent);
+        if (resultCount==0) {
+            return Long.valueOf(resultCount);
+        }
+        return commentId;
+    }
+
+    public void deleteComment(Long commentId) {
+        commentRepository.deleteComment(commentId);
+    }
 }

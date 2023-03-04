@@ -3,9 +3,11 @@ package highsquare.hirecoder.web.controller;
 import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.CommentService;
 import highsquare.hirecoder.domain.service.LikeOnBoardService;
+import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Comment;
 import highsquare.hirecoder.entity.LikeOnBoard;
+import highsquare.hirecoder.entity.Tag;
 import highsquare.hirecoder.page.PageRequestDto;
 import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.web.form.BoardSelectedForm;
@@ -35,6 +37,8 @@ public class BoardController {
 
     private final LikeOnBoardService likeOnBoardService;
 
+    private final TagService tagService;
+
 
     @GetMapping("/content/{study_id}/{board_id}")
     public String getBoard(@PathVariable("study_id") Long studyId,
@@ -56,6 +60,10 @@ public class BoardController {
         // board 엔티티를 boardForm으로 변환
         BoardSelectedForm boardForm = turnBoardEntityToForm(board);
 
+        // boardId를 이용해서 게시글에 해당되는 태그 가져오기
+        // 간단해서 DTO를 생략하고 엔티티를 바로 반환함
+        List<Tag> tags = tagService.getTags(boardId);
+
 
         // 댓글 가져오기 작업
         // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
@@ -66,6 +74,14 @@ public class BoardController {
                 commentService.pagingAllComments(boardId,
                         (Long)session.getAttribute("memberId"),pageRequestDto);
 
+        // DB에서 board.id에 해당하는 Best 댓글순으로 꺼내옴
+        PageResultDto<CommentSelectedForm, Comment> bestComments =
+                commentService.pagingBestComments(boardId,
+                        (Long)session.getAttribute("memberId"),pageRequestDto);
+
+        //게시글에 해당하는 총 댓글수 체크
+        Integer commentsTotalCounts = commentService.countComments(boardId);
+
 
 
         // view로 전달
@@ -74,6 +90,9 @@ public class BoardController {
         model.addAttribute("likeCheckBoard", likeOnBoard.getLikeCheck());
         model.addAttribute("studyId", studyId);
         model.addAttribute("comments", allComments);
+        model.addAttribute("tags", tags);
+        model.addAttribute("commentsTotalCounts", commentsTotalCounts);
+        model.addAttribute("bestComments", bestComments);
 
         return "boards/board";
     }

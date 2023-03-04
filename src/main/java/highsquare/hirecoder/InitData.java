@@ -49,11 +49,11 @@ public class InitData {
 
 
         // ----------------게시글-----------------
-        Board board1 = setBoard(member1, study1, "공부할사람 모집합니다 1", 3, 5,"# 1. Content", CONTENT);
-        Board board2 = setBoard(member2, study1, "공부할사람 모집합니다 2", 3, 5,"반갑습니다 !!", CONTENT);
-        Board board3 = setBoard(member3, study2, "공부할사람 모집합니다 3", 3, 5,"반갑습니다 !!", CONTENT);
-        Board board4 = setBoard(member4, study2, "공부할사람 모집합니다 4", 3, 5,"반갑습니다 !!", CONTENT);
-        Board board5 = setBoard(member1, study1, "인프런 김영한 강좌 자바 ORM 표준 JPA 프로그래밍 스터디", 5, 10,
+        Board board1 = setBoard(member1, study1, "공부할사람 모집합니다 1", "y",3, 5,"# 1. Content", CONTENT);
+        Board board2 = setBoard(member2, study1, "공부할사람 모집합니다 2", "y",3, 5,"반갑습니다 !!", CONTENT);
+        Board board3 = setBoard(member3, study2, "공부할사람 모집합니다 3", "n",3, 5,"반갑습니다 !!", CONTENT);
+        Board board4 = setBoard(member4, study2, "공부할사람 모집합니다 4", "n",3, 5,"반갑습니다 !!", CONTENT);
+        Board board5 = setBoard(member1, study1, "인프런 김영한 강좌 자바 ORM 표준 JPA 프로그래밍 스터디", "y",5, 10,
                 "안녕하세요 오프라인 스터디 인원 구인합니다. 연락 주세요. </p>", RECRUIT);
 
 
@@ -133,10 +133,11 @@ public class InitData {
         return studyMember;
     }
 
-    private static Board setBoard(Member member1, Study study1, String title, int likeCnt, int viewCnt, String content, Kind kind) {
+    private static Board setBoard(Member member1, Study study1, String title,String pulicYn, int likeCnt, int viewCnt, String content, Kind kind) {
         Board board = new Board();
         board.setMember(member1);
         board.setStudy(study1);
+        board.setPublicYn(pulicYn);
         board.setTitle(title);
         board.setLikeCnt(likeCnt);
         board.setViewCnt(viewCnt);

@@ -17,6 +17,7 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/css/styles.css" rel="stylesheet"/>
     <link href="../static/css/board/board.css" th:href="@{/css/board/board.css}" rel="stylesheet">
+
 </head>
 <body>
 <!-- Navigation-->
@@ -81,7 +82,7 @@
         <div class="row text-center" style="background-color:#0dcaf0">
             <div class="col-xl-7"></div>
             <div class="col-xl-3" style="color:white"><b>전체공개여부 :</b></div>
-            <div class="col-xl-1" th:text="${board.publicYn}"></div>
+            <div class="col-xl-1" th:text="${board.publicYn}=='y' ? '전체공개':'비공개'"></div>
         </div>
         <div class="row text-center" style="background-color:#0dcaf0">
             <div class="col-xl-7"></div>
@@ -92,6 +93,14 @@
             <div class="col-xl-7"></div>
             <div class="col-xl-3" style="color:white"><b>수정날짜 :</b></div>
             <div class="col-xl-2" th:text="${#temporals.format(board.updatedTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
+        </div>
+        <div>
+            <h3 class="heading" >Tags</h3>
+            <th:block th:if="${tags.isEmpty()!=null}" th:each="tag : ${tags}">
+                <ul class="tags">
+                    <li><a href="#" th:text="${tag.content}">tag</a></li>
+                </ul>
+            </th:block>
         </div>
         <div class="mt-5 row">
       <span class="col-xl-3" style="margin-left:600px">
@@ -119,15 +128,28 @@
         <!-- 댓글 작성 폼-->
         <div class="row text-center">
             <div class="col-xl-2">댓글작성하기</div>
-            <div class="col-xl-1" id="commentCount">댓글수</div>
+            <div class="col-xl-2" id="commentsCount" th:text="|${commentsTotalCounts}개의 댓글|">0개의 댓글</div>
         </div>
         <div class="container px-4 px-lg-5">
             <div class="col-12 mb-3" th:if="${session.memberId}==null">
                 <textarea id="notLogin" cols="30" rows="3" class="form-control"
                           placeholder="댓글을 작성하려면 로그인을 해주세요"></textarea>
             </div>
-            <div class="col-12 mb-3" th:if="${session.memberId}!=null">
-                <textarea id="newComment" cols="30" rows="3" class="form-control"
+<!--            <div class="col-12 mb-3" th:if="${session.memberId}!=null">-->
+<!--                <div class="textLengthWrap">-->
+<!--                    <p class="textCount">0자</p>-->
+<!--                    <p class="textTotal">/200자</p>-->
+<!--                </div>-->
+<!--                <textarea id="newComment" cols="30" rows="3" class="form-control"-->
+<!--                          placeholder="악의적인 댓글을 마음의 상처가 될 수 있어요^^"></textarea>-->
+<!--                <button type="button" style="border: black;boarder-with: 1px" onclick="postNewComment()">등록</button>-->
+<!--            </div>-->
+            <div class="col-12 mb-3" id="textBox" th:if="${session.memberId}!=null">
+                <div class="textLengthWrap">
+                    <p class="textCount">0자</p>
+                    <p class="textTotal">/200자</p>
+                </div>
+                <textarea id="newComment" style="height:300px; resize: none;" maxlength="201"
                           placeholder="악의적인 댓글을 마음의 상처가 될 수 있어요^^"></textarea>
                 <button type="button" style="border: black;boarder-with: 1px" onclick="postNewComment()">등록</button>
             </div>
@@ -143,6 +165,8 @@
                     style="background: white;border: white;opacity: 0.4;">전체댓글
             </button>
         </div>
+        <!-- 전체 댓글 보여주기 -->
+        <div class="card-comment bg-light" th:unless="${comments.isNotEmpty()}">작성된 댓글이 없습니다.</div>
         <div id="commentTable" th:if="${comments.isNotEmpty()}">
             <nav
                     th:with="
@@ -164,16 +188,23 @@
                                 <img th:id="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==1}"
                                      style="margin-left:1000px" src="/assets/img/comment-like-after.png" width="50px"
                                      height="40px" th:onclick="|javascript:commentLike(${content.id})|">
-                                <span th:id="'commentCount'+${content.id}" class="sidebar-box" th:text="${content.likeCount}"></span>
+                                <span th:id="'commentLikeCount'+${content.id}" class="sidebar-box" th:text="${content.likeCount}"></span>
                             </h4>
                             <p class="card-text fw-bold" th:text="${content.content}"></p>
+                            <!--해당 댓글 작성자이면 보이는 수정, 삭제 버튼 구현 -->
+                            <th:block th:if="${session.memberId==content.memberId}">
+                                <textarea  th:id="'toBeComment'+${content.id}" cols="15" rows="2" class="form-control"
+                                          placeholder="수정 가능합니다."></textarea>
+                                <input type="button" class="updatebtn" th:onclick="|javascript:commentUpdate(${content.id})|" value="수정">
+                                <input type="button" class="deletebtn" th:onclick="|javascript:commentDelete(${content.id})|" value="삭제">
+                            </th:block>
                         </div>
                     </div>
                 </section>
                 <ul class="pagination ">
 
                     <li th:classappend="${comments.first} ? 'disabled'" class="page-item">
-                        <a class="page-link" th:href="|javascript:page('1')|">
+                        <a class="page-link" th:href="|javascript:pageAll('1')|">
                             <span>&laquo;</span>
                             <span class="sr-only">First</span>
                         </a>
@@ -187,7 +218,7 @@
                         </a>
                         <a class="page-link"
                            th:unless="${comments.first}"
-                           th:onclick="|javascript:page('${startPage - pageDefaultSize}')|" aria-label="Previous">
+                           th:onclick="|javascript:pageAll('${startPage - pageDefaultSize}')|" aria-label="Previous">
                             <span aria-hidden="true"><</span>
                             <span class="sr-only">Previous</span>
                         </a>
@@ -195,7 +226,7 @@
 
                     <li th:each="page: ${comments.pageList}" th:classappend="${page == pageNumber} ? 'active'"
                         class="page-item">
-                        <a th:text="${page}" class="page-link" th:onclick="|javascript:page('${page}')|"></a>
+                        <a th:text="${page}" class="page-link" th:onclick="|javascript:pageAll('${page}')|"></a>
                     </li>
 
                     <li th:classappend="${comments.last} ? 'disabled'" class="page-item">
@@ -205,7 +236,7 @@
                             <span class="sr-only">Next</span>
                         </a>
                         <a class="page-link"
-                           th:unless="${comments.last}" th:onclick="|javascript:page('${startPage + pageDefaultSize}')|"
+                           th:unless="${comments.last}" th:onclick="|javascript:pageAll('${startPage + pageDefaultSize}')|"
                            aria-label="Next">
                             <span aria-hidden="true">&gt;</span>
                             <span class="sr-only">Next</span>
@@ -213,7 +244,7 @@
                     </li>
 
                     <li th:classappend=" ${comments.last} ? 'disabled'" class="page-item">
-                        <a class="page-link" th:onclick="|javascript:page('${totalPages}')|">
+                        <a class="page-link" th:onclick="|javascript:pageAll('${totalPages}')|">
                             <span>&raquo;</span>
                             <span class="sr-only">First</span>
                         </a>
@@ -222,7 +253,39 @@
                 </ul>
             </nav>
         </div>
+
+        <!-- BEST 댓글 보여주기 -->
+        <div class="bestComment" style="display:none">
+        <div class="card-comment bg-light" th:unless="${bestComments.isNotEmpty()}">작성된 댓글이 없습니다.</div>
+        <div id="bestCommentTable" th:if="${bestComments.isNotEmpty()}">
+                <section class="mb-5" th:each="content : ${bestComments.dtoList}">
+                    <div class="card-comment bg-light">
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                [[${content.memberName}]]
+                                <img th:id="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==0||content.likeCheckWithMember==null}"
+                                     style="margin-left:1000px" src="/assets/img/comment-like-before.png" width="50px"
+                                     height="40px" th:onclick="|javascript:commentLike(${content.id})|">
+                                <img th:id="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==1}"
+                                     style="margin-left:1000px" src="/assets/img/comment-like-after.png" width="50px"
+                                     height="40px" th:onclick="|javascript:commentLike(${content.id})|">
+                                <span th:id="'commentLikeCount'+${content.id}" class="sidebar-box" th:text="${content.likeCount}"></span>
+                            </h4>
+                            <p class="card-text fw-bold" th:text="${content.content}"></p>
+                            <!--해당 댓글 작성자이면 보이는 수정, 삭제 버튼 구현 -->
+                            <th:block th:if="${session.memberId==content.memberId}">
+                                <textarea  th:id="'toBeComment'+${content.id}" cols="15" rows="2" class="form-control"
+                                           placeholder="수정 가능합니다."></textarea>
+                                <input type="button" class="updatebtn" th:onclick="|javascript:commentUpdate(${content.id})|" value="수정">
+                                <input type="button" class="deletebtn" th:onclick="|javascript:commentDelete(${content.id})|" value="삭제">
+                            </th:block>
+                        </div>
+                    </div>
+                </section>
+        </div>
+        </div>
     </div>
+
 </div>
 <!-- Footer-->
 <footer class="border-top">
@@ -326,15 +389,13 @@
                     data: {'comment_id': commentId, 'member_id': member_id},
                 }).done(function (data) {
                     var commentLike = "#commentLikeImg"+commentId;
-                    var commentCount = "#commentCount"+commentId;
+                    var commentLikeCount = "#commentLikeCount"+commentId;
                     if (data[0].toString() == 1) {
-                        console.log(data[0].toString());
-                        console.log(data[1].toString());
                         $(commentLike).attr("src", "/assets/img/comment-like-after.png");
                     } else {
                         $(commentLike).attr("src", "/assets/img/comment-like-before.png");
                     }
-                    $(commentCount).text(data[1]);
+                    $(commentLikeCount).text(data[1]);
                 });
 
             }
@@ -372,12 +433,26 @@
                 method: "POST",
                 url: "/comments",
                 headers: {"Content-type": "application/json"},
+                // 비동기 처리이므로 실행순서를 보장하기 위해 async:false로 처리(기본값 true)
+                async:false,
                 data: param,
             }).done(function (fragment) {
-                turnAllComments();
-                document.getElementById("newComment").value = '';
                 $("#commentTable").replaceWith(fragment);
             })
+
+            // 댓글 등록 이후 전체 댓글 수 비동기로 가져오기 작업
+            $.ajax({
+                method: "GET",
+                url: "/comments/count",
+                data: {"board_id":[[${board.id}]]}
+            }).done(function (data) {
+                $("#commentsCount").text(data+'개의 댓글');
+            })
+
+            //전체댓글 색깔입히기
+            turnAllComments();
+            //작성중이던 댓글내용 없애기
+            document.getElementById("newComment").value = '';
         }
     }
 
@@ -393,26 +468,25 @@
     })
 
     // BEST 댓글 클릭 시 CommentController에 좋아요순으로 댓글 들고오기
-    // 페이징 없이 좋아요 높은 순으로 15개 들고오기
     $("#bestComments").on("click", function () {
+        pageBest(1);
         turnBestComments();
-
 
     })
 
     // 전체 댓글 클릭 시 CommentController에 해당 게시글에 대한 댓글 들고오기
     // QueryDSL에 검색조건에 따라 들고올 수 있게 설정할지 고민, 우선 검색조건없이 들고오는 기능으로 구현함
     $("#allComments").on("click", function () {
+        pageAll(1);
         turnAllComments();
-        page(1);
 
     })
 
     // 댓글 페이징 ajax 날리기
     // 파라미터로 받아온 페이지를 요청함
-    page = function (page) {
-        pageNumber = page;
-        boardId = [[${boardId}]];
+    pageAll = function (page) {
+       var pageNumber = page;
+       var boardId = [[${boardId}]];
 
         $.ajax({
             method: "GET",
@@ -423,20 +497,98 @@
         })
     }
 
+    // Best댓글 15개 ajax로 들고오기
+    pageBest = function () {
+        var boardId = [[${boardId}]];
+        $.ajax({
+            method: "GET",
+            url: "/comments/BestComments",
+            data: {"boardId": boardId},
+        }).done(function (fragment) {
+            $("#commentTable").empty();
+            $("#bestCommentTable").replaceWith(fragment);
+        })
+    }
+
     //전체 댓글 표시
     turnAllComments = function () {
         $("#allComments").attr("style", "background: white;border: white;opacity: 2;color:green;font-weight:bold");
         $("#bestComments").attr("style", "background: white;border: white;opacity: 0.4;");
+        $(".bestComment").attr("style", "display: none");
     }
 
     //BEST 댓글 표시
     turnBestComments = function () {
         $("#bestComments").attr("style", "background: white;border: white;opacity: 2;color:green;font-weight:bold");
         $("#allComments").attr("style", "background: white;border: white;opacity: 0.4;");
+        $(".bestComment").attr("style", "display: block");
     }
+
+    //댓글 수정하기
+    commentUpdate = function(commentId) {
+        var commentId = commentId;
+        var toBeComment = 'toBeComment'+commentId;
+        var commentContent = document.getElementById(toBeComment).value;
+        var r=confirm("댓글을 수정하시겠습니까?");
+        if (r==true) {
+            $.ajax({
+                method: "PATCH",
+                url: "/comments/update/"+commentId,
+                data: {"commentContent":commentContent},
+                async:false,
+                success: function(data) {
+                    alert("댓글이 수정되었습니다!")
+                    turnAllComments();
+                    pageAll(1);
+                },
+                error: function(error) {
+                    alert("오류가 발생했습니다!")
+                }
+            })
+
+        }
+
+    }
+
+    //댓글 삭제하기
+    commentDelete = function(commentId) {
+        var commentId = commentId;
+        var r=confirm("댓글을 삭제하시겠습니까?");
+        if (r==true) {
+            $.ajax({
+                method: "DELETE",
+                url: "/comments/delete/"+commentId,
+                async:false,
+                success: function(data) {
+                    alert("댓글이 삭제되었습니다!")
+                    turnAllComments();
+                    pageAll(1);
+
+                },
+                error: function(error) {
+                    alert("오류가 발생했습니다!")
+                }
+            })
+
+            // 댓글 삭제 이후 전체 댓글 수 비동기로 가져오기 작업
+            $.ajax({
+                method: "GET",
+                url: "/comments/count",
+                data: {"board_id":[[${board.id}]]}
+            }).done(function (data) {
+                $("#commentsCount").text(data+'개의 댓글');
+            })
+
+        }
+    }
+
+
 
 
 </script>
 <script src="/js/scripts.js"></script>
+<!-- js -->
+<script src="../../static/js/board/comment.js"
+        th:src="@{/js/board/comment.js}"></script>
 </body>
 </html>

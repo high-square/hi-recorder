@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static highsquare.hirecoder.constant.PageConstant.*;
 
@@ -56,6 +55,7 @@ public class CommentController {
                                  HttpSession session,
                                  Model model) {
 
+        // 페이지 검증로직이 필요함(페이지 수, 사이즈가 음수인지 아닌지, boardId가 들어왔는지)
 
         // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
         PageRequestDto pageRequestDto = new PageRequestDto(page, size);
@@ -71,6 +71,43 @@ public class CommentController {
         return "boards/board :: #commentTable";
     }
 
+    @GetMapping("/BestComments")
+    public String getBestComments(@RequestParam("boardId") Long boardId, HttpSession session, Model model) {
+
+        // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
+        PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, BEST_DEFAULT_SIZE);
+
+        // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
+        PageResultDto<CommentSelectedForm, Comment> bestComments =
+                commentService.pagingBestComments(boardId,(Long)session.getAttribute("memberId"), pageRequestDto);
+
+        model.addAttribute("bestComments", bestComments);
+        model.addAttribute("boardId", boardId);
+
+        return "boards/board :: #bestCommentTable";
+    }
+
+    // 댓글 수정 클릭 시 작업
+    @PatchMapping("/update/{commentId}")
+    @ResponseBody
+    public Long updateComment(@PathVariable("commentId") Long commentId,
+                              @RequestParam String commentContent) {
+        Long result = commentService.updateCommentContent(commentId, commentContent);
+        if(result==0) {
+            throw new IllegalArgumentException("해당 댓글이 존재하지 않습니다.");
+        } else {
+            return result;
+        }
+
+    }
+
+    // 댓글 삭제 클릭 시 작업
+    @DeleteMapping("/delete/{commentId}")
+    @ResponseBody
+    public void deleteComment(@PathVariable("commentId") Long commentId) {
+        commentService.deleteComment(commentId);
+    }
+
     // 댓글의 좋아요 클릭 시 작업
     @PostMapping("/like")
     @ResponseBody
@@ -82,6 +119,12 @@ public class CommentController {
         data.add(String.valueOf(likeOnComment.getLikeCheck()));
         data.add(likeCnt);
         return data;
+    }
+
+    @GetMapping("/count")
+    @ResponseBody
+    public Integer commentsCountProcess(@RequestParam(name="board_id") Long boardId) {
+         return commentService.countComments(boardId);
     }
 
 

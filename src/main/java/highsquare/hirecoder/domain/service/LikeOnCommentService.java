@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static highsquare.hirecoder.constant.LikeCheckConstant.Like_Checked_Comment;
+import static highsquare.hirecoder.constant.LikeCheckConstant.Like_Unchecked_Comment;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -28,10 +31,10 @@ public class LikeOnCommentService {
 
         // 해당 LikeOnBoard의 LikeCheck가 0이면 좋아요 선택 X, 1이면 좋아요 선택 O이니 값을 변경해줌
         // 변경감지를 이용해서 update해줌
-        if (findLike.getLikeCheck()==0) {
-            findLike.setLikeCheck(1);
+        if (findLike.getLikeCheck()==Like_Unchecked_Comment) {
+            findLike.setLikeCheck(Like_Checked_Comment);
         } else {
-            findLike.setLikeCheck(0);
+            findLike.setLikeCheck(Like_Unchecked_Comment);
         }
 
         return findLike;
