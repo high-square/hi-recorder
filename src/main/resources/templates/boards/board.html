@@ -135,21 +135,12 @@
                 <textarea id="notLogin" cols="30" rows="3" class="form-control"
                           placeholder="댓글을 작성하려면 로그인을 해주세요"></textarea>
             </div>
-<!--            <div class="col-12 mb-3" th:if="${session.memberId}!=null">-->
-<!--                <div class="textLengthWrap">-->
-<!--                    <p class="textCount">0자</p>-->
-<!--                    <p class="textTotal">/200자</p>-->
-<!--                </div>-->
-<!--                <textarea id="newComment" cols="30" rows="3" class="form-control"-->
-<!--                          placeholder="악의적인 댓글을 마음의 상처가 될 수 있어요^^"></textarea>-->
-<!--                <button type="button" style="border: black;boarder-with: 1px" onclick="postNewComment()">등록</button>-->
-<!--            </div>-->
             <div class="col-12 mb-3" id="textBox" th:if="${session.memberId}!=null">
                 <div class="textLengthWrap">
-                    <p class="textCount">0자</p>
-                    <p class="textTotal">/200자</p>
+                    <span class="textCount">0자</span>
+                    <span class="textTotal">/200자</span>
                 </div>
-                <textarea id="newComment" style="height:300px; resize: none;" maxlength="201"
+                <textarea id="newComment"  cols="30" rows="3" maxlength="201"
                           placeholder="악의적인 댓글을 마음의 상처가 될 수 있어요^^"></textarea>
                 <button type="button" style="border: black;boarder-with: 1px" onclick="postNewComment()">등록</button>
             </div>
@@ -413,7 +404,7 @@
     openDelete = function () {
         var r = confirm("삭제하시겠습니까?");
         if (r == true) {
-            location.href = '/boards/[[${studyId}]]/[[${board.id}]]/delete';
+            location.href = '/boards/content/[[${studyId}]]/[[${board.id}]]/delete';
         }
     }
 
@@ -453,6 +444,8 @@
             turnAllComments();
             //작성중이던 댓글내용 없애기
             document.getElementById("newComment").value = '';
+            //textCount 초기화
+            document.getElementsByClassName("textCount")[0].innerText = '0자';
         }
     }
 
