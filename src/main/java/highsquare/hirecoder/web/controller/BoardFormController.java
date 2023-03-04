@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/boards/content/{study_id}")
-public class ContentBoardFormController {
+@RequestMapping("/boards/{kind}/{study_id}")
+public class BoardFormController {
     private final StudyMemberService studyMemberService;
     private final BoardService boardService;
     private final TagService tagService;
@@ -92,9 +92,9 @@ public class ContentBoardFormController {
     }
 
     @GetMapping("/{board_id}/edit")
-    public String getContentBoardEditForm(@PathVariable(name = "study_id") Long studyId,
-                                          @PathVariable(name = "board_id") Long boardId,
-                                          HttpSession session, Model model) {
+    public String getBoardEditForm(@PathVariable(name = "study_id") Long studyId,
+                                   @PathVariable(name = "board_id") Long boardId,
+                                   HttpSession session, Model model) {
 
         Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
 
@@ -111,8 +111,10 @@ public class ContentBoardFormController {
 
         BoardForm boardForm = new BoardForm();
 
+        model.addAttribute("edit", true);
+
         if (model.containsAttribute("access") ||
-            model.containsAttribute("not_member")) {
+                model.containsAttribute("not_member")) {
             model.addAttribute("boardForm", boardForm);
             return "form/contentBoardCreateForm";
         }
@@ -166,7 +168,7 @@ public class ContentBoardFormController {
         Board board = boardService.updateBoard(boardId, boardForm.getTitle(), boardForm.getContent());
         tagService.updateTags(board, boardForm.getTags());
 
-        return String.format("redirect:/boards/content/%d/%d", studyId, boardId);
+        return String.format("redirect:/boards/%s/%d/%d", board.getKind().name().toLowerCase(), studyId, boardId);
     }
 
 

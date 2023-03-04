@@ -1,13 +1,12 @@
 package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.constant.SessionConstant;
-import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.domain.service.BoardService;
+import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.StudyService;
 import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.dto.StudyCreationInfo;
 import highsquare.hirecoder.entity.*;
-import highsquare.hirecoder.web.form.BoardForm;
 import highsquare.hirecoder.web.form.StudyCreationForm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,9 +29,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@WebMvcTest(RecruitBoardFormController.class)
+@WebMvcTest(StudyCreateFormController.class)
 @MockBean(JpaMetamodelMappingContext.class)
-class RecruitBoardFormControllerTest {
+class StudyCreateFormControllerTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -42,6 +41,8 @@ class RecruitBoardFormControllerTest {
     TagService tagService;
     @MockBean
     StudyService studyService;
+    @MockBean
+    StudyMemberService studyMemberService;
 
     @Test
     @DisplayName("스터디 소개글 생성 폼 접근 로직 테스트")

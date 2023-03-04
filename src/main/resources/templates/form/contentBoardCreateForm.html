@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title th:text="#{text.form.title}">title</title>
+    <title>title</title>
     <link rel="icon" type="image/x-icon" href="../../static/assets/favicon.ico" th:href="@{/assets/favicon.ico}" />
 
     <!--  커스텀 js  -->
@@ -58,7 +58,7 @@
         th:style="${'background-image: url(/assets/img/post-bg.jpg)'}">
     <div class="container position-relative px-1 px-lg-1">
         <div class="post-heading">
-            <h1 style="text-align: center">게시글 작성</h1>
+            <h1 th:text="${edit} ? #{text.form.title.edit} : #{text.form.title.create}" style="text-align: center">게시글 작성</h1>
         </div>
     </div>
 </header>

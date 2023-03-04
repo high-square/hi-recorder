@@ -1,6 +1,7 @@
 package highsquare.hirecoder.domain.service;
 
 import highsquare.hirecoder.domain.repository.StudyMemberRepository;
+import highsquare.hirecoder.entity.Member;
 import highsquare.hirecoder.entity.Study;
 import highsquare.hirecoder.entity.StudyMember;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,20 @@ public class StudyMemberService {
             allMembersStudy = studyMemberRepository.getAllMembersStudy(memberId);
         }
         return allMembersStudy.stream().map(StudyMember::getStudy).collect(Collectors.toList());
+    }
+
+    public void registerMemberToStudy(Long studyId, Long memberId) {
+        Study study = new Study();
+        study.setId(studyId);
+
+        Member member = new Member();
+        member.setId(memberId);
+
+        StudyMember studyMember = new StudyMember();
+        studyMember.setStudy(study);
+        studyMember.setMember(member);
+
+        studyMemberRepository.save(studyMember);
     }
 
     private boolean isIdNotNull(Long studyId, Long memberId) {
