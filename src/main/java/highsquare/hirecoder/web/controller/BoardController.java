@@ -59,10 +59,11 @@ public class BoardController {
             ScriptUtils.alertAndBackPage(response,"해당 스터디가 존재하지 않습니다.");
         }
 
-        //게시글 존재 여부
-        if (!boardService.isExistingBoard(boardId)) {
-            ScriptUtils.alertAndBackPage(response,"해당 게시글이 존재하지 않습니다.");
+        //게시글 존재 여부(스터디에 해당되는지도 체크)
+        if (!boardService.isExistingBoard(boardId,studyId)) {
+            ScriptUtils.alertAndBackPage(response,"해당 스터디에 게시글이 존재하지 않습니다.");
         }
+
 
         //전체 공개 여부에 따라 멤버가 읽을 수 있는지 없는지 여부
         if (!boardService.isPublic(boardId)) {

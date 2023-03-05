@@ -120,8 +120,8 @@ public class BoardService {
         return board;
     }
 
-    public boolean isExistingBoard(Long boardId) {
-        return boardId != null && boardRepository.findById(boardId).orElse(null) != null;
+    public boolean isExistingBoard(Long boardId,Long studyId) {
+        return boardId != null && boardRepository.existsBoardInStudy(boardId,studyId);
     }
 
     public boolean isPublic(Long boardId) {

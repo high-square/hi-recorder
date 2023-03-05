@@ -12,6 +12,7 @@ import highsquare.hirecoder.web.form.CommentSelectedForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -33,7 +34,35 @@ public class CommentController {
     private final LikeOnCommentService likeOnCommentService;
 
     @PostMapping
-    public String addComment(@RequestBody CommentSelectedForm commentForm, RedirectAttributes redirectAttributes, Model model) {
+    public String addComment(@ModelAttribute("commentForm") CommentSelectedForm commentForm, BindingResult bindingResult,
+                             RedirectAttributes redirectAttributes,
+                             HttpSession session,Model model) {
+        // 로그인 여부 확인 로직
+
+        // <----- 검증 로직 시작
+        // 댓글 길이 검증
+        if(!commentForm.isContentTooShort(bindingResult)) {
+            commentForm.isContentTooLong(bindingResult);
+        }
+
+        if (bindingResult.hasErrors()) {
+            String errorCode = bindingResult.getFieldErrors("content").get(0).getCode();
+            String content = (String)bindingResult.getFieldErrors("content").get(0).getRejectedValue();
+
+            if (errorCode.startsWith("max")) {
+                model.addAttribute("contentMaxLength", true);
+            } else if (errorCode.startsWith("min")) {
+                model.addAttribute("contentMinLength", true);
+            }
+
+            model.addAttribute("rejectedContent", content);
+            getAllComments(DEFAULT_PAGE, DEFAULT_SIZE, commentForm.getBoardId(), session, model);
+            return "boards/board ::#commentTable";
+        }
+
+
+        // <----- 검증 로직 종료
+
         // Comment 엔티티 생성 과정(Form -> Entity)
         Comment comment = transformToEntity(commentForm);
 
