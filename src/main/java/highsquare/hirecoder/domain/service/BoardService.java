@@ -52,6 +52,7 @@ public class BoardService {
     public Board getBoard(Long boardId, HttpServletRequest request,HttpServletResponse response) {
         Board board = boardRepository.findById(boardId).get();
 
+
         // 받아온 board의 id가 Cookie에 저장되어 있는지 확인하는 로직
         if(!viewInspection(request,response,board.getId())) {
             board.viewPlus();
@@ -117,5 +118,15 @@ public class BoardService {
         board.setContent(content);
 
         return board;
+    }
+
+    public boolean isExistingBoard(Long boardId) {
+        return boardId != null && boardRepository.findById(boardId).orElse(null) != null;
+    }
+
+    public boolean isPublic(Long boardId) {
+        Board findBoard = boardRepository.findById(boardId).get();
+
+        return findBoard.getPublicYn().equals('y');
     }
 }

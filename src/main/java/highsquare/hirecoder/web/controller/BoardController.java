@@ -1,15 +1,11 @@
 package highsquare.hirecoder.web.controller;
 
-import highsquare.hirecoder.domain.service.BoardService;
-import highsquare.hirecoder.domain.service.CommentService;
-import highsquare.hirecoder.domain.service.LikeOnBoardService;
-import highsquare.hirecoder.domain.service.TagService;
-import highsquare.hirecoder.entity.Board;
-import highsquare.hirecoder.entity.Comment;
-import highsquare.hirecoder.entity.LikeOnBoard;
-import highsquare.hirecoder.entity.Tag;
+import highsquare.hirecoder.domain.repository.StudyMemberRepository;
+import highsquare.hirecoder.domain.service.*;
+import highsquare.hirecoder.entity.*;
 import highsquare.hirecoder.page.PageRequestDto;
 import highsquare.hirecoder.page.PageResultDto;
+import highsquare.hirecoder.utils.ScriptUtils;
 import highsquare.hirecoder.web.form.BoardSelectedForm;
 import highsquare.hirecoder.web.form.CommentSelectedForm;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,24 +34,51 @@ public class BoardController {
 
     private final LikeOnBoardService likeOnBoardService;
 
+    private final StudyService studyService;
+
+    private final StudyMemberRepository studyMemberRepository;
+
     private final TagService tagService;
 
 
-    @GetMapping("/content/{study_id}/{board_id}")
+    @GetMapping("/{kind}/{study_id}/{board_id}")
     public String getBoard(@PathVariable("study_id") Long studyId,
                            @PathVariable("board_id") Long boardId, Model model,
-                           HttpServletRequest request, HttpServletResponse response) {
-        // DB에서 id에 해당하는 board를 꺼내옴
-        Board board = boardService.getBoard(boardId,request,response);
+                           HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-
-        // 세션에 저장된 member와 해당 게시글을 이용해서 LikeOnBoard 엔티티 가져오기
         // 원래라면 로그인 작업에서 session을 생성할텐데 지금 페이지가 없으므로 true를 넣어서 하나 생성해주겠음
         HttpSession session = request.getSession(true);
         // 현재 로그인에 관한 페이지가 없으므로 session 값에 강욱 멤버의 memberId를 임의로 넣어두겠음
         // 현재 로그인한 멤버의 name도 넣어두겠음
         session.setAttribute("memberId",1L);
         session.setAttribute("memberName", "강욱");
+
+
+        //스터디 존재 여부
+        if (!studyService.isExistingStudy(studyId)) {
+            ScriptUtils.alertAndBackPage(response,"해당 스터디가 존재하지 않습니다.");
+        }
+
+        //게시글 존재 여부
+        if (!boardService.isExistingBoard(boardId)) {
+            ScriptUtils.alertAndBackPage(response,"해당 게시글이 존재하지 않습니다.");
+        }
+
+        //전체 공개 여부에 따라 멤버가 읽을 수 있는지 없는지 여부
+        if (!boardService.isPublic(boardId)) {
+            Long memberId = (Long) session.getAttribute("memberId");
+
+            if(!studyMemberRepository.existsMemberAndStudy(studyId, memberId)) {
+                ScriptUtils.alertAndBackPage(response,"해당 스터디에 해당되지 않습니다.");
+            }
+        }
+
+        // DB에서 id에 해당하는 board를 꺼내옴
+        Board board = boardService.getBoard(boardId,request,response);
+
+
+
+        // 세션에 저장된 member와 해당 게시글을 이용해서 LikeOnBoard 엔티티 가져오기
         LikeOnBoard likeOnBoard = likeOnBoardService.getLikeOnBoard(board.getId(), (Long)session.getAttribute("memberId"));
 
         // board 엔티티를 boardForm으로 변환
@@ -131,8 +155,8 @@ public class BoardController {
         BoardSelectedForm boardForm =
                 new BoardSelectedForm(board.getId(), board.getMember().getId(), board.getMember().getName(),
                         board.getStudy().getId(), board.getStudy().getName(), board.getTitle(),
-                        board.getContent(), board.getFile(), board.getPublicYn(), board.getViewCnt(), board.getLikeCnt(),
-                        LocalDateTime.now(),LocalDateTime.now());
+                        board.getContent(), board.getFile(), board.getPublicYn(), board.getViewCnt(), board.getLikeCnt(), board.getKind().name()
+                        ,LocalDateTime.now(),LocalDateTime.now());
         return boardForm;
     }
 }

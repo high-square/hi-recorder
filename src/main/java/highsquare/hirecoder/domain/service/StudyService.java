@@ -37,5 +37,9 @@ public class StudyService {
         return studyRepository.save(study);
 
     }
+
+    public boolean isExistingStudy(Long studyId) {
+        return studyId != null && studyRepository.findById(studyId).orElse(null)!=null;
+    }
 }
 
