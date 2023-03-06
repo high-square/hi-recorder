@@ -227,6 +227,11 @@ public class CommentController {
     @GetMapping("/count")
     @ResponseBody
     public Integer commentsCountProcess(@RequestParam(name="board_id") Long boardId) {
+        // 게시글 존재 여부 확인 로직 - 음수이면 존재하지 않음
+        if(boardRepository.findById(boardId).orElse(null)==null) {
+            return -1;
+        }
+
          return commentService.countComments(boardId);
     }
 

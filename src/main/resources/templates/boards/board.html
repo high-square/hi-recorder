@@ -450,6 +450,9 @@
                 url: "/comments/count",
                 data: {"board_id": [[${board.id}]]}
             }).done(function (data) {
+                if (data==-1) {
+                    alert("해당 게시글은 존재하지 않습니다.");
+                }
                 $("#commentsCount").text(data + '개의 댓글');
             })
 
