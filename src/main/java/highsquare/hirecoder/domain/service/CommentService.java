@@ -100,17 +100,23 @@ public class CommentService {
 
     /**
      * 댓글의 내용 수정하기 작업
-     * update 구문이 적용안됐다면 0을 리턴, 적용됐다면 변경된 commentId를 반환
      */
-    public Long updateCommentContent(Long commentId, String commentContent) {
-        Integer resultCount = commentRepository.updateCommentContent(commentId, commentContent);
-        if (resultCount==0) {
-            return Long.valueOf(resultCount);
-        }
-        return commentId;
+    public void updateCommentContent(Long commentId, String commentContent) {
+        commentRepository.updateCommentContent(commentId, commentContent);
     }
 
     public void deleteComment(Long commentId) {
         commentRepository.deleteComment(commentId);
+    }
+
+    public boolean isExistComment(Long commentId) {
+        return commentId!=null && commentRepository.findById(commentId).orElse(null)!=null;
+    }
+
+    /**
+     * 해당 댓글의 작성자인지 확인하는 로직
+     */
+    public boolean isCommentWriter(Long commentId, Long memberId) {
+        return commentRepository.isCommentWriter(commentId, memberId);
     }
 }

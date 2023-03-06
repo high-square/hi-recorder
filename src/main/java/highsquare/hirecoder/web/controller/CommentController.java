@@ -18,7 +18,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static highsquare.hirecoder.constant.PageConstant.*;
 
@@ -83,11 +85,16 @@ public class CommentController {
                                  @RequestParam("boardId") Long boardId,
                                  HttpSession session,
                                  Model model) {
+        // 로그인 여부 확인 로직
 
         // 페이지 검증로직이 필요함(페이지 수, 사이즈가 음수인지 아닌지, boardId가 들어왔는지)
 
+        // 해당 게시글이 존재하는지 확인 로직
+
+
         // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
         PageRequestDto pageRequestDto = new PageRequestDto(page, size);
+
 
 
         // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
@@ -102,6 +109,11 @@ public class CommentController {
 
     @GetMapping("/BestComments")
     public String getBestComments(@RequestParam("boardId") Long boardId, HttpSession session, Model model) {
+
+        // 로그인 여부 확인 로직
+
+        // 해당 게시글이 존재하는지 확인 로직
+
 
         // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
         PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, BEST_DEFAULT_SIZE);
@@ -119,14 +131,42 @@ public class CommentController {
     // 댓글 수정 클릭 시 작업
     @PatchMapping("/update/{commentId}")
     @ResponseBody
-    public Long updateComment(@PathVariable("commentId") Long commentId,
-                              @RequestParam String commentContent) {
-        Long result = commentService.updateCommentContent(commentId, commentContent);
-        if(result==0) {
-            throw new IllegalArgumentException("해당 댓글이 존재하지 않습니다.");
-        } else {
-            return result;
+    public Map<String,String> updateComment(@PathVariable("commentId") Long commentId,
+                                            @RequestParam String commentContent,
+                                            HttpSession session, Model model) {
+
+        // 로그인 여부
+
+        // <----- 검증 로직 시작
+        Map<String, String> map = new HashMap<>();
+        // 해당 댓글이 존재하는지 확인 로직
+        if (!commentService.isExistComment(commentId)) {
+            map.put("notExistComment", "해당 댓글이 존재하지 않습니다.");
         }
+
+        // 댓글 작성자 본인인지 체크
+        if (!commentService.isCommentWriter(commentId,(Long)session.getAttribute("memberId"))) {
+            map.put("notWriter", "해당 댓글의 작성자가 아닙니다.");
+        }
+
+        // 댓글 길이 검증
+        if (commentContent.trim().length()==0) {
+            map.put("blankContent", "댓글 내용이 빈칸입니다. 재입력이 필요합니다.");
+        }
+
+        if (commentContent.length()>200) {
+            map.put("tooLongContent", "댓글의 최대 길이는 200자입니다.");
+        }
+        // <----- 검증 로직 종료
+
+
+
+        if (map.isEmpty()) {
+            commentService.updateCommentContent(commentId, commentContent);
+        }
+
+
+        return map;
 
     }
 
@@ -134,6 +174,13 @@ public class CommentController {
     @DeleteMapping("/delete/{commentId}")
     @ResponseBody
     public void deleteComment(@PathVariable("commentId") Long commentId) {
+
+        // 로그인 여부 확인 로직
+
+        // 댓글이 존재하는지 확인 로직
+
+        // 댓글 작성자 본인인지 확인 로직
+
         commentService.deleteComment(commentId);
     }
 
@@ -142,6 +189,10 @@ public class CommentController {
     @ResponseBody
     public List<Object> commentLikeProcess(@RequestParam(name="comment_id") Long commentId,
                                          @RequestParam(name="member_id") Long memberId) {
+
+
+
+
         LikeOnComment likeOnComment = likeOnCommentService.updateLike(commentId, memberId);
         Integer likeCnt = likeOnCommentService.countLikeCnt(commentId, memberId);
         List<Object> data = new ArrayList<>();
