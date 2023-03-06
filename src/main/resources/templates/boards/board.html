@@ -569,9 +569,17 @@
                 url: "/comments/delete/" + commentId,
                 async: false,
                 success: function (data) {
-                    alert("댓글이 삭제되었습니다!")
-                    turnAllComments();
-                    pageAll(1);
+                    console.log(data);
+                    if (data.notExistComment!=null) {
+                        alert(data.notExistComment);
+                    } else if (data.notWriter!=null) {
+                        alert(data.notWriter);
+                    }  else {
+                        alert("댓글이 삭제되었습니다!");
+                        turnAllComments();
+                        pageAll(1);
+                    }
+
 
                 },
                 error: function (error) {

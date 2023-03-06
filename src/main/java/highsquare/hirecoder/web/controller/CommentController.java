@@ -173,15 +173,27 @@ public class CommentController {
     // 댓글 삭제 클릭 시 작업
     @DeleteMapping("/delete/{commentId}")
     @ResponseBody
-    public void deleteComment(@PathVariable("commentId") Long commentId) {
+    public Map<String,String> deleteComment(@PathVariable("commentId") Long commentId,HttpSession session) {
 
         // 로그인 여부 확인 로직
 
+        // <----- 검증 로직 시작
+        Map<String, String> map = new HashMap<>();
         // 댓글이 존재하는지 확인 로직
+        if (!commentService.isExistComment(commentId)) {
+            map.put("notExistComment","해당 댓글이 존재하지 않습니다.");
+        }
 
-        // 댓글 작성자 본인인지 확인 로직
+        // 댓글 작성자 본인인지 체크
+        if (!commentService.isCommentWriter(commentId,(Long)session.getAttribute("memberId"))) {
+            map.put("notWriter", "해당 댓글의 작성자가 아닙니다.");
+        }
 
-        commentService.deleteComment(commentId);
+        if (map.isEmpty()) {
+            commentService.deleteComment(commentId);
+        }
+
+        return map;
     }
 
     // 댓글의 좋아요 클릭 시 작업
