@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static highsquare.hirecoder.constant.PageConstant.*;
@@ -87,22 +85,23 @@ public class CommentController {
                                  Model model) {
         // 로그인 여부 확인 로직
 
-        // 페이지 검증로직이 필요함(페이지 수, 사이즈가 음수인지 아닌지, boardId가 들어왔는지)
-
         // 해당 게시글이 존재하는지 확인 로직
+        if (boardRepository.findById(boardId).orElse(null)==null) {
+            model.addAttribute("notExistBoard", true);
+        } else if (page<1 && size<1){ // 페이지 검증로직이 필요함(페이지 수, 사이즈가 음수인지 아닌지)
+            model.addAttribute("notValidPageAndSize", true);
+        } else {
+            // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
+            PageRequestDto pageRequestDto = new PageRequestDto(page, size);
 
+            // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
+            PageResultDto<CommentSelectedForm, Comment> allComments =
+                    commentService.pagingAllComments(boardId,(Long)session.getAttribute("memberId"), pageRequestDto);
 
-        // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
-        PageRequestDto pageRequestDto = new PageRequestDto(page, size);
+            model.addAttribute("comments", allComments);
+            model.addAttribute("boardId", boardId);
+        }
 
-
-
-        // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
-        PageResultDto<CommentSelectedForm, Comment> allComments =
-                commentService.pagingAllComments(boardId,(Long)session.getAttribute("memberId"), pageRequestDto);
-
-        model.addAttribute("comments", allComments);
-        model.addAttribute("boardId", boardId);
 
         return "boards/board :: #commentTable";
     }
@@ -113,17 +112,19 @@ public class CommentController {
         // 로그인 여부 확인 로직
 
         // 해당 게시글이 존재하는지 확인 로직
+        if (boardRepository.findById(boardId).orElse(null)==null) {
+            model.addAttribute("notExistBoard", true);
+        } else {
+            // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
+            PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, BEST_DEFAULT_SIZE);
 
+            // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
+            PageResultDto<CommentSelectedForm, Comment> bestComments =
+                    commentService.pagingBestComments(boardId, (Long) session.getAttribute("memberId"), pageRequestDto);
 
-        // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
-        PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, BEST_DEFAULT_SIZE);
-
-        // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
-        PageResultDto<CommentSelectedForm, Comment> bestComments =
-                commentService.pagingBestComments(boardId,(Long)session.getAttribute("memberId"), pageRequestDto);
-
-        model.addAttribute("bestComments", bestComments);
-        model.addAttribute("boardId", boardId);
+            model.addAttribute("bestComments", bestComments);
+            model.addAttribute("boardId", boardId);
+        }
 
         return "boards/board :: #bestCommentTable";
     }
