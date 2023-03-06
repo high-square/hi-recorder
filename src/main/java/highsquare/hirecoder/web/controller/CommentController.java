@@ -199,18 +199,29 @@ public class CommentController {
     // 댓글의 좋아요 클릭 시 작업
     @PostMapping("/like")
     @ResponseBody
-    public List<Object> commentLikeProcess(@RequestParam(name="comment_id") Long commentId,
-                                         @RequestParam(name="member_id") Long memberId) {
+    public Map<String,String> commentLikeProcess(@RequestParam(name="comment_id") Long commentId,
+                                         @RequestParam(name="member_id") Long memberId,
+                                           HttpSession session) {
+        Map<String, String> map = new HashMap<>();
 
+        // 댓글이 존재하는지 여부 확인 로직
+        if(!commentService.isExistComment(commentId)) {
+            map.put("notExistComment", "해당 댓글이 존재하지 않습니다.");
+            return map;
+        }
 
+        // 로그인 여부 확인 로직
 
+        if (memberId!=(Long)session.getAttribute("memberId")) {
+            map.put("notLoginMember", "로그인이 필요한 작업입니다. 로그인 페이지로 이동하시겠습니까?");
+        } else {
+            LikeOnComment likeOnComment = likeOnCommentService.updateLike(commentId, memberId);
+            Integer likeCnt = likeOnCommentService.countLikeCnt(commentId, memberId);
+            map.put("likeCheck", String.valueOf(likeOnComment.getLikeCheck()));
+            map.put("likeCnt", String.valueOf(likeCnt));
+        }
+        return map;
 
-        LikeOnComment likeOnComment = likeOnCommentService.updateLike(commentId, memberId);
-        Integer likeCnt = likeOnCommentService.countLikeCnt(commentId, memberId);
-        List<Object> data = new ArrayList<>();
-        data.add(String.valueOf(likeOnComment.getLikeCheck()));
-        data.add(likeCnt);
-        return data;
     }
 
     @GetMapping("/count")

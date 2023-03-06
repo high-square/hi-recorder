@@ -366,7 +366,7 @@
 
         turnAllComments();
 
-        //댓글의 좋아요 ajax
+        //댓글의 좋아요 버튼 클릭시 ajax
         commentLike = function (commentId) {
             var commentLikeImg = 'commentLikeImg' + commentId;
             if (member_id == null) {
@@ -380,14 +380,24 @@
                     url: "/comments/like",
                     data: {'comment_id': commentId, 'member_id': member_id},
                 }).done(function (data) {
-                    var commentLike = "#commentLikeImg" + commentId;
-                    var commentLikeCount = "#commentLikeCount" + commentId;
-                    if (data[0].toString() == 1) {
-                        $(commentLike).attr("src", "/assets/img/comment-like-after.png");
+                    if (data.notExistComment!=null) {
+                        alert(data.notExistComment);
+                    } else if (data.notLoginMember!=null) {
+                        var r=confirm(data.notLoginMember);
+                        if (r==true) {
+                            location.href = '/login';
+                        }
                     } else {
-                        $(commentLike).attr("src", "/assets/img/comment-like-before.png");
+                        var commentLike = "#commentLikeImg" + commentId;
+                        var commentLikeCount = "#commentLikeCount" + commentId;
+                        if (data.likeCheck == 1) {
+                            $(commentLike).attr("src", "/assets/img/comment-like-after.png");
+                        } else {
+                            $(commentLike).attr("src", "/assets/img/comment-like-before.png");
+                        }
+                        $(commentLikeCount).text(data.likeCnt);
                     }
-                    $(commentLikeCount).text(data[1]);
+
                 });
 
             }
