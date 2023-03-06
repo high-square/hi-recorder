@@ -28,9 +28,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(BoardFormController.class)
+@WebMvcTest(BoardFormCreateController.class)
 @MockBean(JpaMetamodelMappingContext.class)
-class BoardFormControllerTest {
+class BoardFormCreateControllerTest {
     @Autowired
     MockMvc mockMvc;
     @MockBean
@@ -82,7 +82,7 @@ class BoardFormControllerTest {
         /**
          * 통합 테스트를 위해 컨트롤러에서 세션에 멤버 아이디를 넣어줄 경우
          * 테스트가 실패할 수 있다.
-         * {@link BoardFormController#getPostCreatePage(Long, HttpSession, Model)}
+         * {@link BoardFormCreateController#getPostCreatePage(Long, HttpSession, Model)}
          */
         resultActions2
                 .andExpect(view().name("form/contentBoardCreateForm"))
