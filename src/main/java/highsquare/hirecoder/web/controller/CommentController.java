@@ -1,5 +1,6 @@
 package highsquare.hirecoder.web.controller;
 
+import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.service.CommentService;
@@ -96,7 +97,7 @@ public class CommentController {
 
             // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
             PageResultDto<CommentSelectedForm, Comment> allComments =
-                    commentService.pagingAllComments(boardId,(Long)session.getAttribute("memberId"), pageRequestDto);
+                    commentService.pagingAllComments(boardId,(Long)session.getAttribute(SessionConstant.MEMBER_ID), pageRequestDto);
 
             model.addAttribute("comments", allComments);
             model.addAttribute("boardId", boardId);
@@ -120,7 +121,7 @@ public class CommentController {
 
             // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
             PageResultDto<CommentSelectedForm, Comment> bestComments =
-                    commentService.pagingBestComments(boardId, (Long) session.getAttribute("memberId"), pageRequestDto);
+                    commentService.pagingBestComments(boardId, (Long) session.getAttribute(SessionConstant.MEMBER_ID), pageRequestDto);
 
             model.addAttribute("bestComments", bestComments);
             model.addAttribute("boardId", boardId);
@@ -146,7 +147,7 @@ public class CommentController {
         }
 
         // 댓글 작성자 본인인지 체크
-        if (!commentService.isCommentWriter(commentId,(Long)session.getAttribute("memberId"))) {
+        if (!commentService.isCommentWriter(commentId,(Long)session.getAttribute(SessionConstant.MEMBER_ID))) {
             map.put("notWriter", "해당 댓글의 작성자가 아닙니다.");
         }
 
@@ -186,7 +187,7 @@ public class CommentController {
         }
 
         // 댓글 작성자 본인인지 체크
-        if (!commentService.isCommentWriter(commentId,(Long)session.getAttribute("memberId"))) {
+        if (!commentService.isCommentWriter(commentId,(Long)session.getAttribute(SessionConstant.MEMBER_ID))) {
             map.put("notWriter", "해당 댓글의 작성자가 아닙니다.");
         }
 
@@ -213,7 +214,7 @@ public class CommentController {
 
         // 로그인 여부 확인 로직
 
-        if (memberId!=(Long)session.getAttribute("memberId")) {
+        if (memberId==null||!memberId.equals((Long)session.getAttribute(SessionConstant.MEMBER_ID))) {
             map.put("notLoginMember", "로그인이 필요한 작업입니다. 로그인 페이지로 이동하시겠습니까?");
         } else {
             LikeOnComment likeOnComment = likeOnCommentService.updateLike(commentId, memberId);

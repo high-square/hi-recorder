@@ -85,11 +85,11 @@
         </div>
         <div class="mt-5 row">
       <span class="col-xl-3" style="margin-left:600px">
-        <input type="button" class="w-100 btn btn-third btn-lg" th:if="${board.memberId==session.memberId}"
+        <input type="button" class="w-100 btn btn-third btn-lg" th:if="${board.memberId==session.member_id}"
                onclick="openEdit()" value="수정하기">
       </span>
             <span class="col-xl-3">
-        <input type="button" class="w-100 btn btn-fourth btn-lg" th:if="${board.memberId==session.memberId}"
+        <input type="button" class="w-100 btn btn-fourth btn-lg" th:if="${board.memberId==session.member_id}"
                onclick="openDelete()" value="삭제하기">
       </span>
         </div>
@@ -98,6 +98,7 @@
 
         <article class="mb-4">
             <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7" th:id="content">
                     </div>
@@ -114,11 +115,11 @@
             <div class="col-xl-2" id="commentsCount" th:text="|${commentsTotalCounts}개의 댓글|">0개의 댓글</div>
         </div>
         <div class="container px-4 px-lg-5">
-            <div class="col-12 mb-3" th:if="${session.memberId}==null">
+            <div class="col-12 mb-3" th:if="${session.member_id}==null">
                 <textarea id="notLogin" cols="30" rows="3" class="form-control"
                           placeholder="댓글을 작성하려면 로그인을 해주세요"></textarea>
             </div>
-            <div class="col-12 mb-3" id="textBox" th:if="${session.memberId}!=null">
+            <div class="col-12 mb-3" id="textBox" th:if="${session.member_id}!=null">
                 <div class="textLengthWrap">
                     <span class="textCount">0자</span>
                     <span class="textTotal">/200자</span>
@@ -187,7 +188,7 @@
                             </h4>
                             <p class="card-text fw-bold" th:text="${content.content}"></p>
                             <!--해당 댓글 작성자이면 보이는 수정, 삭제 버튼 구현 -->
-                            <th:block th:if="${session.memberId==content.memberId}">
+                            <th:block th:if="${session.member_id==content.memberId}">
                                 <textarea th:id="'toBeComment'+${content.id}" cols="15" rows="2" class="form-control"
                                           placeholder="수정 가능합니다."></textarea>
                                 <input type="button" class="updatebtn"
@@ -277,7 +278,7 @@
                             </h4>
                             <p class="card-text fw-bold" th:text="${content.content}"></p>
                             <!--해당 댓글 작성자이면 보이는 수정, 삭제 버튼 구현 -->
-                            <th:block th:if="${session.memberId==content.memberId}">
+                            <th:block th:if="${session.member_id==content.memberId}">
                                 <textarea th:id="'toBeComment'+${content.id}" cols="15" rows="2" class="form-control"
                                           placeholder="수정 가능합니다."></textarea>
                                 <input type="button" class="updatebtn"
@@ -346,7 +347,7 @@
         // 게시글의 좋아요 처리
         let likeCheckBoard = [[${likeCheckBoard}]];
         const board_id = [[${board.id}]];
-        const member_id = [[${session.memberId}]]; // 세션에 로그인한 사용자 id
+        const member_id = [[${session.member_id}]]; // 세션에 로그인한 사용자 id
         const boardLikeImg = document.getElementById("boardLikeImg")
 
         if (likeCheckBoard == 1) {
@@ -366,12 +367,23 @@
                     url: "/boards/like",
                     data: {'board_id': board_id, 'member_id': member_id},
                 }).done(function (data) {
-                    if (data[0].toString() == 1) {
-                        $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-after.png");
-                    } else {
-                        $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-before.png");
-                    }
-                    $("#boardLikeCnt").text(data[1]);
+                    if (data.notLoginMember!=null) {
+                        var r = confirm(data.notLoginMember);
+                        if (r == true) {
+                            location.href = '/login';
+                        }
+                    }else if(data.notExistBoard!=null) {
+                            alert(data.notExistBoard);
+                        } else {
+                            if (data.likeCheck==1) {
+                                $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-after.png");
+                            } else if(data.likeCheck==0){
+                                $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-before.png");
+                            }
+                            $("#boardLikeCnt").text(data.likeCnt);
+                        }
+
+
                 });
             }
 
@@ -440,7 +452,7 @@
         var r = confirm("등록하시겠습니까?");
         if (r == true) {
             param = {
-                "memberId": [[${session.memberId}]],
+                "memberId": [[${session.member_id}]],
                 "boardId": [[${board.id}]],
                 "content": content
             };
@@ -481,7 +493,7 @@
 
     // 비로그인 시 댓글 작성하기 클릭 시 로그인 페이지로 이동하기
     $("#notLogin").on("click", function () {
-        if ([[${session.memberId}]] == null) {
+        if ([[${session.member_id}]] == null) {
             var r = confirm("로그인 페이지로 이동하시겠습니까?");
             if (r == true) {
                 location.href = "/login";

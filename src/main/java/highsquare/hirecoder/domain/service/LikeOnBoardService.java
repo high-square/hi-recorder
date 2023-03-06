@@ -50,14 +50,18 @@ public class LikeOnBoardService {
     }
 
     public LikeOnBoard getLikeOnBoard(Long boardId, Long memberId) {
-        LikeOnBoard findLike = likeOnBoardRepository.findLikeOnBoard(boardId, memberId);
 
         // 해당 게시글과 해당 멤버의 좋아요 엔티티가 존재하지 않을 시 새로 만드는 작업
-        if (findLike==null) {
+        if (!likeOnBoardRepository.isExistingLikeOnBoard(boardId,memberId)) {
             return likeOnBoardRepository.save(makeNewLike(boardId, memberId));
         }
 
+        LikeOnBoard findLike = likeOnBoardRepository.findLikeOnBoard(boardId, memberId);
         return findLike;
+    }
+
+    public boolean isExistingLikeOnBoard(Long boardId, Long memberId) {
+        return likeOnBoardRepository.isExistingLikeOnBoard(boardId, memberId);
     }
 
     private LikeOnBoard makeNewLike(Long boardId, Long memberId) {
