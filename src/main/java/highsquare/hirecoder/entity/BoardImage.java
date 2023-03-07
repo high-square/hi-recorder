@@ -4,13 +4,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @NoArgsConstructor
 @Getter
 @Entity
 public class BoardImage {
-    @Id @GeneratedValue
-    private Long id;
+    @Id
+    private String uuid;
 
     @Embedded
     private Image image;
@@ -19,7 +20,9 @@ public class BoardImage {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    public BoardImage(Image image) {
+    public BoardImage(UUID uuid, Image image, Board board) {
+        this.uuid = uuid.toString();
         this.image = image;
+        this.board = board;
     }
 }
