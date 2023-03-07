@@ -169,7 +169,7 @@ public class BoardController {
                 likeOnBoardService.getLikeOnBoard(boardId, memberId);
             }
 
-            
+
             LikeOnBoard likeOnBoard = likeOnBoardService.updateLike(boardId, memberId);
             Integer likeCnt = likeOnBoardService.countLikeCnt(boardId, memberId);
             map.put("likeCheck",String.valueOf(likeOnBoard.getLikeCheck()));
