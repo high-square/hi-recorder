@@ -3,16 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title th:text="#{text.form.title}">title</title>
+    <title>title</title>
     <link rel="icon" type="image/x-icon" href="../../static/assets/favicon.ico" th:href="@{/assets/favicon.ico}" />
 
     <!--  커스텀 js  -->
-    <script src="../../static/js/postEdit/markdown.js"
-            th:src="@{/js/postEdit/markdown.js}"></script>
     <script src="../../static/js/postEdit/tag.js"
             th:src="@{/js/postEdit/tag.js}"></script>
-    <script src="../../static/js/postEdit/postEdit.js"
-            th:src="@{/js/postEdit/postEdit.js}"></script>
 
     <script th:if="${access}" th:inline="javascript">alert([[#{access.form}]]); history.back();</script>
     <script th:if="${not_member}" th:inline="javascript">alert([[#{access.form.not_member}]]); history.back();</script>
@@ -30,6 +26,7 @@
     <link href="../../static/css/postEdit/postEdit.css"
           th:href="@{/css/postEdit/postEdit.css}"
           rel="stylesheet">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 </head>
 <body>
 
@@ -215,5 +212,9 @@
 <!-- Core theme JS-->
 <script src="../../static/js/scripts.js"
         th:src="@{/js/scripts.js}"></script>
+
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script src="../../static/js/postEdit/postEdit.js"
+        th:src="@{/js/postEdit/postEdit.js}"></script>
 </body>
 </html>

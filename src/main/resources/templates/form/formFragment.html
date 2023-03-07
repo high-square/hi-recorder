@@ -61,20 +61,8 @@
 
             <!-- 마크다운 작성 -->
             <div th:fragment="markdownInput">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a id="markdown-code-button" class="nav-link">Code</a>
-                    </li>
-                    <li class="nav-item">
-                        <a id="markdown-preview-button" class="nav-link">Preview</a>
-                    </li>
-                </ul>
-                <div id="editor" class="md-4">
-                                <textarea id="codeArea" name="content" th:field="*{content}"
-                                          placeholder="내용을 입력하세요."></textarea>
-                    <div class="mt-4" id="previewArea"></div>
-                    <span th:errors="*{content}" class="field-error">내용 오류</span>
-                </div>
+                <div id="editor" th:classappend="${#fields.hasErrors('content')} ? 'border border-danger'"></div>
+                <textarea id="content" name="content" th:field="*{content}" hidden></textarea>
             </div>
 
         </div>
