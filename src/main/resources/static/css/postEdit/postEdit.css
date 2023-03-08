@@ -1,11 +1,11 @@
-html, body, #editor {
+html, body {
     margin: 0;
     height: 100%;
     font-family: 'Helvetica Neue', Arial, sans-serif;
     color: #333;
 }
 
-textarea, #editor div {
+textarea {
     display: inline-block;
     width: 100%;
     height: 100%;

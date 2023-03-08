@@ -7,12 +7,9 @@
     <link rel="icon" type="image/x-icon" href="../../static/assets/favicon.ico" th:href="@{/assets/favicon.ico}" />
 
     <!--  커스텀 js  -->
-    <script src="../../static/js/postEdit/markdown.js"
-            th:src="@{/js/postEdit/markdown.js}"></script>
     <script src="../../static/js/postEdit/tag.js"
             th:src="@{/js/postEdit/tag.js}"></script>
-    <script src="../../static/js/postEdit/postEdit.js"
-            th:src="@{/js/postEdit/postEdit.js}"></script>
+
 
     <script th:if="${access}" th:inline="javascript">alert([[#{access.form}]]); history.back();</script>
     <script th:if="${writer}" th:inline="javascript">alert([[#{access.form.writer}]]); history.back();</script>
@@ -31,6 +28,7 @@
     <link href="../../static/css/postEdit/postEdit.css"
           th:href="@{/css/postEdit/postEdit.css}"
           rel="stylesheet">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 </head>
 <body>
 
@@ -66,8 +64,6 @@
 <article class="h-auto">
     <div class="container d-flex align-content-center justify-content-center">
         <div class="row gx-3 gx-lg-3 justify-content-center h-auto w-75">
-            <!-- marked 의 역할 : 마크다운 해석기 -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.7/marked.min.js"></script>
             <!-- 유틸리티 라이브러리 역할 : debounce -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
 
@@ -75,7 +71,7 @@
                 alert([[${error}]]);
             </script>
 
-            <form action="#" th:action id="form" th:object="${boardForm}" method="post">
+            <form action="#" th:action id="form" th:object="${boardForm}" method="post" disabled="">
                 <div class="container">
 
                     <!-- 제목 작성 -->
@@ -87,20 +83,22 @@
                     <!-- 마크다운 작성 -->
                     <div th:replace="/form/formFragment :: markdownInput"></div>
 
-                    <!-- 버튼 작성 -->
-                    <div class="mt-5 row">
-                        <div class="col">
-                            <button class="w-100 btn btn-primary btn-lg" id="submit">제출</button>
-                        </div>
-                        <div class="col">
-                            <button class="w-100 btn btn-secondary btn-lg"
-                                    onclick="location.href='items.html'"
-                                    th:onclick="|location.href='@{studyMain}'|"
-                                    type="button">취소</button>
-                        </div>
-                    </div>
                 </div>
             </form>
+
+            <!-- 버튼 작성 -->
+            <div class="mt-5 row">
+                <div class="col">
+                    <button class="w-100 btn btn-primary btn-lg" onclick="submit()">제출</button>
+                </div>
+                <div class="col">
+                    <button class="w-100 btn btn-secondary btn-lg"
+                            onclick="location.href='items.html'"
+                            th:onclick="|location.href='@{studyMain.html}'|"
+                            type="button">취소</button>
+                </div>
+            </div>
+
         </div>
     </div>
 </article>
@@ -145,5 +143,9 @@
 <!-- Core theme JS-->
 <script src="../../static/js/scripts.js"
         th:src="@{/js/scripts.js}"></script>
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script src="../../static/js/postEdit/postEdit.js"
+        th:src="@{/js/postEdit/postEdit.js}"></script>
+
 </body>
 </html>

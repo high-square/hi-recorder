@@ -22,6 +22,7 @@ public class BoardForm {
     protected String title;
     protected List<String> tags = new ArrayList<>();
     protected String content;
+    protected List<String> images = new ArrayList<>();
 
     // 폼 검증 로직
     public boolean isTitleTooShort() {

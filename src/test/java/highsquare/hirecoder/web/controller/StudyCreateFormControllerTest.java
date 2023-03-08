@@ -1,10 +1,7 @@
 package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.constant.SessionConstant;
-import highsquare.hirecoder.domain.service.BoardService;
-import highsquare.hirecoder.domain.service.StudyMemberService;
-import highsquare.hirecoder.domain.service.StudyService;
-import highsquare.hirecoder.domain.service.TagService;
+import highsquare.hirecoder.domain.service.*;
 import highsquare.hirecoder.dto.StudyCreationInfo;
 import highsquare.hirecoder.entity.*;
 import highsquare.hirecoder.web.form.StudyCreationForm;
@@ -44,6 +41,9 @@ class StudyCreateFormControllerTest {
     @MockBean
     StudyMemberService studyMemberService;
 
+    @MockBean
+    ImageService imageService;
+
     @Test
     @DisplayName("스터디 소개글 생성 폼 접근 로직 테스트")
     public void getCreateFormTest() throws Exception {
@@ -82,7 +82,7 @@ class StudyCreateFormControllerTest {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(SessionConstant.MEMBER_ID, 1L);
 
-        StudyCreationForm expectedForm = new StudyCreationForm("벡엔드 스터디입니다.", List.of("tag1", "tag2"), "# hello world", "백엔드 스터디",
+        StudyCreationForm expectedForm = new StudyCreationForm("벡엔드 스터디입니다.", List.of("tag1", "tag2"), "# hello world", null, "백엔드 스터디",
                 "2023-01-01", "2023-03-31", 5, ActivityState.진행전, RecruitState.모집중, MeetingType.오프라인);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();

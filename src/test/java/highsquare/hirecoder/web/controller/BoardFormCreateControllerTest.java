@@ -2,6 +2,7 @@ package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.service.BoardService;
+import highsquare.hirecoder.domain.service.ImageService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
@@ -9,6 +10,7 @@ import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.web.form.BoardForm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -28,9 +30,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(BoardFormController.class)
+@WebMvcTest(BoardFormCreateController.class)
 @MockBean(JpaMetamodelMappingContext.class)
-class BoardFormControllerTest {
+class BoardFormCreateControllerTest {
     @Autowired
     MockMvc mockMvc;
     @MockBean
@@ -41,6 +43,9 @@ class BoardFormControllerTest {
 
     @MockBean
     TagService tagService;
+
+    @MockBean
+    ImageService imageService;
 
     @Test
     @DisplayName("게시글 생성 폼 접근 로직 테스트")
@@ -82,7 +87,7 @@ class BoardFormControllerTest {
         /**
          * 통합 테스트를 위해 컨트롤러에서 세션에 멤버 아이디를 넣어줄 경우
          * 테스트가 실패할 수 있다.
-         * {@link BoardFormController#getPostCreatePage(Long, HttpSession, Model)}
+         * {@link BoardFormCreateController#getPostCreatePage(Long, HttpSession, Model)}
          */
         resultActions2
                 .andExpect(view().name("form/contentBoardCreateForm"))
@@ -105,7 +110,7 @@ class BoardFormControllerTest {
                 .willReturn(true);
 
         BoardForm expectedCreateForm = new BoardForm(
-                "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo");
+                "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo", null);
 
         Board expectedBoard = new Board();
         expectedBoard.setId(1L);
@@ -141,7 +146,7 @@ class BoardFormControllerTest {
                 .willReturn(false);
 
         BoardForm expectedCreateForm = new BoardForm(
-                "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo");
+                "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo", null);
 
         Board expectedBoard = new Board();
         expectedBoard.setId(1L);
