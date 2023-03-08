@@ -2,6 +2,7 @@ package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.service.BoardService;
+import highsquare.hirecoder.domain.service.ImageService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
@@ -28,6 +29,8 @@ public class BoardFormCreateController {
     private final StudyMemberService studyMemberService;
     private final BoardService boardService;
     private final TagService tagService;
+
+    private final ImageService imageService;
 
     @GetMapping("/create")
     public String getContentBoardCreateForm(@PathVariable(name="study_id") Long studyId,
@@ -85,6 +88,8 @@ public class BoardFormCreateController {
         assert boardForm.getContent() != null;
 
         Board board = boardService.createBoard(memberId, studyId, Kind.CONTENT, boardForm);
+
+        imageService.connectBoardAndImage(board, boardForm.getImages());
 
         tagService.registerTags(board, boardForm.getTags());
 

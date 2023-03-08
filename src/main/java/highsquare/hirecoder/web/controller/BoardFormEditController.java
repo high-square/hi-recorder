@@ -62,7 +62,7 @@ public class BoardFormEditController {
 
         List<String> tags = foundTags.stream().map(Tag::getContent).collect(Collectors.toList());
 
-        boardForm = new BoardForm(board.getTitle(), tags, board.getContent());
+        boardForm = new BoardForm(board.getTitle(), tags, board.getContent(), null);
 
         model.addAttribute("boardForm", boardForm);
 

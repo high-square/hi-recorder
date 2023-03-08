@@ -2,17 +2,20 @@ package highsquare.hirecoder.domain.service;
 
 import highsquare.hirecoder.domain.repository.BoardImageRepository;
 import highsquare.hirecoder.dto.RegisterImageResponse;
+import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.BoardImage;
 import highsquare.hirecoder.entity.Image;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -44,6 +47,19 @@ public class ImageService {
         boardImageRepository.save(boardImage);
 
         return new RegisterImageResponse(uuid, imageUri);
+    }
+
+    @Transactional
+    public void connectBoardAndImage(Board board, List<String> imageIds) {
+
+        for (String imageId : imageIds) {
+
+            boardImageRepository.findById(imageId).ifPresent(
+                    (boardImage) -> {
+                        boardImage.updateBoard(board);
+                    }
+            );
+        }
     }
 
 }

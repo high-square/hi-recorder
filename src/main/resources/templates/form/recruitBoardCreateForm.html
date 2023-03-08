@@ -154,20 +154,21 @@
                     <!-- 마크다운 작성 -->
                     <div th:replace="/form/formFragment :: markdownInput"></div>
 
-                    <!-- 버튼 작성 -->
-                    <div class="mt-5 row">
-                        <div class="col">
-                            <button class="w-100 btn btn-primary btn-lg" id="submit">제출</button>
-                        </div>
-                        <div class="col">
-                            <button class="w-100 btn btn-secondary btn-lg"
-                                    onclick="location.href='items.html'"
-                                    th:onclick="|location.href='@{studyMain}'|"
-                                    type="button">취소</button>
-                        </div>
-                    </div>
                 </div>
             </form>
+
+            <!-- 버튼 작성 -->
+            <div class="mt-5 row">
+                <div class="col">
+                    <button class="w-100 btn btn-primary btn-lg" onclick="submit()">제출</button>
+                </div>
+                <div class="col">
+                    <button class="w-100 btn btn-secondary btn-lg"
+                            onclick="location.href='items.html'"
+                            th:onclick="|location.href='@{studyMain}'|"
+                            type="button">취소</button>
+                </div>
+            </div>
         </div>
     </div>
 </article>
