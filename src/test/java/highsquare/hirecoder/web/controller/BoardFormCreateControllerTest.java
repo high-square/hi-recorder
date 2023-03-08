@@ -2,6 +2,7 @@ package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.service.BoardService;
+import highsquare.hirecoder.domain.service.ImageService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
@@ -9,6 +10,7 @@ import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.web.form.BoardForm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -41,6 +43,9 @@ class BoardFormCreateControllerTest {
 
     @MockBean
     TagService tagService;
+
+    @MockBean
+    ImageService imageService;
 
     @Test
     @DisplayName("게시글 생성 폼 접근 로직 테스트")
@@ -105,7 +110,7 @@ class BoardFormCreateControllerTest {
                 .willReturn(true);
 
         BoardForm expectedCreateForm = new BoardForm(
-                "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo");
+                "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo", null);
 
         Board expectedBoard = new Board();
         expectedBoard.setId(1L);
@@ -141,7 +146,7 @@ class BoardFormCreateControllerTest {
                 .willReturn(false);
 
         BoardForm expectedCreateForm = new BoardForm(
-                "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo");
+                "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo", null);
 
         Board expectedBoard = new Board();
         expectedBoard.setId(1L);

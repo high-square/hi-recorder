@@ -1,11 +1,7 @@
 package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.constant.SessionConstant;
-import highsquare.hirecoder.domain.repository.StudyMemberRepository;
-import highsquare.hirecoder.domain.service.BoardService;
-import highsquare.hirecoder.domain.service.StudyMemberService;
-import highsquare.hirecoder.domain.service.StudyService;
-import highsquare.hirecoder.domain.service.TagService;
+import highsquare.hirecoder.domain.service.*;
 import highsquare.hirecoder.dto.StudyCreationInfo;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Kind;
@@ -34,6 +30,8 @@ public class StudyCreateFormController {
     private final BoardService boardService;
     private final TagService tagService;
     private final StudyMemberService studyMemberService;
+
+    private final ImageService imageService;
 
     @GetMapping("/create")
     public String getRecruitBoardCreateForm(HttpSession session, Model model) {
@@ -109,6 +107,8 @@ public class StudyCreateFormController {
         studyMemberService.registerMemberToStudy(study.getId(), memberId);
 
         Board board = boardService.createBoard(memberId, study.getId(), Kind.RECRUIT, studyCreationForm);
+
+        imageService.connectBoardAndImage(board, studyCreationForm.getImages());
 
         tagService.registerTags(board, studyCreationForm.getTags());
 

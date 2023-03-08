@@ -8,6 +8,35 @@ const editor = new toastui.Editor({
     initialValue: document.querySelector("#content").value
 });
 
+editor.addHook('addImageBlobHook', addImage);
+function addImage(blob, callback) {
+    const formData = new FormData();
+    formData.append("image", blob);
+
+    fetch(location.origin.toString() + "/image/upload", {
+        method: 'POST',
+        cache: "no-cache",
+        body: formData
+    })
+        .then((response)=>response.json())
+        .then((data)=>{
+            callback(location.origin.toString() + data.url);
+            processData(data);
+        })
+}
+
+function processData(data) {
+    let form = document.querySelector("#form");
+
+    let input = document.createElement("input");
+    input.type = "text";
+    input.hidden = true;
+    input.name = "images";
+    input.value = data.imageId;
+
+    form.appendChild(input);
+}
+
 function setTag() {
     let tagBox = document.querySelector('#inner-tag-box');
     let tagInput = document.querySelector('#tag-typing');
