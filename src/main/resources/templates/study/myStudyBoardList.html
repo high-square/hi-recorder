@@ -77,9 +77,15 @@
                             <tbody>
                             <tr th:each="studyBoardList : ${studyBoardList}">
                                 <th scope="row" th:text="${studyBoardList.id}"></th>
-                                <td th:text="${studyBoardList.title}"></td>
+                                <td>
+                                    <a th:href="@{/boards/content/{studyId}/{boardId}(studyId=${studyBoardList.study.id}, boardId=${studyBoardList.id})}" th:text="${studyBoardList.title}"></a>
+                                </td>
                                 <td th:text="${studyBoardList.member.name}"></td>
                                 <td th:text="${studyBoardList.viewCnt}"></td>
+<!--                                <a th:href="@{/study/{id}(id=${data.id})}">스터디 페이지</a>-->
+<!--                                </td>-->
+<!--                                <td>-->
+<!--                                    <a th:href="@{/study/{studyId}/{memberId}(studyId=${data.id}, memberId=${memberId})}">스터디 페이지</a>-->
                             </tr>
                             </tbody>
                         </table>
@@ -87,18 +93,16 @@
                     </div>
 
 
-                    <div class="row text-start pt-5 border-top">
-                        <div class="col-md-12">
-                            <div class="custom-pagination">
-                                <span>1</span>
-                                <a href="#">2</a>
-                                <a href="#">3</a>
-                                <a href="#">4</a>
-                                <span>...</span>
-                                <a href="#">15</a>
-                            </div>
+                <div class="row text-start pt-5 border-top">
+                    <div class="col-md-12">
+                        <div class="custom-pagination">
+                            <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+                                <a th:if="${page != nowPage}" th:href="@{/(page=${page -1}, searchKeyword = ${param.searchKeyword})}" th:text="${page}"></a>
+                                <span th:if="${page == nowPage}" th:text="${page}"></span>
+                            </th:block>
                         </div>
                     </div>
+                </div>
 
                 </div>
 

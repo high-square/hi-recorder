@@ -8,6 +8,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -17,13 +19,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class BoardListServiceTest {
     @Autowired BoardListService boardListService;
     @Test
-    public void getStudyBoardList() {
+    public void getStudyBoardList(Pageable pageable) {
         //given
         Long studyId = 5L;
         Long memberId = 1L;
 
         //when
-        List<Board> boardList = boardListService.findAllByStudyId(studyId, memberId);
+        Page<Board> boardList = boardListService.findAllByStudyId(studyId, memberId, pageable);
 
         //then
         assertThat(boardList);
