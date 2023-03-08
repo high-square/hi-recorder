@@ -41,5 +41,9 @@ public class StudyService {
     public boolean isExistingStudy(Long studyId) {
         return studyId != null && studyRepository.findById(studyId).orElse(null)!=null;
     }
+
+    public Long getStudyManagerId(Long studyId) {
+        return studyRepository.findStudyManagerId(studyId);
+    }
 }
 

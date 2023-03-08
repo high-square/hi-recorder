@@ -5,11 +5,14 @@ import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.service.CommentService;
 import highsquare.hirecoder.domain.service.LikeOnCommentService;
+import highsquare.hirecoder.domain.service.StudyService;
 import highsquare.hirecoder.entity.Comment;
+import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.LikeOnComment;
 import highsquare.hirecoder.page.PageRequestDto;
 import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.web.form.CommentSelectedForm;
+import highsquare.hirecoder.web.form.CommentSelectedRecruitForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,8 +37,12 @@ public class CommentController {
 
     private final LikeOnCommentService likeOnCommentService;
 
+    private final StudyService studyService;
+
     @PostMapping
     public String addComment(@ModelAttribute("commentForm") CommentSelectedForm commentForm, BindingResult bindingResult,
+                             @RequestParam("kind") Kind kind,
+                             @RequestParam("studyId") Long studyId,
                              RedirectAttributes redirectAttributes,
                              HttpSession session,Model model) {
         // 로그인 여부 확인 로직
@@ -57,7 +64,9 @@ public class CommentController {
             }
 
             model.addAttribute("rejectedContent", content);
-            getAllComments(DEFAULT_PAGE, DEFAULT_SIZE, commentForm.getBoardId(), session, model);
+            getAllComments(DEFAULT_PAGE, DEFAULT_SIZE, commentForm.getBoardId(),kind,studyId, session, model);
+            model.addAttribute("kind", kind);
+            model.addAttribute("studyId", studyId);
             return "boards/board ::#commentTable";
         }
 
@@ -73,34 +82,49 @@ public class CommentController {
         // CommentSelectedForm에서 boardId를 getAllComments에 넘겨줌
         redirectAttributes.addAttribute("boardId", commentForm.getBoardId());
         redirectAttributes.addAttribute("memberId", commentForm.getMemberId());
+        redirectAttributes.addAttribute("kind", kind);
+        redirectAttributes.addAttribute("studyId", studyId);
 
 
         return "redirect:/comments";
     }
 
     @GetMapping
-    public String getAllComments(@RequestParam(defaultValue = ""+ DEFAULT_PAGE) int page,
-                                 @RequestParam(defaultValue = ""+ DEFAULT_SIZE) int size,
+    public String getAllComments(@RequestParam(defaultValue = "" + DEFAULT_PAGE) int page,
+                                 @RequestParam(defaultValue = "" + DEFAULT_SIZE) int size,
                                  @RequestParam("boardId") Long boardId,
+                                 @RequestParam("kind") Kind kind,
+                                 @RequestParam("studyId") Long studyId,
                                  HttpSession session,
                                  Model model) {
+
         // 로그인 여부 확인 로직
 
         // 해당 게시글이 존재하는지 확인 로직
-        if (boardRepository.findById(boardId).orElse(null)==null) {
+        if (boardRepository.findById(boardId).orElse(null) == null) {
             model.addAttribute("notExistBoard", true);
-        } else if (page<1 && size<1){ // 페이지 검증로직이 필요함(페이지 수, 사이즈가 음수인지 아닌지)
+        } else if (page < 1 && size < 1) { // 페이지 검증로직이 필요함(페이지 수, 사이즈가 음수인지 아닌지)
             model.addAttribute("notValidPageAndSize", true);
         } else {
             // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
             PageRequestDto pageRequestDto = new PageRequestDto(page, size);
 
             // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
-            PageResultDto<CommentSelectedForm, Comment> allComments =
-                    commentService.pagingAllComments(boardId,(Long)session.getAttribute(SessionConstant.MEMBER_ID), pageRequestDto);
+            if (kind.name().equals("CONTENT")) {
+                PageResultDto<CommentSelectedForm, Comment> allComments =
+                        commentService.pagingAllComments(boardId, (Long) session.getAttribute(SessionConstant.MEMBER_ID), pageRequestDto);
+                model.addAttribute("comments", allComments);
+            } else if (kind.name().equals("RECRUIT")) {
+                PageResultDto<CommentSelectedRecruitForm, CommentSelectedRecruitForm> allComments =
+                        commentService.pagingAllCommentsRecruit(boardId, (Long) session.getAttribute(SessionConstant.MEMBER_ID), pageRequestDto);
+                model.addAttribute("comments", allComments);
+                // 스터디 managerId를 찾아서 model에 추가
+                Long studyManagerId = studyService.getStudyManagerId(studyId);
+                model.addAttribute("studyManagerId", studyManagerId);
+            }
 
-            model.addAttribute("comments", allComments);
             model.addAttribute("boardId", boardId);
+            model.addAttribute("kind", kind);
         }
 
 

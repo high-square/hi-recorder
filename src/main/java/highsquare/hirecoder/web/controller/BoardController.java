@@ -10,6 +10,7 @@ import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.utils.ScriptUtils;
 import highsquare.hirecoder.web.form.BoardSelectedForm;
 import highsquare.hirecoder.web.form.CommentSelectedForm;
+import highsquare.hirecoder.web.form.CommentSelectedRecruitForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,7 +49,8 @@ public class BoardController {
 
 
     @GetMapping("/{kind}/{study_id}/{board_id}")
-    public String getBoard(@PathVariable("study_id") Long studyId,
+    public String getBoard(@PathVariable("kind") Kind kind,
+                           @PathVariable("study_id") Long studyId,
                            @PathVariable("board_id") Long boardId, Model model,
                            HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -82,7 +84,11 @@ public class BoardController {
 
         // DB에서 id에 해당하는 board를 꺼내옴
         Board board = boardService.getBoard(boardId,request,response);
-
+        // 해당 스터디의 매니저 id를 꺼내옴
+        if (kind.name().equals("RECRUIT")) {
+            Long studyManagerId = studyService.getStudyManagerId(studyId);
+            model.addAttribute("studyManagerId", studyManagerId);
+        }
 
 
         // 세션에 저장된 member와 해당 게시글을 이용해서 LikeOnBoard 엔티티 가져오기
@@ -101,14 +107,30 @@ public class BoardController {
         PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, DEFAULT_SIZE);
 
         // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
-        PageResultDto<CommentSelectedForm, Comment> allComments =
-                commentService.pagingAllComments(boardId,
-                        (Long)session.getAttribute(SessionConstant.MEMBER_ID),pageRequestDto);
-
         // DB에서 board.id에 해당하는 Best 댓글순으로 꺼내옴
-        PageResultDto<CommentSelectedForm, Comment> bestComments =
-                commentService.pagingBestComments(boardId,
-                        (Long)session.getAttribute(SessionConstant.MEMBER_ID),pageRequestDto);
+        if (kind.name().equals("CONTENT")) {
+            PageResultDto<CommentSelectedForm, Comment> allComments =
+                    commentService.pagingAllComments(boardId,
+                            (Long)session.getAttribute(SessionConstant.MEMBER_ID),pageRequestDto);
+
+            PageResultDto<CommentSelectedForm, Comment> bestComments =
+                    commentService.pagingBestComments(boardId,
+                            (Long)session.getAttribute(SessionConstant.MEMBER_ID),pageRequestDto);
+
+            model.addAttribute("comments", allComments);
+            model.addAttribute("bestComments", bestComments);
+        } else if (kind.name().equals("RECRUIT")) {
+            PageResultDto<CommentSelectedRecruitForm, CommentSelectedRecruitForm> allComments =
+                    commentService.pagingAllCommentsRecruit(boardId,
+                            (Long)session.getAttribute(SessionConstant.MEMBER_ID),pageRequestDto);
+
+            PageResultDto<CommentSelectedForm, Comment> bestComments =
+                    commentService.pagingBestComments(boardId,
+                            (Long)session.getAttribute(SessionConstant.MEMBER_ID),pageRequestDto);
+            model.addAttribute("comments", allComments);
+            model.addAttribute("bestComments", bestComments);
+        }
+
 
         //게시글에 해당하는 총 댓글수 체크
         Integer commentsTotalCounts = commentService.countComments(boardId);
@@ -120,10 +142,9 @@ public class BoardController {
         model.addAttribute("boardId", boardForm.getId());
         model.addAttribute("likeCheckBoard", likeOnBoard.getLikeCheck());
         model.addAttribute("studyId", studyId);
-        model.addAttribute("comments", allComments);
         model.addAttribute("tags", tags);
         model.addAttribute("commentsTotalCounts", commentsTotalCounts);
-        model.addAttribute("bestComments", bestComments);
+        model.addAttribute("kind", kind);
 
         return "boards/board";
     }

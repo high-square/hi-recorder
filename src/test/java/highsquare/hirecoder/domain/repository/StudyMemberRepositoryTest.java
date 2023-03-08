@@ -86,6 +86,7 @@ class StudyMemberRepositoryTest {
         allMembersStudy.get(0).getMember();
     }
 
+
     private List<Member> initMember() {
 
         List<Member> members = new ArrayList<>();
@@ -135,4 +136,6 @@ class StudyMemberRepositoryTest {
 
         return studyMembers;
     }
+
+
 }
