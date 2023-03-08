@@ -38,6 +38,8 @@ public class BoardSelectedForm {
 
     private int likeCnt;
 
+    private String kind;
+
     private LocalDateTime createdTime;
 
     private LocalDateTime updatedTime;

@@ -39,4 +39,5 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepositoryCustom {
                 .join(studyMember.study, study)
                 .fetchJoin().fetch();
     }
+
 }

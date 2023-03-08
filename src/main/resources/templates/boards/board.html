@@ -1,24 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <meta name="description" content=""/>
-    <meta name="author" content=""/>
-    <title>Clean Blog - Start Bootstrap Theme</title>
-    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico"/>
-    <!-- Font Awesome icons (free version)-->
-    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
-    <!-- Google fonts-->
-    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
-          type="text/css"/>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
-          rel="stylesheet" type="text/css"/>
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="/css/styles.css" rel="stylesheet"/>
-    <link href="../static/css/board/board.css" th:href="@{/css/board/board.css}" rel="stylesheet">
-
-</head>
 <body>
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
@@ -95,7 +76,7 @@
             <div class="col-xl-2" th:text="${#temporals.format(board.updatedTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
         </div>
         <div>
-            <h3 class="heading" >Tags</h3>
+            <h3 class="heading">Tags</h3>
             <th:block th:if="${tags.isEmpty()!=null}" th:each="tag : ${tags}">
                 <ul class="tags">
                     <li><a href="#" th:text="${tag.content}">tag</a></li>
@@ -104,11 +85,11 @@
         </div>
         <div class="mt-5 row">
       <span class="col-xl-3" style="margin-left:600px">
-        <input type="button" class="w-100 btn btn-third btn-lg" th:if="${board.memberId==session.memberId}"
+        <input type="button" class="w-100 btn btn-third btn-lg" th:if="${board.memberId==session.member_id}"
                onclick="openEdit()" value="수정하기">
       </span>
             <span class="col-xl-3">
-        <input type="button" class="w-100 btn btn-fourth btn-lg" th:if="${board.memberId==session.memberId}"
+        <input type="button" class="w-100 btn btn-fourth btn-lg" th:if="${board.memberId==session.member_id}"
                onclick="openDelete()" value="삭제하기">
       </span>
         </div>
@@ -118,6 +99,7 @@
         <article class="mb-4">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7" th:id="content">
                     </div>
 
@@ -125,31 +107,24 @@
             </div>
         </article>
 
+        <hr class="lh-lg" style="margin-top: 50px"/>
+
         <!-- 댓글 작성 폼-->
         <div class="row text-center">
             <div class="col-xl-2">댓글작성하기</div>
             <div class="col-xl-2" id="commentsCount" th:text="|${commentsTotalCounts}개의 댓글|">0개의 댓글</div>
         </div>
         <div class="container px-4 px-lg-5">
-            <div class="col-12 mb-3" th:if="${session.memberId}==null">
+            <div class="col-12 mb-3" th:if="${session.member_id}==null">
                 <textarea id="notLogin" cols="30" rows="3" class="form-control"
                           placeholder="댓글을 작성하려면 로그인을 해주세요"></textarea>
             </div>
-<!--            <div class="col-12 mb-3" th:if="${session.memberId}!=null">-->
-<!--                <div class="textLengthWrap">-->
-<!--                    <p class="textCount">0자</p>-->
-<!--                    <p class="textTotal">/200자</p>-->
-<!--                </div>-->
-<!--                <textarea id="newComment" cols="30" rows="3" class="form-control"-->
-<!--                          placeholder="악의적인 댓글을 마음의 상처가 될 수 있어요^^"></textarea>-->
-<!--                <button type="button" style="border: black;boarder-with: 1px" onclick="postNewComment()">등록</button>-->
-<!--            </div>-->
-            <div class="col-12 mb-3" id="textBox" th:if="${session.memberId}!=null">
+            <div class="col-12 mb-3" id="textBox" th:if="${session.member_id}!=null">
                 <div class="textLengthWrap">
-                    <p class="textCount">0자</p>
-                    <p class="textTotal">/200자</p>
+                    <span class="textCount">0자</span>
+                    <span class="textTotal">/200자</span>
                 </div>
-                <textarea id="newComment" style="height:300px; resize: none;" maxlength="201"
+                <textarea id="newComment" cols="30" rows="3" maxlength="201"
                           placeholder="악의적인 댓글을 마음의 상처가 될 수 있어요^^"></textarea>
                 <button type="button" style="border: black;boarder-with: 1px" onclick="postNewComment()">등록</button>
             </div>
@@ -168,6 +143,25 @@
         <!-- 전체 댓글 보여주기 -->
         <div class="card-comment bg-light" th:unless="${comments.isNotEmpty()}">작성된 댓글이 없습니다.</div>
         <div id="commentTable" th:if="${comments.isNotEmpty()}">
+            <script th:inline="javascript" th:if="${contentMaxLength}">
+                console.log('댓글길이 max');
+                alert([[#{max.comment.content_length}]]);
+                document.getElementById('newComment').value=[[${rejectedContent}]];
+            </script>
+            <script th:inline="javascript" th:if="${contentMinLength}">
+                console.log('댓글길이 min');
+                alert([[#{min.comment.content_length}]]);
+                document.getElementById('newComment').value=[[${rejectedContent}]];
+            </script>
+            <script th:inline="javascript" th:if="${notExistBoard}">
+                alert([[#{invalid.boardId}]]);
+                history.back();
+            </script>
+            <script th:inline="javascript" th:if="${notValidPageAndSize}">
+                alert([[#{invalid.pageandsize}]]);
+                history.back();
+            </script>
+
             <nav
                     th:with="
                 pageNumber = ${comments.page},
@@ -182,21 +176,25 @@
                         <div class="card-body">
                             <h4 class="card-title">
                                 [[${content.memberName}]]
-                                <img th:id="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==0||content.likeCheckWithMember==null}"
+                                <img th:id="'commentLikeImg'+${content.id}"
+                                     th:if="${content.likeCheckWithMember==0||content.likeCheckWithMember==null}"
                                      style="margin-left:1000px" src="/assets/img/comment-like-before.png" width="50px"
                                      height="40px" th:onclick="|javascript:commentLike(${content.id})|">
                                 <img th:id="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==1}"
                                      style="margin-left:1000px" src="/assets/img/comment-like-after.png" width="50px"
                                      height="40px" th:onclick="|javascript:commentLike(${content.id})|">
-                                <span th:id="'commentLikeCount'+${content.id}" class="sidebar-box" th:text="${content.likeCount}"></span>
+                                <span th:id="'commentLikeCount'+${content.id}" class="sidebar-box"
+                                      th:text="${content.likeCount}"></span>
                             </h4>
                             <p class="card-text fw-bold" th:text="${content.content}"></p>
                             <!--해당 댓글 작성자이면 보이는 수정, 삭제 버튼 구현 -->
-                            <th:block th:if="${session.memberId==content.memberId}">
-                                <textarea  th:id="'toBeComment'+${content.id}" cols="15" rows="2" class="form-control"
+                            <th:block th:if="${session.member_id==content.memberId}">
+                                <textarea th:id="'toBeComment'+${content.id}" cols="15" rows="2" class="form-control"
                                           placeholder="수정 가능합니다."></textarea>
-                                <input type="button" class="updatebtn" th:onclick="|javascript:commentUpdate(${content.id})|" value="수정">
-                                <input type="button" class="deletebtn" th:onclick="|javascript:commentDelete(${content.id})|" value="삭제">
+                                <input type="button" class="updatebtn"
+                                       th:onclick="|javascript:commentUpdate(${content.id})|" value="수정">
+                                <input type="button" class="deletebtn"
+                                       th:onclick="|javascript:commentDelete(${content.id})|" value="삭제">
                             </th:block>
                         </div>
                     </div>
@@ -236,7 +234,8 @@
                             <span class="sr-only">Next</span>
                         </a>
                         <a class="page-link"
-                           th:unless="${comments.last}" th:onclick="|javascript:pageAll('${startPage + pageDefaultSize}')|"
+                           th:unless="${comments.last}"
+                           th:onclick="|javascript:pageAll('${startPage + pageDefaultSize}')|"
                            aria-label="Next">
                             <span aria-hidden="true">&gt;</span>
                             <span class="sr-only">Next</span>
@@ -256,33 +255,41 @@
 
         <!-- BEST 댓글 보여주기 -->
         <div class="bestComment" style="display:none">
-        <div class="card-comment bg-light" th:unless="${bestComments.isNotEmpty()}">작성된 댓글이 없습니다.</div>
-        <div id="bestCommentTable" th:if="${bestComments.isNotEmpty()}">
+            <div class="card-comment bg-light" th:unless="${bestComments.isNotEmpty()}">작성된 댓글이 없습니다.</div>
+            <div id="bestCommentTable" th:if="${bestComments.isNotEmpty()}">
+                <script th:inline="javascript" th:if="${notExistBoard}">
+                    alert([[#{invalid.boardId}]]);
+                    history.back();
+                </script>
                 <section class="mb-5" th:each="content : ${bestComments.dtoList}">
                     <div class="card-comment bg-light">
                         <div class="card-body">
                             <h4 class="card-title">
                                 [[${content.memberName}]]
-                                <img th:id="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==0||content.likeCheckWithMember==null}"
+                                <img th:id="'commentLikeImg'+${content.id}"
+                                     th:if="${content.likeCheckWithMember==0||content.likeCheckWithMember==null}"
                                      style="margin-left:1000px" src="/assets/img/comment-like-before.png" width="50px"
                                      height="40px" th:onclick="|javascript:commentLike(${content.id})|">
                                 <img th:id="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==1}"
                                      style="margin-left:1000px" src="/assets/img/comment-like-after.png" width="50px"
                                      height="40px" th:onclick="|javascript:commentLike(${content.id})|">
-                                <span th:id="'commentLikeCount'+${content.id}" class="sidebar-box" th:text="${content.likeCount}"></span>
+                                <span th:id="'commentLikeCount'+${content.id}" class="sidebar-box"
+                                      th:text="${content.likeCount}"></span>
                             </h4>
                             <p class="card-text fw-bold" th:text="${content.content}"></p>
                             <!--해당 댓글 작성자이면 보이는 수정, 삭제 버튼 구현 -->
-                            <th:block th:if="${session.memberId==content.memberId}">
-                                <textarea  th:id="'toBeComment'+${content.id}" cols="15" rows="2" class="form-control"
-                                           placeholder="수정 가능합니다."></textarea>
-                                <input type="button" class="updatebtn" th:onclick="|javascript:commentUpdate(${content.id})|" value="수정">
-                                <input type="button" class="deletebtn" th:onclick="|javascript:commentDelete(${content.id})|" value="삭제">
+                            <th:block th:if="${session.member_id==content.memberId}">
+                                <textarea th:id="'toBeComment'+${content.id}" cols="15" rows="2" class="form-control"
+                                          placeholder="수정 가능합니다."></textarea>
+                                <input type="button" class="updatebtn"
+                                       th:onclick="|javascript:commentUpdate(${content.id})|" value="수정">
+                                <input type="button" class="deletebtn"
+                                       th:onclick="|javascript:commentDelete(${content.id})|" value="삭제">
                             </th:block>
                         </div>
                     </div>
                 </section>
-        </div>
+            </div>
         </div>
     </div>
 
@@ -340,7 +347,7 @@
         // 게시글의 좋아요 처리
         let likeCheckBoard = [[${likeCheckBoard}]];
         const board_id = [[${board.id}]];
-        const member_id = [[${session.memberId}]]; // 세션에 로그인한 사용자 id
+        const member_id = [[${session.member_id}]]; // 세션에 로그인한 사용자 id
         const boardLikeImg = document.getElementById("boardLikeImg")
 
         if (likeCheckBoard == 1) {
@@ -360,12 +367,23 @@
                     url: "/boards/like",
                     data: {'board_id': board_id, 'member_id': member_id},
                 }).done(function (data) {
-                    if (data[0].toString() == 1) {
-                        $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-after.png");
-                    } else {
-                        $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-before.png");
-                    }
-                    $("#boardLikeCnt").text(data[1]);
+                    if (data.notLoginMember!=null) {
+                        var r = confirm(data.notLoginMember);
+                        if (r == true) {
+                            location.href = '/login';
+                        }
+                    }else if(data.notExistBoard!=null) {
+                            alert(data.notExistBoard);
+                        } else {
+                            if (data.likeCheck==1) {
+                                $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-after.png");
+                            } else if(data.likeCheck==0){
+                                $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-before.png");
+                            }
+                            $("#boardLikeCnt").text(data.likeCnt);
+                        }
+
+
                 });
             }
 
@@ -374,9 +392,9 @@
 
         turnAllComments();
 
-        //댓글의 좋아요 ajax
+        //댓글의 좋아요 버튼 클릭시 ajax
         commentLike = function (commentId) {
-            var commentLikeImg = 'commentLikeImg'+commentId;
+            var commentLikeImg = 'commentLikeImg' + commentId;
             if (member_id == null) {
                 var r = confirm("로그인이 필요한 작업입니다. 로그인 페이지로 이동하시겠습니까?");
                 if (r == true) {
@@ -388,14 +406,24 @@
                     url: "/comments/like",
                     data: {'comment_id': commentId, 'member_id': member_id},
                 }).done(function (data) {
-                    var commentLike = "#commentLikeImg"+commentId;
-                    var commentLikeCount = "#commentLikeCount"+commentId;
-                    if (data[0].toString() == 1) {
-                        $(commentLike).attr("src", "/assets/img/comment-like-after.png");
+                    if (data.notExistComment!=null) {
+                        alert(data.notExistComment);
+                    } else if (data.notLoginMember!=null) {
+                        var r=confirm(data.notLoginMember);
+                        if (r==true) {
+                            location.href = '/login';
+                        }
                     } else {
-                        $(commentLike).attr("src", "/assets/img/comment-like-before.png");
+                        var commentLike = "#commentLikeImg" + commentId;
+                        var commentLikeCount = "#commentLikeCount" + commentId;
+                        if (data.likeCheck == 1) {
+                            $(commentLike).attr("src", "/assets/img/comment-like-after.png");
+                        } else {
+                            $(commentLike).attr("src", "/assets/img/comment-like-before.png");
+                        }
+                        $(commentLikeCount).text(data.likeCnt);
                     }
-                    $(commentLikeCount).text(data[1]);
+
                 });
 
             }
@@ -413,7 +441,7 @@
     openDelete = function () {
         var r = confirm("삭제하시겠습니까?");
         if (r == true) {
-            location.href = '/boards/[[${studyId}]]/[[${board.id}]]/delete';
+            location.href = '/boards/content/[[${studyId}]]/[[${board.id}]]/delete';
         }
     }
 
@@ -423,20 +451,22 @@
         var content = document.getElementById("newComment").value;
         var r = confirm("등록하시겠습니까?");
         if (r == true) {
-            param = JSON.stringify({
-                "memberId": [[${session.memberId}]],
+            param = {
+                "memberId": [[${session.member_id}]],
                 "boardId": [[${board.id}]],
                 "content": content
-            });
+            };
 
             $.ajax({
                 method: "POST",
                 url: "/comments",
-                headers: {"Content-type": "application/json"},
                 // 비동기 처리이므로 실행순서를 보장하기 위해 async:false로 처리(기본값 true)
-                async:false,
+                async: false,
                 data: param,
             }).done(function (fragment) {
+                //작성중이던 댓글내용 없애기
+                document.getElementById("newComment").value = '';
+
                 $("#commentTable").replaceWith(fragment);
             })
 
@@ -444,22 +474,26 @@
             $.ajax({
                 method: "GET",
                 url: "/comments/count",
-                data: {"board_id":[[${board.id}]]}
+                data: {"board_id": [[${board.id}]]}
             }).done(function (data) {
-                $("#commentsCount").text(data+'개의 댓글');
+                if (data==-1) {
+                    alert("해당 게시글은 존재하지 않습니다.");
+                }
+                $("#commentsCount").text(data + '개의 댓글');
             })
 
             //전체댓글 색깔입히기
             turnAllComments();
-            //작성중이던 댓글내용 없애기
-            document.getElementById("newComment").value = '';
+
+            //textCount 초기화
+            document.getElementsByClassName("textCount")[0].innerText = '0자';
         }
     }
 
 
     // 비로그인 시 댓글 작성하기 클릭 시 로그인 페이지로 이동하기
     $("#notLogin").on("click", function () {
-        if ([[${session.memberId}]] == null) {
+        if ([[${session.member_id}]] == null) {
             var r = confirm("로그인 페이지로 이동하시겠습니까?");
             if (r == true) {
                 location.href = "/login";
@@ -485,8 +519,8 @@
     // 댓글 페이징 ajax 날리기
     // 파라미터로 받아온 페이지를 요청함
     pageAll = function (page) {
-       var pageNumber = page;
-       var boardId = [[${boardId}]];
+        var pageNumber = page;
+        var boardId = [[${boardId}]];
 
         $.ajax({
             method: "GET",
@@ -525,23 +559,37 @@
     }
 
     //댓글 수정하기
-    commentUpdate = function(commentId) {
+    commentUpdate = function (commentId) {
         var commentId = commentId;
-        var toBeComment = 'toBeComment'+commentId;
+        var toBeComment = 'toBeComment' + commentId;
         var commentContent = document.getElementById(toBeComment).value;
-        var r=confirm("댓글을 수정하시겠습니까?");
-        if (r==true) {
+        var r = confirm("댓글을 수정하시겠습니까?");
+        if (r == true) {
             $.ajax({
                 method: "PATCH",
-                url: "/comments/update/"+commentId,
-                data: {"commentContent":commentContent},
-                async:false,
-                success: function(data) {
-                    alert("댓글이 수정되었습니다!")
-                    turnAllComments();
-                    pageAll(1);
+                url: "/comments/update/" + commentId,
+                data: {"commentContent": commentContent},
+                async: false,
+                success: function (data) {
+                    console.log(data);
+                    if (data.notExistComment!=null) {
+                        alert(data.notExistComment);
+                    } else if (data.notWriter!=null) {
+                        alert(data.notWriter);
+                    } else if (data.blankContent!=null) {
+                        alert(data.blankContent);
+                    } else if (data.tooLongContent!=null) {
+                        alert(data.tooLongContent);
+                        document.getElementById(toBeComment).value=
+                        document.getElementById(toBeComment).value.substring(0, 200);
+                    } else {
+                        alert("댓글이 수정되었습니다!");
+                        turnAllComments();
+                        pageAll(1);
+                    }
+
                 },
-                error: function(error) {
+                error: function (error) {
                     alert("오류가 발생했습니다!")
                 }
             })
@@ -551,21 +599,29 @@
     }
 
     //댓글 삭제하기
-    commentDelete = function(commentId) {
+    commentDelete = function (commentId) {
         var commentId = commentId;
-        var r=confirm("댓글을 삭제하시겠습니까?");
-        if (r==true) {
+        var r = confirm("댓글을 삭제하시겠습니까?");
+        if (r == true) {
             $.ajax({
                 method: "DELETE",
-                url: "/comments/delete/"+commentId,
-                async:false,
-                success: function(data) {
-                    alert("댓글이 삭제되었습니다!")
-                    turnAllComments();
-                    pageAll(1);
+                url: "/comments/delete/" + commentId,
+                async: false,
+                success: function (data) {
+                    console.log(data);
+                    if (data.notExistComment!=null) {
+                        alert(data.notExistComment);
+                    } else if (data.notWriter!=null) {
+                        alert(data.notWriter);
+                    }  else {
+                        alert("댓글이 삭제되었습니다!");
+                        turnAllComments();
+                        pageAll(1);
+                    }
+
 
                 },
-                error: function(error) {
+                error: function (error) {
                     alert("오류가 발생했습니다!")
                 }
             })
@@ -574,15 +630,13 @@
             $.ajax({
                 method: "GET",
                 url: "/comments/count",
-                data: {"board_id":[[${board.id}]]}
+                data: {"board_id": [[${board.id}]]}
             }).done(function (data) {
-                $("#commentsCount").text(data+'개의 댓글');
+                $("#commentsCount").text(data + '개의 댓글');
             })
 
         }
     }
-
-
 
 
 </script>
@@ -591,4 +645,25 @@
 <script src="../../static/js/board/comment.js"
         th:src="@{/js/board/comment.js}"></script>
 </body>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Clean Blog - Start Bootstrap Theme</title>
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico"/>
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
+          rel="stylesheet" type="text/css"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="/css/styles.css" rel="stylesheet"/>
+    <link href="../static/css/board/board.css" th:href="@{/css/board/board.css}" rel="stylesheet">
+
+
+
+</head>
 </html>

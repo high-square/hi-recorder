@@ -25,4 +25,12 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
         return foundBoard != null;
     }
+
+    @Override
+    public boolean existsBoardInStudy(Long boardId, Long studyId) {
+        Long foundBoard = queryFactory.select(board.id).from(board)
+                .where(board.id.eq(boardId), board.study.id.eq(studyId)).fetchOne();
+
+        return foundBoard!=null;
+    }
 }

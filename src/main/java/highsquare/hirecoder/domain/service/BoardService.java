@@ -37,7 +37,7 @@ public class BoardService {
 
         Study study = studyRepository.findById(studyId).get();
 
-        Board board = new Board(member, study, BoardForm.getTitle(), BoardForm.getContent(), kind, null);
+        Board board = new Board(member, study, BoardForm.getTitle(), BoardForm.getContent(), kind, "y",null);
 
         Board savedBoard = boardRepository.save(board);
 
@@ -51,6 +51,7 @@ public class BoardService {
 
     public Board getBoard(Long boardId, HttpServletRequest request,HttpServletResponse response) {
         Board board = boardRepository.findById(boardId).get();
+
 
         // 받아온 board의 id가 Cookie에 저장되어 있는지 확인하는 로직
         if(!viewInspection(request,response,board.getId())) {
@@ -117,5 +118,15 @@ public class BoardService {
         board.setContent(content);
 
         return board;
+    }
+
+    public boolean isExistingBoard(Long boardId,Long studyId) {
+        return boardId != null && boardRepository.existsBoardInStudy(boardId,studyId);
+    }
+
+    public boolean isPublic(Long boardId) {
+        Board findBoard = boardRepository.findById(boardId).get();
+
+        return findBoard.getPublicYn().equals('y');
     }
 }

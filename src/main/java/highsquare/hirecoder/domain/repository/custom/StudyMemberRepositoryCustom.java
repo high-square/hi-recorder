@@ -9,4 +9,5 @@ public interface StudyMemberRepositoryCustom {
     public boolean existsMemberAndStudy(Long study_id, Long member_id);
 
     public List<StudyMember> getAllMembersStudy(Long member_id);
+
 }

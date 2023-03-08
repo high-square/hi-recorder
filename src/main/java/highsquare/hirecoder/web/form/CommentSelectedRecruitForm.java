@@ -1,22 +1,15 @@
 package highsquare.hirecoder.web.form;
 
-import highsquare.hirecoder.entity.Board;
-import highsquare.hirecoder.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
-
-import static javax.persistence.FetchType.LAZY;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @Data
-public class CommentSelectedForm {
+public class CommentSelectedRecruitForm {
 
     public static final int MAX_COMMENT_LENGTH=200;
 
@@ -28,13 +21,24 @@ public class CommentSelectedForm {
 
     private Long memberId;
 
+    private List<Long> studyList=new ArrayList<>();
+
     private String memberName;
 
     private Long boardId;
 
     private Integer likeCheckWithMember;
 
-    public CommentSelectedForm() {
+    public CommentSelectedRecruitForm() {
+    }
+
+    public CommentSelectedRecruitForm(Long id, String content, int likeCount, Long memberId, String memberName, Long boardId) {
+        this.id = id;
+        this.content = content;
+        this.likeCount = likeCount;
+        this.memberId = memberId;
+        this.memberName = memberName;
+        this.boardId = boardId;
     }
 
     private boolean isContentTooShort() {

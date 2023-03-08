@@ -1,23 +1,28 @@
 package highsquare.hirecoder.web.controller;
 
+import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.service.CommentService;
 import highsquare.hirecoder.domain.service.LikeOnCommentService;
+import highsquare.hirecoder.domain.service.StudyService;
 import highsquare.hirecoder.entity.Comment;
+import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.LikeOnComment;
 import highsquare.hirecoder.page.PageRequestDto;
 import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.web.form.CommentSelectedForm;
+import highsquare.hirecoder.web.form.CommentSelectedRecruitForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import static highsquare.hirecoder.constant.PageConstant.*;
 
@@ -32,8 +37,42 @@ public class CommentController {
 
     private final LikeOnCommentService likeOnCommentService;
 
+    private final StudyService studyService;
+
     @PostMapping
-    public String addComment(@RequestBody CommentSelectedForm commentForm, RedirectAttributes redirectAttributes, Model model) {
+    public String addComment(@ModelAttribute("commentForm") CommentSelectedForm commentForm, BindingResult bindingResult,
+                             @RequestParam("kind") Kind kind,
+                             @RequestParam("studyId") Long studyId,
+                             RedirectAttributes redirectAttributes,
+                             HttpSession session,Model model) {
+        // 로그인 여부 확인 로직
+
+        // <----- 검증 로직 시작
+        // 댓글 길이 검증
+        if(!commentForm.isContentTooShort(bindingResult)) {
+            commentForm.isContentTooLong(bindingResult);
+        }
+
+        if (bindingResult.hasErrors()) {
+            String errorCode = bindingResult.getFieldErrors("content").get(0).getCode();
+            String content = (String)bindingResult.getFieldErrors("content").get(0).getRejectedValue();
+
+            if (errorCode.startsWith("max")) {
+                model.addAttribute("contentMaxLength", true);
+            } else if (errorCode.startsWith("min")) {
+                model.addAttribute("contentMinLength", true);
+            }
+
+            model.addAttribute("rejectedContent", content);
+            getAllComments(DEFAULT_PAGE, DEFAULT_SIZE, commentForm.getBoardId(),kind,studyId, session, model);
+            model.addAttribute("kind", kind);
+            model.addAttribute("studyId", studyId);
+            return "boards/board ::#commentTable";
+        }
+
+
+        // <----- 검증 로직 종료
+
         // Comment 엔티티 생성 과정(Form -> Entity)
         Comment comment = transformToEntity(commentForm);
 
@@ -43,30 +82,51 @@ public class CommentController {
         // CommentSelectedForm에서 boardId를 getAllComments에 넘겨줌
         redirectAttributes.addAttribute("boardId", commentForm.getBoardId());
         redirectAttributes.addAttribute("memberId", commentForm.getMemberId());
+        redirectAttributes.addAttribute("kind", kind);
+        redirectAttributes.addAttribute("studyId", studyId);
 
 
         return "redirect:/comments";
     }
 
     @GetMapping
-    public String getAllComments(@RequestParam(defaultValue = ""+ DEFAULT_PAGE) int page,
-                                 @RequestParam(defaultValue = ""+ DEFAULT_SIZE) int size,
+    public String getAllComments(@RequestParam(defaultValue = "" + DEFAULT_PAGE) int page,
+                                 @RequestParam(defaultValue = "" + DEFAULT_SIZE) int size,
                                  @RequestParam("boardId") Long boardId,
+                                 @RequestParam("kind") Kind kind,
+                                 @RequestParam("studyId") Long studyId,
                                  HttpSession session,
                                  Model model) {
 
-        // 페이지 검증로직이 필요함(페이지 수, 사이즈가 음수인지 아닌지, boardId가 들어왔는지)
+        // 로그인 여부 확인 로직
 
-        // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
-        PageRequestDto pageRequestDto = new PageRequestDto(page, size);
+        // 해당 게시글이 존재하는지 확인 로직
+        if (boardRepository.findById(boardId).orElse(null) == null) {
+            model.addAttribute("notExistBoard", true);
+        } else if (page < 1 && size < 1) { // 페이지 검증로직이 필요함(페이지 수, 사이즈가 음수인지 아닌지)
+            model.addAttribute("notValidPageAndSize", true);
+        } else {
+            // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
+            PageRequestDto pageRequestDto = new PageRequestDto(page, size);
 
+            // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
+            if (kind.name().equals("CONTENT")) {
+                PageResultDto<CommentSelectedForm, Comment> allComments =
+                        commentService.pagingAllComments(boardId, (Long) session.getAttribute(SessionConstant.MEMBER_ID), pageRequestDto);
+                model.addAttribute("comments", allComments);
+            } else if (kind.name().equals("RECRUIT")) {
+                PageResultDto<CommentSelectedRecruitForm, CommentSelectedRecruitForm> allComments =
+                        commentService.pagingAllCommentsRecruit(boardId, (Long) session.getAttribute(SessionConstant.MEMBER_ID), pageRequestDto);
+                model.addAttribute("comments", allComments);
+                // 스터디 managerId를 찾아서 model에 추가
+                Long studyManagerId = studyService.getStudyManagerId(studyId);
+                model.addAttribute("studyManagerId", studyManagerId);
+            }
 
-        // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
-        PageResultDto<CommentSelectedForm, Comment> allComments =
-                commentService.pagingAllComments(boardId,(Long)session.getAttribute("memberId"), pageRequestDto);
+            model.addAttribute("boardId", boardId);
+            model.addAttribute("kind", kind);
+        }
 
-        model.addAttribute("comments", allComments);
-        model.addAttribute("boardId", boardId);
 
         return "boards/board :: #commentTable";
     }
@@ -74,15 +134,22 @@ public class CommentController {
     @GetMapping("/BestComments")
     public String getBestComments(@RequestParam("boardId") Long boardId, HttpSession session, Model model) {
 
-        // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
-        PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, BEST_DEFAULT_SIZE);
+        // 로그인 여부 확인 로직
 
-        // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
-        PageResultDto<CommentSelectedForm, Comment> bestComments =
-                commentService.pagingBestComments(boardId,(Long)session.getAttribute("memberId"), pageRequestDto);
+        // 해당 게시글이 존재하는지 확인 로직
+        if (boardRepository.findById(boardId).orElse(null)==null) {
+            model.addAttribute("notExistBoard", true);
+        } else {
+            // Paging에 필요한 데이터를 가지는 PageRequest 생성(page, size)
+            PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, BEST_DEFAULT_SIZE);
 
-        model.addAttribute("bestComments", bestComments);
-        model.addAttribute("boardId", boardId);
+            // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
+            PageResultDto<CommentSelectedForm, Comment> bestComments =
+                    commentService.pagingBestComments(boardId, (Long) session.getAttribute(SessionConstant.MEMBER_ID), pageRequestDto);
+
+            model.addAttribute("bestComments", bestComments);
+            model.addAttribute("boardId", boardId);
+        }
 
         return "boards/board :: #bestCommentTable";
     }
@@ -90,40 +157,107 @@ public class CommentController {
     // 댓글 수정 클릭 시 작업
     @PatchMapping("/update/{commentId}")
     @ResponseBody
-    public Long updateComment(@PathVariable("commentId") Long commentId,
-                              @RequestParam String commentContent) {
-        Long result = commentService.updateCommentContent(commentId, commentContent);
-        if(result==0) {
-            throw new IllegalArgumentException("해당 댓글이 존재하지 않습니다.");
-        } else {
-            return result;
+    public Map<String,String> updateComment(@PathVariable("commentId") Long commentId,
+                                            @RequestParam String commentContent,
+                                            HttpSession session, Model model) {
+
+        // 로그인 여부
+
+        // <----- 검증 로직 시작
+        Map<String, String> map = new HashMap<>();
+        // 해당 댓글이 존재하는지 확인 로직
+        if (!commentService.isExistComment(commentId)) {
+            map.put("notExistComment", "해당 댓글이 존재하지 않습니다.");
         }
+
+        // 댓글 작성자 본인인지 체크
+        if (!commentService.isCommentWriter(commentId,(Long)session.getAttribute(SessionConstant.MEMBER_ID))) {
+            map.put("notWriter", "해당 댓글의 작성자가 아닙니다.");
+        }
+
+        // 댓글 길이 검증
+        if (commentContent.trim().length()==0) {
+            map.put("blankContent", "댓글 내용이 빈칸입니다. 재입력이 필요합니다.");
+        }
+
+        if (commentContent.length()>200) {
+            map.put("tooLongContent", "댓글의 최대 길이는 200자입니다.");
+        }
+        // <----- 검증 로직 종료
+
+
+
+        if (map.isEmpty()) {
+            commentService.updateCommentContent(commentId, commentContent);
+        }
+
+
+        return map;
 
     }
 
     // 댓글 삭제 클릭 시 작업
     @DeleteMapping("/delete/{commentId}")
     @ResponseBody
-    public void deleteComment(@PathVariable("commentId") Long commentId) {
-        commentService.deleteComment(commentId);
+    public Map<String,String> deleteComment(@PathVariable("commentId") Long commentId,HttpSession session) {
+
+        // 로그인 여부 확인 로직
+
+        // <----- 검증 로직 시작
+        Map<String, String> map = new HashMap<>();
+        // 댓글이 존재하는지 확인 로직
+        if (!commentService.isExistComment(commentId)) {
+            map.put("notExistComment","해당 댓글이 존재하지 않습니다.");
+        }
+
+        // 댓글 작성자 본인인지 체크
+        if (!commentService.isCommentWriter(commentId,(Long)session.getAttribute(SessionConstant.MEMBER_ID))) {
+            map.put("notWriter", "해당 댓글의 작성자가 아닙니다.");
+        }
+
+        if (map.isEmpty()) {
+            commentService.deleteComment(commentId);
+        }
+
+        return map;
     }
 
     // 댓글의 좋아요 클릭 시 작업
     @PostMapping("/like")
     @ResponseBody
-    public List<Object> commentLikeProcess(@RequestParam(name="comment_id") Long commentId,
-                                         @RequestParam(name="member_id") Long memberId) {
-        LikeOnComment likeOnComment = likeOnCommentService.updateLike(commentId, memberId);
-        Integer likeCnt = likeOnCommentService.countLikeCnt(commentId, memberId);
-        List<Object> data = new ArrayList<>();
-        data.add(String.valueOf(likeOnComment.getLikeCheck()));
-        data.add(likeCnt);
-        return data;
+    public Map<String,String> commentLikeProcess(@RequestParam(name="comment_id") Long commentId,
+                                         @RequestParam(name="member_id") Long memberId,
+                                           HttpSession session) {
+        Map<String, String> map = new HashMap<>();
+
+        // 댓글이 존재하는지 여부 확인 로직
+        if(!commentService.isExistComment(commentId)) {
+            map.put("notExistComment", "해당 댓글이 존재하지 않습니다.");
+            return map;
+        }
+
+        // 로그인 여부 확인 로직
+
+        if (memberId==null||!memberId.equals((Long)session.getAttribute(SessionConstant.MEMBER_ID))) {
+            map.put("notLoginMember", "로그인이 필요한 작업입니다. 로그인 페이지로 이동하시겠습니까?");
+        } else {
+            LikeOnComment likeOnComment = likeOnCommentService.updateLike(commentId, memberId);
+            Integer likeCnt = likeOnCommentService.countLikeCnt(commentId, memberId);
+            map.put("likeCheck", String.valueOf(likeOnComment.getLikeCheck()));
+            map.put("likeCnt", String.valueOf(likeCnt));
+        }
+        return map;
+
     }
 
     @GetMapping("/count")
     @ResponseBody
     public Integer commentsCountProcess(@RequestParam(name="board_id") Long boardId) {
+        // 게시글 존재 여부 확인 로직 - 음수이면 존재하지 않음
+        if(boardRepository.findById(boardId).orElse(null)==null) {
+            return -1;
+        }
+
          return commentService.countComments(boardId);
     }
 

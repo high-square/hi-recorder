@@ -53,12 +53,13 @@ public class Board {
     @Enumerated(value = EnumType.STRING)
     private Kind kind;
 
-    public Board(Member member, Study study, String title, String content, Kind kind, String file) {
+    public Board(Member member, Study study, String title, String content, Kind kind, String publicYn ,String file) {
         this.member = member;
         this.study = study;
         this.title = title;
         this.content = content;
         this.file = file;
+        this.publicYn = publicYn;
         this.kind = kind;
     }
 
