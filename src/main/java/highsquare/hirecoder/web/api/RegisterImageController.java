@@ -12,14 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/boards/*/{study_id}/create")
 public class RegisterImageController {
 
     private final ImageService imageService;
 
     @PostMapping("/image/upload")
     public ResponseEntity<RegisterImageResponse> registerImage(
-                        @PathVariable("study_id") Long studyId,
                         @RequestParam("image")MultipartFile image) {
 
         try {
