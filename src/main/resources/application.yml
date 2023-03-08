@@ -1,9 +1,4 @@
 spring:
-  datasource:
-    url: jdbc:h2:tcp://localhost/~/hirecorder
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
   messages:
     basename: messages,errors
   servlet:
@@ -13,11 +8,13 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         #        show_sql: true 시스템아웃을 통해 찍음
         format_sql: true
+  config:
+    import: private.yml
 #    open-in-view: false
 
 
