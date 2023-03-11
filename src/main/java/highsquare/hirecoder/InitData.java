@@ -27,7 +27,7 @@ public class InitData {
     private final StudyMemberRepository studyMemberRepository;
 
 
-    @PostConstruct
+    //@PostConstruct
     public void init() {
         // ----------------멤버-----------------
         Member member1 = setMember("강욱", "1234", "kimkangwook@naver.com");
