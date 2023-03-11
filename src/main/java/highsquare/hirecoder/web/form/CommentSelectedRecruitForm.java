@@ -21,7 +21,7 @@ public class CommentSelectedRecruitForm {
 
     private Long memberId;
 
-    private List<Long> studyList=new ArrayList<>();
+    public List<Long> studyList=new ArrayList<>();
 
     private String memberName;
 

@@ -123,8 +123,8 @@ public class BoardController {
                     commentService.pagingAllCommentsRecruit(boardId,
                             (Long)session.getAttribute(SessionConstant.MEMBER_ID),pageRequestDto);
 
-            PageResultDto<CommentSelectedForm, Comment> bestComments =
-                    commentService.pagingBestComments(boardId,
+            PageResultDto<CommentSelectedRecruitForm, CommentSelectedRecruitForm> bestComments =
+                    commentService.pagingBestCommentsRecruit(boardId,
                             (Long)session.getAttribute(SessionConstant.MEMBER_ID),pageRequestDto);
             model.addAttribute("comments", allComments);
             model.addAttribute("bestComments", bestComments);

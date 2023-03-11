@@ -132,7 +132,10 @@ public class CommentController {
     }
 
     @GetMapping("/BestComments")
-    public String getBestComments(@RequestParam("boardId") Long boardId, HttpSession session, Model model) {
+    public String getBestComments(@RequestParam("boardId") Long boardId,
+                                  @RequestParam("kind") Kind kind,
+                                  @RequestParam("studyId") Long studyId,
+                                  HttpSession session, Model model) {
 
         // 로그인 여부 확인 로직
 
@@ -144,11 +147,21 @@ public class CommentController {
             PageRequestDto pageRequestDto = new PageRequestDto(DEFAULT_PAGE, BEST_DEFAULT_SIZE);
 
             // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
-            PageResultDto<CommentSelectedForm, Comment> bestComments =
-                    commentService.pagingBestComments(boardId, (Long) session.getAttribute(SessionConstant.MEMBER_ID), pageRequestDto);
+            if (kind.name().equals("CONTENT")) {
+                PageResultDto<CommentSelectedForm, Comment> bestComments =
+                        commentService.pagingBestComments(boardId, (Long) session.getAttribute(SessionConstant.MEMBER_ID), pageRequestDto);
+                model.addAttribute("bestComments", bestComments);
+            } else if (kind.name().equals("RECRUIT")) {
+                PageResultDto<CommentSelectedRecruitForm, CommentSelectedRecruitForm> bestComments =
+                        commentService.pagingBestCommentsRecruit(boardId, (Long) session.getAttribute(SessionConstant.MEMBER_ID), pageRequestDto);
+                model.addAttribute("bestComments", bestComments);
+                // 스터디 managerId를 찾아서 model에 추가
+                Long studyManagerId = studyService.getStudyManagerId(studyId);
+                model.addAttribute("studyManagerId", studyManagerId);
+            }
 
-            model.addAttribute("bestComments", bestComments);
             model.addAttribute("boardId", boardId);
+            model.addAttribute("kind", kind);
         }
 
         return "boards/board :: #bestCommentTable";

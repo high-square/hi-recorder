@@ -54,22 +54,50 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         List<OrderSpecifier> ORDERS = getAllOrderSpecifiers(pageable);
 
         // boardId에 해당하는 comment들을 CommentSelectedRecruitForm 형태로 빼옴
+        List<CommentSelectedRecruitForm> commentForm = getCommentSelectedRecruitForms(boardId, pageable, ORDERS);
+
+
+        // 각각의 comment를 작성한 멤버의 studyList를 빼와서 CommentSelectedRecruitForm.StudyList에 넣어주는 작업
+        commentForm.forEach(form -> {
+            injectStudyList(form);
+        });
+
+        Long total = queryFactory.select(comment.count()).from(comment)
+                .where(comment.board.id.eq(boardId)).fetchOne();
+        return new PageImpl<>(commentForm, pageable, total);
+    }
+
+    private void injectStudyList(CommentSelectedRecruitForm form) {
+        List<StudyMember> studyMemberList = queryFactory.selectFrom(studyMember)
+                .where(studyMember.member.id.eq(form.getMemberId()))
+                .join(studyMember.study, study)
+                .fetchJoin().fetch();
+        log.info("studyMemberList {}", studyMemberList.toString());
+        studyMemberList.forEach(studyMember -> form.getStudyList().add(studyMember.getStudy().getId()));
+    }
+
+    private List<CommentSelectedRecruitForm> getCommentSelectedRecruitForms(Long boardId, Pageable pageable, List<OrderSpecifier> ORDERS) {
         List<CommentSelectedRecruitForm> commentForm = queryFactory.select(Projections.constructor(CommentSelectedRecruitForm.class,
                         comment.id, comment.content, comment.likeCnt, comment.member.id, member.name, board.id
                 )).from(comment).join(comment.board, board).join(comment.member, member)
                 .where(comment.board.id.eq(boardId))
                 .orderBy(ORDERS.stream().toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
+        return commentForm;
+    }
+
+    @Override
+    @Transactional
+    public Page<CommentSelectedRecruitForm> findBestCommentsRecruit(Long boardId, Pageable pageable) {
+        List<OrderSpecifier> ORDERS = getAllOrderSpecifiers(pageable);
+
+        // boardId에 해당하는 comment들을 CommentSelectedRecruitForm 형태로 빼옴
+        List<CommentSelectedRecruitForm> commentForm = getCommentSelectedRecruitForms(boardId, pageable, ORDERS);
 
 
         // 각각의 comment를 작성한 멤버의 studyList를 빼와서 CommentSelectedRecruitForm.StudyList에 넣어주는 작업
         commentForm.forEach(form -> {
-            List<StudyMember> studyMemberList = queryFactory.selectFrom(studyMember)
-                    .where(studyMember.member.id.eq(form.getMemberId()))
-                    .join(studyMember.study, study)
-                    .fetchJoin().fetch();
-            log.info("studyMemberList {}", studyMemberList.toString());
-            studyMemberList.forEach(studyMember -> form.getStudyList().add(studyMember.getStudy().getId()));
+            injectStudyList(form);
         });
 
         Long total = queryFactory.select(comment.count()).from(comment)
@@ -84,9 +112,14 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         if (!isEmpty(pageable.getSort())) {
             for (Sort.Order order : pageable.getSort()) {
                 Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+                OrderSpecifier<?> orderId;
                 switch (order.getProperty()) {
                     case "createdTime":
-                        OrderSpecifier<?> orderId = QueryDslUtils.getSortedColumn(direction, comment, "createdTime");
+                        orderId = QueryDslUtils.getSortedColumn(direction, comment, "createdTime");
+                        ORDERS.add(orderId);
+                        break;
+                    case "likeCnt":
+                        orderId = QueryDslUtils.getSortedColumn(direction, comment, "likeCnt");
                         ORDERS.add(orderId);
                         break;
                     default:
