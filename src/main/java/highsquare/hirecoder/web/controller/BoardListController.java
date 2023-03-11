@@ -71,6 +71,7 @@ public class BoardListController {
         }
 
         model.addAttribute("studyBoardList", studyBoardList);
+        model.addAttribute("studyId", studyId);
         model.addAttribute("nowPage", nowPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
