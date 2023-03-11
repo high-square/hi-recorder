@@ -33,7 +33,7 @@
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">About</a></li>
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="post.html">Sample Post</a></li>
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" th:onclick="|location.href='@{/boards/studies/add}'|" >글쓰기</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" th:onclick="|location.href='@{/study/myStudy}'|" >나의 스터디</a></li>
             </ul>
         </div>
     </div>
@@ -69,7 +69,7 @@
                 <div class="col-lg-8">
                     <div th:each="studyLists : ${studies}" class="blog-entry d-flex blog-entry-search-item">
                         <div class="img-wrapper me-4">
-                            <a href="post.html">
+                            <a th:href="@{/boards/{kind}/{studyId}/{boardId}(kind=${studyLists.kind},studyId=${studyLists.study.id}, boardId=${studyLists.id})}"></a>
                                 <img th:src="@{/images/kyh_jsp.png}" alt="Image" class="img-fluid">
                             </a>
                         </div>
@@ -77,7 +77,7 @@
                             <div>
                                 <span class="date">Apr. 14th, 2023 &bullet; <a href="#">Java</a></span>
                                 <hidden th:text="${studyLists.id}"></hidden>
-                                <h2><a href="post.html" th:text="${studyLists.title}">인프런 김영한 강좌 자바 ORM 표준 JPA 프로그래밍 스터디</a></h2>
+                                <h2><a th:href="@{/boards/{kind}/{studyId}/{boardId}(kind=${studyLists.kind},studyId=${studyLists.study.id}, boardId=${studyLists.id})}" th:text="${studyLists.title}"></a></a></h2>
                                 <p th:text="${studyLists.content}"></p>
                                 <span>
                                     <ul class="tags">
