@@ -23,6 +23,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         .and(board.id.eq(boardId)))
                 .fetchFirst();
 
+
         return foundBoard != null;
     }
 

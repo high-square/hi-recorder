@@ -12,6 +12,6 @@ import java.util.List;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select sm.member from StudyMember sm where sm.study.id = :studyId")
-    List<Member> findByStudyId(Long studyId);
+    List<Member> findByStudyId(@Param("studyId")Long studyId);
 
 }

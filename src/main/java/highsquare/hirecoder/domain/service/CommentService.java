@@ -76,7 +76,7 @@ public class CommentService {
 
 
     /**
-     * Best 댓글 페이징
+     * Best 댓글 페이징(content)
      */
     public PageResultDto<CommentSelectedForm, Comment> pagingBestComments(Long boardId,Long memberId,PageRequestDto requestDto) {
         Pageable pageable = requestDto.getPageable(Sort.by("likeCnt").descending());
@@ -85,6 +85,21 @@ public class CommentService {
         //해당 멤버가 클릭한 좋아요 확인 작업
         Map<Long, Integer> commentLikeList = likeOnCommentService.commentWithLikeByMember(boardId,memberId);
         Function<Comment, CommentSelectedForm> fn = (entity -> entityToDto(entity,commentLikeList));
+
+
+        return new PageResultDto<>(result, fn);
+    }
+
+    /**
+     * Best 댓글 페이징(recruit)
+     */
+    public PageResultDto<CommentSelectedRecruitForm, CommentSelectedRecruitForm> pagingBestCommentsRecruit(Long boardId,Long memberId,PageRequestDto requestDto) {
+        Pageable pageable = requestDto.getPageable(Sort.by("likeCnt").descending());
+        Page<CommentSelectedRecruitForm> result = commentRepository.findBestCommentsRecruit(boardId, pageable);
+
+        //해당 멤버가 클릭한 좋아요 확인 작업
+        Map<Long, Integer> commentLikeList = likeOnCommentService.commentWithLikeByMember(boardId,memberId);
+        Function<CommentSelectedRecruitForm, CommentSelectedRecruitForm> fn = (form -> setLikeCheckWithMember(form,commentLikeList));
 
 
         return new PageResultDto<>(result, fn);

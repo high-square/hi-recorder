@@ -26,7 +26,8 @@
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
                 <div class="site-heading">
-                    <h1 th:text="|${board.studyName} 게시판|">Clean Blog</h1>
+                    <h1>
+                        <a th:href="@{/study/{studyId} (studyId=${studyId})}" th:text="|${board.studyName} 게시판|"></a></h1>
                     <span class="subheading">환영합니다</span>
                 </div>
             </div>
@@ -176,9 +177,10 @@
                         <div class="card-body">
                             <h4 class="card-title">
                                 [[${content.memberName}]]
-                                <th:block th:if="${kind.name().equals('recruit')&&session.member_id==studyManagerId}">
-                                    <input type="button" class="inviteStudybtn"
+                                <th:block th:if="${kind.name().equals('RECRUIT')&&session.member_id==studyManagerId}">
+                                    <input th:if="${content.studyList.contains(studyId)}" type="button" class="inviteStudybtn"
                                            th:onclick="|javascript:inviteStudy(${content.memberId})|" value="스터디 초대하기">
+                                    <div th:if="${!content.studyList.contains(studyId)}">이미 스터디에 가입하셨습니다.</div>
                                 </th:block>
                                 <img th:id="'commentLikeImg'+${content.id}"
                                      th:if="${content.likeCheckWithMember==0||content.likeCheckWithMember==null}"
@@ -270,6 +272,11 @@
                         <div class="card-body">
                             <h4 class="card-title">
                                 [[${content.memberName}]]
+                                <th:block th:if="${kind.name().equals('RECRUIT')&&session.member_id==studyManagerId}">
+                                    <input th:if="${content.studyList.contains(studyId)}" type="button" class="inviteStudybtn"
+                                           th:onclick="|javascript:inviteStudy(${content.memberId})|" value="스터디 초대하기">
+                                    <div th:if="${!content.studyList.contains(studyId)}">이미 스터디에 가입하셨습니다.</div>
+                                </th:block>
                                 <img th:id="'commentLikeImg'+${content.id}"
                                      th:if="${content.likeCheckWithMember==0||content.likeCheckWithMember==null}"
                                      style="margin-left:1000px" src="/assets/img/comment-like-before.png" width="50px"
@@ -543,7 +550,7 @@
         $.ajax({
             method: "GET",
             url: "/comments/BestComments",
-            data: {"boardId": boardId},
+            data: {"boardId": boardId,"kind": [[${kind}]], "studyId":[[${studyId}]]},
         }).done(function (fragment) {
             $("#commentTable").empty();
             $("#bestCommentTable").replaceWith(fragment);
@@ -655,14 +662,16 @@
                 url: "/studyMember/add/" + studyId + "/" + commentWriterId,
                 async: false,
                 success: function(data) {
-                    alert("해당 멤버의 스터디 가입이 성공하였습니다.")
+                    alert("해당 멤버의 스터디 가입이 성공하였습니다.");
                 },
                 error: function(error) {
-                    alert("해당 멤버의 스터디 가입이 실패하였습니다.")
+                    alert("해당 멤버의 스터디 가입이 실패하였습니다.");
                 }
             })
         }
     }
+
+
 
 
 </script>

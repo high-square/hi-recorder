@@ -11,4 +11,6 @@ public interface CommentRepositoryCustom {
     public boolean isCommentWriter(Long commentId, Long memberId);
 
     Page<CommentSelectedRecruitForm> findAllCommentsRecruit(Long boardId, Pageable pageable);
+
+    Page<CommentSelectedRecruitForm> findBestCommentsRecruit(Long boardId, Pageable pageable);
 }
