@@ -15,7 +15,7 @@ import javax.persistence.Id;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-public class Board {
+public class Board extends TimeEntity {
     // 게시글 아이디
     @Id @GeneratedValue()
     @Column(name="board_id")

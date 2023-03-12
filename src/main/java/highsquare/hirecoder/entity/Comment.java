@@ -15,7 +15,7 @@ import static javax.persistence.FetchType.*;
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 @Setter
-public class Comment {
+public class Comment extends TimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "comment_id")
