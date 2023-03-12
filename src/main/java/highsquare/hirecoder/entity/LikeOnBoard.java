@@ -12,7 +12,7 @@ import static javax.persistence.FetchType.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LikeOnBoard {
+public class LikeOnBoard extends TimeEntity {
 
     @Id
     @GeneratedValue

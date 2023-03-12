@@ -12,7 +12,7 @@ import static javax.persistence.FetchType.LAZY;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LikeOnComment {
+public class LikeOnComment extends TimeEntity {
 
     @Id
     @GeneratedValue

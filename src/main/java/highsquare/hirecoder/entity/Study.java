@@ -13,7 +13,7 @@ import static javax.persistence.FetchType.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Study {
+public class Study extends TimeEntity {
     @Id @GeneratedValue
     private Long id;
 
