@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.*;
 
 @Entity
@@ -12,7 +13,7 @@ import static javax.persistence.FetchType.*;
 public class StudyMember extends TimeEntity {
 
     @Id @GeneratedValue
-    @Column(name="study_member_id")
+    @Column(name="study_member_id", nullable = false)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
@@ -23,4 +24,6 @@ public class StudyMember extends TimeEntity {
     @JoinColumn(name="study_id")
     private Study study;
 
+    @Enumerated(value = STRING)
+    private AttendState attendState;
 }
