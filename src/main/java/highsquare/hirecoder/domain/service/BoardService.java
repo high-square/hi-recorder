@@ -127,6 +127,6 @@ public class BoardService {
     public boolean isPublic(Long boardId) {
         Board findBoard = boardRepository.findById(boardId).get();
 
-        return findBoard.getPublicYn().equals("Y");
+        return findBoard.getPublicYn().equals("y");
     }
 }
