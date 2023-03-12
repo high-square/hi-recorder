@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Tag {
+public class Tag extends CommonEntity {
 
     @Id @GeneratedValue
     @Column(name="tag_id")
