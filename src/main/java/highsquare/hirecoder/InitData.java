@@ -4,8 +4,12 @@ import highsquare.hirecoder.domain.repository.*;
 import highsquare.hirecoder.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 
 import static highsquare.hirecoder.entity.ActivityState.진행전;
 import static highsquare.hirecoder.entity.ActivityState.진행중;
@@ -20,6 +24,9 @@ import static highsquare.hirecoder.entity.RecruitState.모집중;
 @RequiredArgsConstructor
 public class InitData {
 
+    private static final Long DEFAULT_CREATED_BY = 1L;
+
+    private final PlatformTransactionManager platformTransactionManager;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
@@ -27,8 +34,11 @@ public class InitData {
     private final StudyMemberRepository studyMemberRepository;
 
 
-    //@PostConstruct
+    @PostConstruct
     public void init() {
+
+        TransactionStatus ts = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
+
         // ----------------멤버-----------------
         Member member1 = setMember("강욱", "1234", "kimkangwook@naver.com");
         Member member2 = setMember("재원", "1234", "jaewon@naver.com");
@@ -76,6 +86,8 @@ public class InitData {
         persistStudyMember(studyMember1, studyMember2, studyMember3, studyMember4, studyMember5);
         persistBoard(board1, board2, board3, board4, board5);
         persistComment(comment1, comment2, comment3, comment4, comment5, comment6, comment7, comment8);
+
+        platformTransactionManager.commit(ts);
     }
 
     private void persistComment(Comment comment1, Comment comment2, Comment comment3, Comment comment4, Comment comment5, Comment comment6, Comment comment7, Comment comment8) {
@@ -123,6 +135,10 @@ public class InitData {
         comment.setBoard(board2);
         comment.setContent(content);
         comment.setLikeCnt(likeCnt);
+
+        setTime(comment);
+        setCreatedBy(comment, DEFAULT_CREATED_BY);
+
         return comment;
     }
 
@@ -130,6 +146,10 @@ public class InitData {
         StudyMember studyMember = new StudyMember();
         studyMember.setMember(member1);
         studyMember.setStudy(study1);
+
+        setTime(studyMember);
+        setCreatedBy(studyMember, DEFAULT_CREATED_BY);
+
         return studyMember;
     }
 
@@ -143,6 +163,10 @@ public class InitData {
         board.setViewCnt(viewCnt);
         board.setContent(content);
         board.setKind(kind);
+
+        setTime(board);
+        setCreatedBy(board, DEFAULT_CREATED_BY);
+
         return board;
     }
 
@@ -155,6 +179,9 @@ public class InitData {
         study.setRecruitState(recruitState);
         study.setMeetingType(meetingType);
 
+        setTime(study);
+        setCreatedBy(study, DEFAULT_CREATED_BY);
+
         return study;
     }
 
@@ -163,6 +190,20 @@ public class InitData {
         member.setName(name);
         member.setPassword(password);
         member.setEmail(email);
+
+        setTime(member);
+        setCreatedBy(member, DEFAULT_CREATED_BY);
+
         return member;
+    }
+
+    private static void setTime(CommonEntity commonEntity) {
+        commonEntity.setCreateDate(LocalDateTime.now());
+        commonEntity.setUpdateDate(LocalDateTime.now());
+    }
+
+    private static void setCreatedBy(CommonEntity commonEntity, Long createdBy) {
+        commonEntity.setCreateBy(createdBy);
+        commonEntity.setUpdateBy(createdBy);
     }
 }

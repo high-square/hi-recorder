@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @Setter
-public class Member {
+public class Member extends CommonEntity {
 
     @Id @GeneratedValue
     @Column(name="member_id")

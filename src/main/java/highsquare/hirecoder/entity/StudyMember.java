@@ -9,7 +9,7 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter @Setter
-public class StudyMember {
+public class StudyMember extends CommonEntity {
 
     @Id @GeneratedValue
     @Column(name="study_member_id")

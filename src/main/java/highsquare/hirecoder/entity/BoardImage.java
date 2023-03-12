@@ -10,7 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Entity
-public class BoardImage {
+public class BoardImage extends CommonEntity {
     @Id
     private String uuid;
 
