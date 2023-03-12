@@ -54,8 +54,8 @@ public class MyPageController {
     }
 
     @GetMapping("/{studyId}/{memberId}")
-    public String myStudyPostList(@PathVariable(value="studyId") String studyId,
-                                  @PathVariable(value="memberId") String memberId,
+    public String myStudyPostList(@PathVariable(value="studyId") Long studyId,
+                                  @PathVariable(value="memberId") Long memberId,
                                   Model model, HttpSession session) {
         // session에 넣는 것?
 
@@ -63,13 +63,13 @@ public class MyPageController {
 
         // 현재 로그인에 관한 페이지가 없으므로 session 값에 강욱 멤버의 memberId와 memberName을 임의로 넣어둔다.
 //        session.setAttribute("memberId",1L);
-        session.setAttribute("memberId", Long.parseLong(memberId));
+        session.setAttribute("memberId", memberId);
         session.setAttribute("memberName", "강욱");
 
         model.addAttribute("memberName", "강욱");
 
         // session에 studyId도 넣어준다.
-        session.setAttribute("studyId", Long.parseLong(studyId));
+        session.setAttribute("studyId", studyId);
 
         model.addAttribute("studyId", 5L);
 
