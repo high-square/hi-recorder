@@ -1,4 +1,4 @@
-package highsquare.hirecoder;
+package highsquare.hirecoder.config;
 
 import highsquare.hirecoder.converter.StringToKindConverter;
 import org.springframework.context.annotation.Configuration;

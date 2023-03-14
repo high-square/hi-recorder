@@ -27,3 +27,7 @@ decorator:
   datasource:
     p6spy:
       enable-logging: true
+
+jwt:
+  secret: Ji4CH3Ujc7QBH1SJCkCjrWxW80FInv1W5KVwjSThQMv7QqwIxGdPC7YkRAcvtXsaN0bfGCoo2tTqibpvcMhGYQ==
+  token-validity-in-seconds: 86400  # 24 * 60 * 60 하루 -> 초

@@ -17,9 +17,11 @@ public class Member extends TimeEntity {
     @Column(name="member_id")
     private Long id;
 
-    private String password;
-
+    @Column(unique = true)
     private String name;
+
+    @Column(nullable = false)
+    private String password;
 
     private String email;
 }
