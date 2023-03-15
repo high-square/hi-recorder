@@ -1,4 +1,4 @@
-package highsquare.hirecoder.jwt;
+package highsquare.hirecoder.security.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -55,6 +55,11 @@ public class TokenProvider implements InitializingBean {
 
         long now = System.currentTimeMillis();
 
+        /* TODO: 2023-03-15 토큰 재할당 문제
+        * 현재는 하나의 토큰만을 발급하고 재할당하는 로직이 전혀 없다.
+        * 그래서 expired된 토큰이 쿠키에 계속 남아있게 되고 접근을 차단한다.
+        * 토큰을 재할당하기 위해 Refresh Token 전략을 함께 사용해야 한다.  */
+
         String token = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
@@ -75,11 +80,20 @@ public class TokenProvider implements InitializingBean {
                 .parseClaimsJws(token)
                 .getBody();
 
+        log.debug("claims : {}", claims.getSubject());
+
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
+
+        // TODO: 2023-03-15 Password에 아무 값도 들어가지 않는다.
+        /*
+           TODO: 2023-03-15 JWT 토큰에 멤버 아이디를 넣는 방법은 무엇일까?
+              - Controller에서 Principal을 통해 바로 memberId를 가져오고 싶다.
+              - memberRepository를 통해 검증 수행 및 ID를 가져오는 로직이 필요하다.
+        */
         User principal = new User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
@@ -91,12 +105,16 @@ public class TokenProvider implements InitializingBean {
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.warn("잘못된 JWT 서명입니다.");
+            throw e;
         } catch (ExpiredJwtException e) {
             log.warn("만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
             log.warn("지원되지 않는 토큰입니다.");
         } catch (IllegalArgumentException e) {
             log.warn("JWT 토큰이 잘못되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.warn("예외발생");
         }
 
         return false;

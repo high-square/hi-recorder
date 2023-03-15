@@ -9,6 +9,7 @@ import highsquare.hirecoder.entity.Study;
 import highsquare.hirecoder.web.form.StudyCreationForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 
 @Controller
 @Slf4j
@@ -34,12 +36,14 @@ public class StudyCreateFormController {
     private final ImageService imageService;
 
     @GetMapping("/create")
-    public String getRecruitBoardCreateForm(HttpSession session, Model model) {
+    public String getRecruitBoardCreateForm(HttpSession session, Principal principal, Model model) {
+        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        log.debug("principal.getName() : {}", principal.getName());
+        log.debug("sessionId : {}", session.getId());
         // 테스트용 데이터
-        session.setAttribute(SessionConstant.MEMBER_ID, 1L);
 
-        Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
+        Long memberId = 1L;
 
         if (memberId == null) {
             model.addAttribute("not_member", true);
