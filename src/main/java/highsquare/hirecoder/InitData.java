@@ -10,6 +10,8 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.annotation.PostConstruct;
 
+import java.util.List;
+
 import static highsquare.hirecoder.entity.ActivityState.진행전;
 import static highsquare.hirecoder.entity.ActivityState.진행중;
 import static highsquare.hirecoder.entity.Kind.CONTENT;
@@ -32,6 +34,8 @@ public class InitData {
     private final StudyRepository studyRepository;
     private final StudyMemberRepository studyMemberRepository;
 
+    private final UserAuthorityRepository userAuthorityRepository;
+
 
     // @PostConstruct
     public void init() {
@@ -39,10 +43,10 @@ public class InitData {
         TransactionStatus ts = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
 
         // ----------------멤버-----------------
-        Member member1 = setMember("강욱", "1234", "kimkangwook@naver.com");
-        Member member2 = setMember("재원", "1234", "jaewon@naver.com");
-        Member member3 = setMember("경림", "1234", "rim@naver.com");
-        Member member4 = setMember("효진", "1234", "hyojin@naver.com");
+        Member member1 = setMember("강욱", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", "kimkangwook@naver.com");
+        Member member2 = setMember("송재원", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", "jaewon@naver.com");
+        Member member3 = setMember("경림", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", "rim@naver.com");
+        Member member4 = setMember("효진", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", "hyojin@naver.com");
 
             // ----------------스터디-----------------
         Study study1 = setStudyData("백엔드1팀", member1, 4, 진행중, 모집완료, 오프라인);
@@ -78,6 +82,14 @@ public class InitData {
         Comment comment7 = setComment(member3, board1, "글 못읽었습니다 - 경림", 6);
         Comment comment8 = setComment(member4, board2, "글 못읽었습니다 - 효진", 6);
 
+        // ----------------UserAuthority---------
+        List<UserAuthority> userAuthorities = List.of(
+                new UserAuthority(member1, Authority.USER),
+                new UserAuthority(member2, Authority.USER),
+                new UserAuthority(member3, Authority.USER),
+                new UserAuthority(member4, Authority.USER)
+        );
+
 
         // ----------------DB 저장-----------------
         persistMember(member1, member2, member3, member4);
@@ -85,6 +97,7 @@ public class InitData {
         persistStudyMember(studyMember1, studyMember2, studyMember3, studyMember4, studyMember5);
         persistBoard(board1, board2, board3, board4, board5);
         persistComment(comment1, comment2, comment3, comment4, comment5, comment6, comment7, comment8);
+        userAuthorityRepository.saveAll(userAuthorities);
 
         platformTransactionManager.commit(ts);
     }
