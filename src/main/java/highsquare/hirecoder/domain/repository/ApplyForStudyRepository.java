@@ -1,6 +1,7 @@
 package highsquare.hirecoder.domain.repository;
 
 import highsquare.hirecoder.entity.ApplyForStudy;
+import highsquare.hirecoder.entity.AuditState;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,5 +14,9 @@ public interface ApplyForStudyRepository extends JpaRepository<ApplyForStudy, Lo
     // 선택지 1. natvie 쿼리   2. repository.save(entity)
     void enrollApplyForStudy(@Param("studyId")Long studyId, @Param("memberId") Long memberId,@Param("auditstate") String auditState);
 
+
+    @Modifying
+    @Query("update ApplyForStudy ap set ap.auditstate=:auditState where ap.id=:applyForStudyId")
+    void changeAuditState(@Param("applyForStudyId") Long applyForStudyId,@Param("auditState") AuditState auditState);
 
 }
