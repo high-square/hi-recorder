@@ -9,7 +9,6 @@ import javax.persistence.*;
 
 import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
 @Getter @Setter
@@ -17,7 +16,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Table(name = "applyforstudy")
 public class ApplyForStudy {
 
-    @Id
+    @Id @GeneratedValue
     @Column(name = "apply_id")
     private Long id;
 
