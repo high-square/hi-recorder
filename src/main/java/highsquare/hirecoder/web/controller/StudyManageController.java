@@ -37,7 +37,7 @@ public class StudyManageController {
 
     /**
      * 일반 멤버가 스터디 신청하기 버튼 클릭시 신청테이블에 등록되는 로직
-     * 스터디에 신청할 때 사유테이블에 신청사유를 작성해야함
+     * 스터디에 신청할 때 사유테이블에 신청사유를 작성
      * 우선 ScriptUtils를 이용하여 간단하게 로직 작성함(map에 오류를 넣어서 페이지로 반환시키든 리펙토링 필요)
      */
     @GetMapping("/studyManage/enroll/{studyId}/{memberId}")
@@ -84,10 +84,12 @@ public class StudyManageController {
 
     /**
      * 스터디장이 자신의 스터디 페이지에서 신청 테이블을 읽어옴
+     * 페이징 처리 필요
      */
 
     /**
      * 일반 멤버가 myPage에서 자신이 신청한 신청 테이블을 읽어옴
+     * 페이징 처리 필요
      */
 
 
@@ -97,7 +99,7 @@ public class StudyManageController {
      * 우선 ScriptUtils를 이용하여 간단하게 로직 작성함(map에 오류를 넣어서 페이지로 반환시키든 리펙토링 필요)
      */
     @PatchMapping("/studyManage/manager/approval/{studyId}/{memberId}/{applyForStudyId}/")
-    public String approval(@PathVariable("studyId") Long studyId,
+    public void approval(@PathVariable("studyId") Long studyId,
                            @PathVariable("memberId") Long memberId,
                            @PathVariable("applyForStudyId") Long applyForStudyId,
                            HttpServletResponse response,
@@ -137,7 +139,7 @@ public class StudyManageController {
      * 스터디장이 거절했을 시 사유 테이블에 거절 메시지 작성
      */
     @PatchMapping("/studyManage/manager/reject/{studyId}/{memberId}/{applyForStudyId}/")
-    public String reject(@PathVariable("studyId") Long studyId,
+    public void reject(@PathVariable("studyId") Long studyId,
                            @PathVariable("applyForStudyId") Long applyForStudyId,
                            HttpServletResponse response,
                            HttpSession session,
@@ -173,7 +175,7 @@ public class StudyManageController {
      * 스터디장의 스터디 현황 페이지에서 현재 속해있는 스터디의 구성원을 강퇴시키는 기능
      */
     @PatchMapping("/studyManage/manager/kickout/{studyId}/{studyMemberId}")
-    public String kickOut(@PathVariable("studyId") Long studyId,
+    public void kickOut(@PathVariable("studyId") Long studyId,
                           @PathVariable("studyMemberId") Long studyMemberId,
                           HttpServletResponse response,
                           HttpSession session) throws IOException {
@@ -203,7 +205,7 @@ public class StudyManageController {
 
     }
 
-    
+
 
 
 
