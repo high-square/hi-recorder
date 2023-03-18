@@ -21,6 +21,7 @@ public class BoardForm {
 
     protected String title;
     protected List<String> tags = new ArrayList<>();
+    protected boolean open;
     protected String content;
     protected List<String> images = new ArrayList<>();
 

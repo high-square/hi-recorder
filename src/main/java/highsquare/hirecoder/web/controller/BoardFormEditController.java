@@ -61,7 +61,8 @@ public class BoardFormEditController {
 
         List<String> tags = foundTags.stream().map(Tag::getContent).collect(Collectors.toList());
 
-        boardForm = new BoardForm(board.getTitle(), tags, board.getContent(), null);
+        boolean isOpen = board.getPublicYn().equals("y") ? true : false;
+        boardForm = new BoardForm(board.getTitle(), tags, isOpen, board.getContent(), null);
 
         model.addAttribute("boardForm", boardForm);
 
@@ -102,7 +103,7 @@ public class BoardFormEditController {
             return "form/contentBoardCreateForm";
         }
 
-        Board board = boardService.updateBoard(boardId, boardForm.getTitle(), boardForm.getContent());
+        Board board = boardService.updateBoard(boardId, boardForm.getTitle(), boardForm.isOpen(), boardForm.getContent());
         tagService.updateTags(board, boardForm.getTags());
 
         return String.format("redirect:/boards/%s/%d/%d", board.getKind().name().toLowerCase(), studyId, boardId);

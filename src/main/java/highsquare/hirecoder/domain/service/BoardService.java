@@ -31,13 +31,14 @@ public class BoardService {
     private final MemberRepository memberRepository;
     private final StudyRepository studyRepository;
 
-    public Board createBoard(Long memberId, Long studyId, Kind kind, BoardForm BoardForm) {
+    public Board createBoard(Long memberId, Long studyId, Kind kind, BoardForm boardForm) {
 
         Member member = memberRepository.findById(memberId).get();
 
         Study study = studyRepository.findById(studyId).get();
 
-        Board board = new Board(member, study, BoardForm.getTitle(), BoardForm.getContent(), kind, "y",null);
+        Board board = new Board(member, study, boardForm.getTitle(), boardForm.getContent(), kind,
+                boardForm.isOpen(),null);
 
         Board savedBoard = boardRepository.save(board);
 
@@ -111,11 +112,12 @@ public class BoardService {
     }
 
     @Transactional
-    public Board updateBoard(Long boardId, String title, String content) {
+    public Board updateBoard(Long boardId, String title, boolean open, String content) {
         Board board = boardRepository.findById(boardId).get();
 
         board.setTitle(title);
         board.setContent(content);
+        board.setPublicYn(open ? "y" : "n");
 
         return board;
     }

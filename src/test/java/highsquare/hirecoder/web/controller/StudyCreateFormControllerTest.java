@@ -82,7 +82,7 @@ class StudyCreateFormControllerTest {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(SessionConstant.MEMBER_ID, 1L);
 
-        StudyCreationForm expectedForm = new StudyCreationForm("벡엔드 스터디입니다.", List.of("tag1", "tag2"), "# hello world", null, "백엔드 스터디",
+        StudyCreationForm expectedForm = new StudyCreationForm("벡엔드 스터디입니다.", List.of("tag1", "tag2"), true, "# hello world", null, "백엔드 스터디",
                 "2023-01-01", "2023-03-31", 5, ActivityState.진행전, RecruitState.모집중, MeetingType.오프라인);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
