@@ -23,6 +23,7 @@ public class BoardForm {
     protected List<String> tags = new ArrayList<>();
     protected boolean open;
     protected String content;
+    protected String headImageUrl;
     protected List<String> images = new ArrayList<>();
 
     // 폼 검증 로직

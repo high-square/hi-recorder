@@ -30,8 +30,12 @@ public class StudyCreationForm extends BoardForm {
     private RecruitState recruitState;
     private MeetingType meetingType;
 
-    public StudyCreationForm(String title, List<String> tags, boolean isPublic, String content, List<String> images, String studyName, String startDate, String endDate, Integer crewNumber, ActivityState activityState, RecruitState recruitState, MeetingType meetingType) {
-        super(title, tags, isPublic, content, images);
+    public StudyCreationForm(String title, List<String> tags, boolean isPublic,
+                             String content, List<String> images, String studyName,
+                             String startDate, String endDate, Integer crewNumber,
+                             ActivityState activityState, RecruitState recruitState,
+                             MeetingType meetingType, String headImageUrl) {
+        super(title, tags, isPublic, content, headImageUrl, images);
         this.studyName = studyName;
         this.startDate = startDate;
         this.endDate = endDate;

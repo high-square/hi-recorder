@@ -62,7 +62,7 @@ public class BoardFormEditController {
         List<String> tags = foundTags.stream().map(Tag::getContent).collect(Collectors.toList());
 
         boolean isOpen = board.getPublicYn().equals("y") ? true : false;
-        boardForm = new BoardForm(board.getTitle(), tags, isOpen, board.getContent(), null);
+        boardForm = new BoardForm(board.getTitle(), tags, isOpen, board.getContent(), board.getHeadImageUrl(), null);
 
         model.addAttribute("boardForm", boardForm);
 

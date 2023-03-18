@@ -37,8 +37,8 @@ public class BoardService {
 
         Study study = studyRepository.findById(studyId).get();
 
-        Board board = new Board(member, study, boardForm.getTitle(), boardForm.getContent(), kind,
-                boardForm.isOpen(),null);
+        Board board = new Board(member, study, boardForm.getTitle(), boardForm.getContent(), boardForm.getHeadImageUrl(),
+                boardForm.isOpen(), kind);
 
         Board savedBoard = boardRepository.save(board);
 
