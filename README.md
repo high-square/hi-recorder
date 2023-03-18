@@ -1,13 +1,17 @@
-# 요구사항
+# Hi-Recorder
 
-## [프로젝트 개요](requirements-analysis/undefined/undefined.md)
+## 프로젝트 개요
 
-## [요구사항 분석](requirements-analysis/undefined/undefined-1/)
+&#x20;이 프로젝트의 목표는 스터디 블로그를 생성, 관리하고 정보를 공유할 수 있는 사이트를 만드는 것입니다.&#x20;
 
-> #### [기능/품질 요소 도출](requirements-analysis/undefined/undefined-1/undefined.md)
+## 프로젝트 시작 동기
 
-## [요구사항 구체화](requirements-analysis/undefined/undefined-2/)
+&#x20;학습 스터디를 진행하다보면 스터디 기록물이나 공유하고 싶은 정보, 정리노트 등 데이터가 많이 발생합니다. 이렇게 발생한 데이터를 쉽게 저장 및 공유하고 스터디의 모집, 관리를 지원하는 플랫폼의 필요성을 느껴 프로젝트를 시작하게 되었습니다.
 
-> #### [Use Case](requirements-analysis/undefined/undefined-2/use-case.md)
->
-> #### [요구사항 구체화](requirements-analysis/undefined/undefined-2/use-case-1/)
+## 요구사항
+
+* 사용자는 로그인/회원가입을 할 수 있습니다.
+* 사용자는 스터디를 생성하고 스터디원을 모집할 수 있습니다.
+* 사용자는 정보 공유 및 기록을 위해 스터디 게시판에 게시글을 등록할 수 있습니다.
+* 사용자는 게시글 글쓴이와의 소통을 위해 게시글에 댓글을 작성할 수 있습니다.
+* 사용자는 정보 획득을 위해 게시판의 게시글을 검색, 열람할 수 있습니다.

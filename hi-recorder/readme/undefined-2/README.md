@@ -2,4 +2,4 @@
 
 ## [Use Case](use-case.md)
 
-## [Use Case 상세](use-case-1/)
+## [Use Case 상세](use-case-1.md)
