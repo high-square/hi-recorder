@@ -1,13 +1,11 @@
 package highsquare.hirecoder.web.controller;
 
-import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.ImageService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Kind;
-import highsquare.hirecoder.entity.Tag;
 import highsquare.hirecoder.web.form.BoardForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.security.Principal;
 
 @Controller
 @Slf4j
@@ -34,12 +30,9 @@ public class BoardFormCreateController {
 
     @GetMapping("/create")
     public String getContentBoardCreateForm(@PathVariable(name="study_id") Long studyId,
-                                            HttpSession session, Model model) {
+                                            Principal principal, Model model) {
 
-        // 테스트용 데이터
-        session.setAttribute(SessionConstant.MEMBER_ID, 1L);
-
-        Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
+        Long memberId = Long.parseLong(principal.getName());
 
         if (isIdNull(studyId, memberId)) {
             model.addAttribute("access", true);
@@ -53,9 +46,9 @@ public class BoardFormCreateController {
 
     @PostMapping("/create")
     public String postContentBoardCreateForm(@ModelAttribute BoardForm boardForm, BindingResult bindingResult,
-                             @PathVariable(name = "study_id") Long studyId, HttpSession session) {
+                             @PathVariable(name = "study_id") Long studyId, Principal principal) {
 
-        Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
+        Long memberId = Long.parseLong(principal.getName());
 
         if (!studyMemberService.doesMemberBelongToStudy(studyId, memberId)) {
             bindingResult.reject("access.not_member");

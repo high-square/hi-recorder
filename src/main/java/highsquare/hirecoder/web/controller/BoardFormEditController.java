@@ -1,6 +1,5 @@
 package highsquare.hirecoder.web.controller;
 
-import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.TagService;
@@ -15,7 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,9 +31,9 @@ public class BoardFormEditController {
     @GetMapping("/{board_id}/edit")
     public String getBoardEditForm(@PathVariable(name = "study_id") Long studyId,
                                    @PathVariable(name = "board_id") Long boardId,
-                                   HttpSession session, Model model) {
+                                   Principal principal, Model model) {
 
-        Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
+        Long memberId = Long.parseLong(principal.getName());
 
         if (isIdNull(studyId, memberId)) {
             log.warn("스터디 id나 멤버 id가 널입니다.");
@@ -71,9 +70,9 @@ public class BoardFormEditController {
 
     @PostMapping("/{board_id}/edit")
     public String postContentBoardEditForm(@PathVariable("study_id") Long studyId, @PathVariable("board_id") Long boardId,
-                                           @ModelAttribute BoardForm boardForm, BindingResult bindingResult, HttpSession session) {
+                                           @ModelAttribute BoardForm boardForm, BindingResult bindingResult, Principal principal) {
 
-        Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
+        Long memberId = Long.parseLong(principal.getName());
 
         if (!studyMemberService.doesMemberBelongToStudy(studyId, memberId)) {
             bindingResult.reject("access.not_member");
