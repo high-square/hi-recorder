@@ -28,7 +28,7 @@ public class LikeOnBoardService {
 
     public LikeOnBoard updateLike(Long boardId, Long memberId) {
 
-        LikeOnBoard findLike = likeOnBoardRepository.findLikeOnBoard(boardId, memberId);
+        LikeOnBoard findLike = getLikeOnBoard(boardId, memberId);
 
         // 해당 LikeOnBoard의 LikeCheck가 0이면 좋아요 선택 X, 1이면 좋아요 선택 O이니 값을 변경해줌
         // 변경감지를 이용해서 update해줌
@@ -42,8 +42,8 @@ public class LikeOnBoardService {
     }
 
     // 조회수를 클릭 or 취소할 때만 이 메소드가 호출되므로 여기 메소드에서 board의 likeCnt도 업데이트 하는 것이 좋아보임(팀원들의 의견 들어보기)
-    public Integer countLikeCnt(Long boardId, Long memberId) {
-        Integer likeCnt = likeOnBoardRepository.countLikeCnt(boardId, memberId);
+    public Integer countLikeCnt(Long boardId) {
+        Integer likeCnt = likeOnBoardRepository.countLikeCnt(boardId);
         Board findBoard = boardRepository.findById(boardId).get();
         findBoard.setLikeCnt(likeCnt);
         return likeCnt;

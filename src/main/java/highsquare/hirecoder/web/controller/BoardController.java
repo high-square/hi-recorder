@@ -151,7 +151,7 @@ public class BoardController {
     // 게시글의 좋아요 클릭 시 작업
     @PostMapping("/like")
     @ResponseBody
-    public Map<String, String> boardLikeProcess(@RequestParam(name = "board_id") Long boardId, Principal principal, HttpSession session) {
+    public Map<String, String> boardLikeProcess(@RequestParam(name = "board_id") Long boardId, Principal principal) {
 
         Map<String, String> map = new HashMap<>();
 
@@ -160,14 +160,8 @@ public class BoardController {
         if ((boardRepository.findById(boardId).orElse(null) == null)) { // 게시글 존재 여부 확인 로직
             map.put("notExistBoard", "해당 게시글이 존재하지 않습니다.");
         } else {
-            if (!likeOnBoardService.isExistingLikeOnBoard(boardId, loginMemberId)) {
-                // LikeOnBoard 새로 생성
-                likeOnBoardService.getLikeOnBoard(boardId, loginMemberId);
-            }
-
-
             LikeOnBoard likeOnBoard = likeOnBoardService.updateLike(boardId, loginMemberId);
-            Integer likeCnt = likeOnBoardService.countLikeCnt(boardId, loginMemberId);
+            Integer likeCnt = likeOnBoardService.countLikeCnt(boardId);
             map.put("likeCheck", String.valueOf(likeOnBoard.getLikeCheck()));
             map.put("likeCnt", String.valueOf(likeCnt));
         }
