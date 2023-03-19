@@ -6,7 +6,6 @@ import highsquare.hirecoder.entity.Comment;
 import highsquare.hirecoder.page.PageRequestDto;
 import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.web.form.CommentSelectedForm;
-import highsquare.hirecoder.web.form.CommentSelectedRecruitForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,11 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static highsquare.hirecoder.constant.LikeCheckConstant.Like_Checked_Comment;
 import static highsquare.hirecoder.constant.LikeCheckConstant.Like_Unchecked_Comment;
@@ -34,7 +30,6 @@ public class CommentService {
 
     private final LikeOnCommentService likeOnCommentService;
 
-    private final StudyMemberRepository studyMemberRepository;
 
 
     public Long addComment(Comment comment) {
@@ -58,28 +53,14 @@ public class CommentService {
         return new PageResultDto<>(result, fn);
     }
 
-    /**
-     * 전체 댓글 페이징(recruit)
-     */
-    public PageResultDto<CommentSelectedRecruitForm, CommentSelectedRecruitForm> pagingAllCommentsRecruit(Long boardId,Long memberId, PageRequestDto requestDto) {
-        Pageable pageable = requestDto.getPageable(Sort.by("createdTime").descending());
-        Page<CommentSelectedRecruitForm> result = commentRepository.findAllCommentsRecruit(boardId, pageable);
 
-
-        //해당 멤버가 클릭한 좋아요 확인 작업
-        Map<Long, Integer> commentLikeList = likeOnCommentService.commentWithLikeByMember(boardId,memberId);
-
-        Function<CommentSelectedRecruitForm, CommentSelectedRecruitForm> fn = (form -> setLikeCheckWithMember(form,commentLikeList));
-
-        return new PageResultDto<>(result, fn);
-    }
 
 
     /**
      * Best 댓글 페이징(content)
      */
     public PageResultDto<CommentSelectedForm, Comment> pagingBestComments(Long boardId,Long memberId,PageRequestDto requestDto) {
-        Pageable pageable = requestDto.getPageable(Sort.by("likeCnt").descending());
+        Pageable pageable = requestDto.getPageable(Sort.by("likeCnt").descending().and(Sort.by("createdTime").ascending()));
         Page<Comment> result = commentRepository.findBestComments(boardId, pageable);
 
         //해당 멤버가 클릭한 좋아요 확인 작업
@@ -90,20 +71,7 @@ public class CommentService {
         return new PageResultDto<>(result, fn);
     }
 
-    /**
-     * Best 댓글 페이징(recruit)
-     */
-    public PageResultDto<CommentSelectedRecruitForm, CommentSelectedRecruitForm> pagingBestCommentsRecruit(Long boardId,Long memberId,PageRequestDto requestDto) {
-        Pageable pageable = requestDto.getPageable(Sort.by("likeCnt").descending());
-        Page<CommentSelectedRecruitForm> result = commentRepository.findBestCommentsRecruit(boardId, pageable);
 
-        //해당 멤버가 클릭한 좋아요 확인 작업
-        Map<Long, Integer> commentLikeList = likeOnCommentService.commentWithLikeByMember(boardId,memberId);
-        Function<CommentSelectedRecruitForm, CommentSelectedRecruitForm> fn = (form -> setLikeCheckWithMember(form,commentLikeList));
-
-
-        return new PageResultDto<>(result, fn);
-    }
 
 
     /**
@@ -130,20 +98,7 @@ public class CommentService {
         return form;
     }
 
-    /**
-     * CommentSelectedRecruitForm에 likeCheckWithMember를 setting 해주는 작업
-     * (recruit일때)
-     */
-    private CommentSelectedRecruitForm setLikeCheckWithMember(CommentSelectedRecruitForm form,Map<Long, Integer> commentLikeList) {
-        //좋아요 체크 로직
-        if (commentLikeList.get(form.getId())==null || commentLikeList.get(form.getId())==Like_Unchecked_Comment) {
-            form.setLikeCheckWithMember(Like_Unchecked_Comment);
-        } else {
-            form.setLikeCheckWithMember(Like_Checked_Comment);
-        }
 
-        return form;
-    }
 
 
 

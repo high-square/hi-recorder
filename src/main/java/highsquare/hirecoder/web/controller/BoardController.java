@@ -1,6 +1,5 @@
 package highsquare.hirecoder.web.controller;
 
-import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.StudyMemberRepository;
 import highsquare.hirecoder.domain.service.*;
@@ -10,7 +9,6 @@ import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.utils.ScriptUtils;
 import highsquare.hirecoder.web.form.BoardSelectedForm;
 import highsquare.hirecoder.web.form.CommentSelectedForm;
-import highsquare.hirecoder.web.form.CommentSelectedRecruitForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,41 +46,35 @@ public class BoardController {
 
 
     @GetMapping("/{kind}/{study_id}/{board_id}")
-    public String getBoard(@PathVariable("kind") Kind kind,
-                           @PathVariable("study_id") Long studyId,
+    public String getBoard(@PathVariable("kind") Kind kind, @PathVariable("study_id") Long studyId,
                            @PathVariable("board_id") Long boardId, Model model,
+                           Principal principal,
                            HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        // 원래라면 로그인 작업에서 session을 생성할텐데 지금 페이지가 없으므로 true를 넣어서 하나 생성해주겠음
-        HttpSession session = request.getSession(true);
-        // 현재 로그인에 관한 페이지가 없으므로 session 값에 강욱 멤버의 memberId를 임의로 넣어두겠음
-        // 현재 로그인한 멤버의 name도 넣어두겠음
-        session.setAttribute(SessionConstant.MEMBER_ID,1L);
-        session.setAttribute("memberName", "강욱");
+        Long loginMemberId = Long.parseLong(principal.getName());
 
 
         //스터디 존재 여부
         if (!studyService.isExistingStudy(studyId)) {
-            ScriptUtils.alertAndBackPage(response,"해당 스터디가 존재하지 않습니다.");
+            ScriptUtils.alertAndBackPage(response, "해당 스터디가 존재하지 않습니다.");
         }
 
         //게시글 존재 여부(스터디에 해당되는지도 체크)
-        if (!boardService.isExistingBoard(boardId,studyId)) {
-            ScriptUtils.alertAndBackPage(response,"해당 스터디에 게시글이 존재하지 않습니다.");
+        if (!boardService.isExistingBoard(boardId, studyId)) {
+            ScriptUtils.alertAndBackPage(response, "해당 스터디에 게시글이 존재하지 않습니다.");
         }
 
 
         //전체 공개 여부에 따라 멤버가 읽을 수 있는지 없는지 여부
         if (!boardService.isPublic(boardId)) {
-            Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
 
-            if(!studyMemberRepository.existsMemberAndStudy(studyId, memberId)) {
-                ScriptUtils.alertAndBackPage(response,"해당 스터디에 해당되지 않습니다.");
+            if (!studyMemberRepository.existsMemberAndStudy(studyId, loginMemberId)) {
+                ScriptUtils.alertAndBackPage(response, "해당 스터디에 해당되지 않습니다.");
             }
         }
 
         // DB에서 id에 해당하는 board를 꺼내옴
-        Board board = boardService.getBoard(boardId,request,response);
+        Board board = boardService.getBoard(boardId, request, response);
         // 해당 스터디의 매니저 id를 꺼내옴
         if (kind.name().equals("RECRUIT")) {
             Long studyManagerId = studyService.getStudyManagerId(studyId);
@@ -91,7 +83,7 @@ public class BoardController {
 
 
         // 세션에 저장된 member와 해당 게시글을 이용해서 LikeOnBoard 엔티티 가져오기
-        LikeOnBoard likeOnBoard = likeOnBoardService.getLikeOnBoard(board.getId(), (Long)session.getAttribute(SessionConstant.MEMBER_ID));
+        LikeOnBoard likeOnBoard = likeOnBoardService.getLikeOnBoard(board.getId(), loginMemberId);
 
         // board 엔티티를 boardForm으로 변환
         BoardSelectedForm boardForm = turnBoardEntityToForm(board);
@@ -107,36 +99,23 @@ public class BoardController {
 
         // DB에서 board.id에 해당하는 PageResultDto<CommentSelectedForm>를 꺼내옴
         // DB에서 board.id에 해당하는 Best 댓글순으로 꺼내옴
-        if (kind.name().equals("CONTENT")) {
-            PageResultDto<CommentSelectedForm, Comment> allComments =
-                    commentService.pagingAllComments(boardId,
-                            (Long)session.getAttribute(SessionConstant.MEMBER_ID),pageRequestDto);
 
-            PageResultDto<CommentSelectedForm, Comment> bestComments =
-                    commentService.pagingBestComments(boardId,
-                            (Long)session.getAttribute(SessionConstant.MEMBER_ID),pageRequestDto);
+        PageResultDto<CommentSelectedForm, Comment> allComments =
+                commentService.pagingAllComments(boardId, loginMemberId, pageRequestDto);
 
-            model.addAttribute("comments", allComments);
-            model.addAttribute("bestComments", bestComments);
-        } else if (kind.name().equals("RECRUIT")) {
-            PageResultDto<CommentSelectedRecruitForm, CommentSelectedRecruitForm> allComments =
-                    commentService.pagingAllCommentsRecruit(boardId,
-                            (Long)session.getAttribute(SessionConstant.MEMBER_ID),pageRequestDto);
+        PageResultDto<CommentSelectedForm, Comment> bestComments =
+                commentService.pagingBestComments(boardId, loginMemberId, pageRequestDto);
 
-            PageResultDto<CommentSelectedRecruitForm, CommentSelectedRecruitForm> bestComments =
-                    commentService.pagingBestCommentsRecruit(boardId,
-                            (Long)session.getAttribute(SessionConstant.MEMBER_ID),pageRequestDto);
-            model.addAttribute("comments", allComments);
-            model.addAttribute("bestComments", bestComments);
-        }
+
 
 
         //게시글에 해당하는 총 댓글수 체크
         Integer commentsTotalCounts = commentService.countComments(boardId);
 
 
-
         // view로 전달
+        model.addAttribute("comments", allComments);
+        model.addAttribute("bestComments", bestComments);
         model.addAttribute("board", boardForm);
         model.addAttribute("boardId", boardForm.getId());
         model.addAttribute("likeCheckBoard", likeOnBoard.getLikeCheck());
@@ -144,7 +123,7 @@ public class BoardController {
         model.addAttribute("tags", tags);
         model.addAttribute("commentsTotalCounts", commentsTotalCounts);
         model.addAttribute("kind", kind);
-
+        model.addAttribute("memberId", loginMemberId);
         return "boards/board";
     }
 
@@ -152,14 +131,14 @@ public class BoardController {
     // 삭제 시 foreignKey 제약조건으로 인해 삭제가 안됨 -- 설정해야함
 
     @GetMapping("/{kind}/{study_id}/{board_id}/delete")
-    public String deleteBoard(@PathVariable("study_id") Long studyId,
-                              @PathVariable("board_id") Long boardId,
-                              HttpSession session,
-                              RedirectAttributes redirectAttributes,
-                              HttpServletResponse response) throws IOException{
+    public String deleteBoard(@PathVariable("study_id") Long studyId, @PathVariable("board_id") Long boardId, Principal principal
+            , RedirectAttributes redirectAttributes, HttpServletResponse response) throws IOException {
 
-        if(!boardService.isMemberWriter((Long)session.getAttribute(SessionConstant.MEMBER_ID), boardId)) {
-           ScriptUtils.alertAndBackPage(response,"게시글 작성자가 아니라 게시글 삭제가 불가능합니다.");
+        Long loginMemberId = Long.parseLong(principal.getName());
+
+
+        if (!boardService.isMemberWriter(loginMemberId, boardId)) {
+            ScriptUtils.alertAndBackPage(response, "게시글 작성자가 아니라 게시글 삭제가 불가능합니다.");
         } else {
             boardService.deleteBoard(boardId);
         }
@@ -172,27 +151,24 @@ public class BoardController {
     // 게시글의 좋아요 클릭 시 작업
     @PostMapping("/like")
     @ResponseBody
-    public Map<String,String> boardLikeProcess(@RequestParam(name="board_id") Long boardId,
-                                               @RequestParam(name="member_id") Long memberId,
-                                               HttpSession session) {
+    public Map<String, String> boardLikeProcess(@RequestParam(name = "board_id") Long boardId, Principal principal, HttpSession session) {
 
         Map<String, String> map = new HashMap<>();
 
-        // 로그인 여부 확인 로직
-        if (memberId == null || !memberId.equals((Long)session.getAttribute(SessionConstant.MEMBER_ID))) {
-            map.put("notLoginMember", "로그인이 필요한 작업입니다. 로그인 페이지로 이동하시겠습니까?");
-        } else if ((boardRepository.findById(boardId).orElse(null) == null)) { // 게시글 존재 여부 확인 로직
-            map.put("notExistBoard","해당 게시글이 존재하지 않습니다.");
+        Long loginMemberId = Long.parseLong(principal.getName());
+
+        if ((boardRepository.findById(boardId).orElse(null) == null)) { // 게시글 존재 여부 확인 로직
+            map.put("notExistBoard", "해당 게시글이 존재하지 않습니다.");
         } else {
-            if (!likeOnBoardService.isExistingLikeOnBoard(boardId, memberId)) {
+            if (!likeOnBoardService.isExistingLikeOnBoard(boardId, loginMemberId)) {
                 // LikeOnBoard 새로 생성
-                likeOnBoardService.getLikeOnBoard(boardId, memberId);
+                likeOnBoardService.getLikeOnBoard(boardId, loginMemberId);
             }
 
 
-            LikeOnBoard likeOnBoard = likeOnBoardService.updateLike(boardId, memberId);
-            Integer likeCnt = likeOnBoardService.countLikeCnt(boardId, memberId);
-            map.put("likeCheck",String.valueOf(likeOnBoard.getLikeCheck()));
+            LikeOnBoard likeOnBoard = likeOnBoardService.updateLike(boardId, loginMemberId);
+            Integer likeCnt = likeOnBoardService.countLikeCnt(boardId, loginMemberId);
+            map.put("likeCheck", String.valueOf(likeOnBoard.getLikeCheck()));
             map.put("likeCnt", String.valueOf(likeCnt));
         }
 
@@ -200,17 +176,14 @@ public class BoardController {
     }
 
 
-
-
     /**
      * Board 엔티티를 BoardSelectedForm으로 변환하는 작업
      */
     private static BoardSelectedForm turnBoardEntityToForm(Board board) {
-        BoardSelectedForm boardForm =
-                new BoardSelectedForm(board.getId(), board.getMember().getId(), board.getMember().getName(),
-                        board.getStudy().getId(), board.getStudy().getName(), board.getTitle(),
-                        board.getContent(), board.getFile(), board.getPublicYn(), board.getViewCnt(), board.getLikeCnt(), board.getKind().name()
-                        ,LocalDateTime.now(),LocalDateTime.now());
+        BoardSelectedForm boardForm = new BoardSelectedForm(board.getId(), board.getMember().getId(), board.getMember().getName(),
+                board.getStudy().getId(), board.getStudy().getName(), board.getTitle(), board.getContent(),
+                board.getPublicYn(), board.getViewCnt(), board.getLikeCnt(), board.getKind().name(), board.getCreateDate(),
+                board.getUpdateDate());
         return boardForm;
     }
 }
