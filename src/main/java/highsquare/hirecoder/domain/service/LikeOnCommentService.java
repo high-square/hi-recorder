@@ -40,8 +40,8 @@ public class LikeOnCommentService {
         return findLike;
     }
 
-    public Integer countLikeCnt(Long commentId, Long memberId) {
-        Integer likeCnt = likeOnCommentRepository.countLikeCnt(commentId, memberId);
+    public Integer countLikeCnt(Long commentId) {
+        Integer likeCnt = likeOnCommentRepository.countLikeCnt(commentId);
         Comment findComment = commentRepository.findById(commentId).get();
         findComment.setLikeCnt(likeCnt);
         return likeCnt;

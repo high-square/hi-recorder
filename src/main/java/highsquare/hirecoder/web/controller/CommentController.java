@@ -58,7 +58,6 @@ public class CommentController {
             }
 
 
-
             model.addAttribute("rejectedContent", content);
             getAllComments(DEFAULT_PAGE, DEFAULT_SIZE, commentForm.getBoardId(), principal, model);
             return "boards/board ::#commentTable";
@@ -221,11 +220,10 @@ public class CommentController {
             return map;
         }
 
-
-            LikeOnComment likeOnComment = likeOnCommentService.updateLike(commentId, loginMemberId);
-            Integer likeCnt = likeOnCommentService.countLikeCnt(commentId, loginMemberId);
-            map.put("likeCheck", String.valueOf(likeOnComment.getLikeCheck()));
-            map.put("likeCnt", String.valueOf(likeCnt));
+        LikeOnComment likeOnComment = likeOnCommentService.updateLike(commentId, loginMemberId);
+        Integer likeCnt = likeOnCommentService.countLikeCnt(commentId);
+        map.put("likeCheck", String.valueOf(likeOnComment.getLikeCheck()));
+        map.put("likeCnt", String.valueOf(likeCnt));
 
         return map;
 

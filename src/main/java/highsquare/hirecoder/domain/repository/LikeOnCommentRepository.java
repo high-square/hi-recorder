@@ -15,8 +15,8 @@ public interface LikeOnCommentRepository extends JpaRepository<LikeOnComment, Lo
     @Query("select l from LikeOnComment l where l.comment.id =:commentId and l.member.id =:memberId")
     LikeOnComment findLikeOnComment(@Param("commentId") Long commentId, @Param("memberId") Long memberId);
 
-    @Query("select count(l) from LikeOnComment l where l.comment.id =:commentId and l.member.id =:memberId and l.likeCheck=1")
-    Integer countLikeCnt(@Param("commentId") Long commentId, @Param("memberId") Long memberId);
+    @Query("select count(l) from LikeOnComment l where l.comment.id =:commentId and l.likeCheck=1")
+    Integer countLikeCnt(@Param("commentId") Long commentId);
 
 
     @Query("select  new highsquare.hirecoder.web.form.LikeCheckDto(l.comment.id, l.likeCheck) from LikeOnComment l " +

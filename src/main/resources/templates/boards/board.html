@@ -205,15 +205,14 @@
                         <div class="card-body">
                             <h4 class="card-title">
                                 [[${content.memberName}]]
-                                <img th:id="'commentLikeImg'+${content.id}"
+                                <img th:class="'commentLikeImg'+${content.id}"
                                      th:if="${content.likeCheckWithMember==0||content.likeCheckWithMember==null}"
                                      style="margin-left:1000px" src="/assets/img/comment-like-before.png" width="50px"
                                      height="40px" th:onclick="|javascript:commentLike(${content.id})|">
-                                <img th:id="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==1}"
+                                <img th:class="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==1}"
                                      style="margin-left:1000px" src="/assets/img/comment-like-after.png" width="50px"
                                      height="40px" th:onclick="|javascript:commentLike(${content.id})|">
-                                <span th:id="'commentLikeCount'+${content.id}" class="sidebar-box"
-                                      th:text="${content.likeCount}"></span>
+                                <span th:class="'commentLikeCount'+${content.id}" th:text="${content.likeCount}"></span>
                             </h4>
                             <p class="card-text fw-bold" th:text="${content.content}"></p>
                             <!--해당 댓글 작성자이면 보이는 수정, 삭제 버튼 구현 -->
@@ -295,15 +294,14 @@
                         <div class="card-body">
                             <h4 class="card-title">
                                 [[${content.memberName}]]
-                                <img th:id="'commentLikeImg'+${content.id}"
+                                <img th:class="'commentLikeImg'+${content.id}"
                                      th:if="${content.likeCheckWithMember==0||content.likeCheckWithMember==null}"
                                      style="margin-left:1000px" src="/assets/img/comment-like-before.png" width="50px"
                                      height="40px" th:onclick="|javascript:commentLike(${content.id})|">
-                                <img th:id="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==1}"
+                                <img th:class="'commentLikeImg'+${content.id}" th:if="${content.likeCheckWithMember==1}"
                                      style="margin-left:1000px" src="/assets/img/comment-like-after.png" width="50px"
                                      height="40px" th:onclick="|javascript:commentLike(${content.id})|">
-                                <span th:id="'commentLikeCount'+${content.id}" class="sidebar-box"
-                                      th:text="${content.likeCount}"></span>
+                                <span th:class="'commentLikeCount'+${content.id}" th:text="${content.likeCount}"></span>
                             </h4>
                             <p class="card-text fw-bold" th:text="${content.content}"></p>
                             <!--해당 댓글 작성자이면 보이는 수정, 삭제 버튼 구현 -->
@@ -436,14 +434,9 @@
                 }).done(function (data) {
                     if (data.notExistComment!=null) {
                         alert(data.notExistComment);
-                    } else if (data.notLoginMember!=null) {
-                        var r=confirm(data.notLoginMember);
-                        if (r==true) {
-                            location.href = '/login';
-                        }
                     } else {
-                        var commentLike = "#commentLikeImg" + commentId;
-                        var commentLikeCount = "#commentLikeCount" + commentId;
+                        var commentLike = ".commentLikeImg" + commentId;
+                        var commentLikeCount = ".commentLikeCount" + commentId;
                         if (data.likeCheck == 1) {
                             $(commentLike).attr("src", "/assets/img/comment-like-after.png");
                         } else {
