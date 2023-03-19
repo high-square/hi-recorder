@@ -82,6 +82,9 @@ public class StudyManageController {
         }
 
         model.addAttribute("studyId", studyId);
+
+        String studyName = studyService.getStudyNameById(studyId);
+        model.addAttribute("studyName", studyName);
         return "form/messageForApply";
     }
 
@@ -257,6 +260,9 @@ public class StudyManageController {
                 // appealMessage 검증로직
                 if (!validMessage(appealMessage,model)) {
                     model.addAttribute("studyId", studyId);
+
+                    String studyName = studyService.getStudyNameById(studyId);
+                    model.addAttribute("studyName", studyName);
                     return "form/messageForApply";
                 }
                 Long applyForStudyId = applyForStudyService.enrollApplyForStudy(studyId, loginMemberId, AuditState.대기.name());
