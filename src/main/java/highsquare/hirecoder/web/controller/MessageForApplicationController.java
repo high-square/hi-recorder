@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,13 +33,13 @@ public class MessageForApplicationController {
     @GetMapping("/applyStatus/Message/{applyForStudyId}")
     @ResponseBody
     public void getMessage(@PathVariable("applyForStudyId") Long applyForStudyId,
-                           HttpSession session,
+                           Principal principal,
                            HttpServletResponse response) throws IOException {
 
-        // 로그인한 회원인지 검증 로직
+        Long loginMemberId = Long.parseLong(principal.getName());
 
         // 신청자 본인 or 신청한 스터디의 팀장인지 확인하는 로직
-        if (!messageService.checkEligibility(applyForStudyId,session)) {
+        if (!messageService.checkEligibility(applyForStudyId,loginMemberId)) {
             ScriptUtils.alert(response,"다른 회원의 신청 메시지를 보실 수 없습니다.");
         }
 

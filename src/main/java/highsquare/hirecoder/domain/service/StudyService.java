@@ -45,5 +45,10 @@ public class StudyService {
     public Long getStudyManagerId(Long studyId) {
         return studyRepository.findStudyManagerId(studyId);
     }
+
+    public String getStudyNameById(Long studyId) {
+        Study study = studyRepository.findById(studyId).get();
+        return study.getName();
+    }
 }
 

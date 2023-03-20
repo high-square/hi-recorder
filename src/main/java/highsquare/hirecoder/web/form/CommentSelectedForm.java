@@ -1,18 +1,9 @@
 package highsquare.hirecoder.web.form;
 
-import highsquare.hirecoder.entity.Board;
-import highsquare.hirecoder.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
-
-import static javax.persistence.FetchType.LAZY;
 
 @AllArgsConstructor
 @Data
