@@ -24,7 +24,7 @@ public class RegisterImageController {
 
             RegisterImageResponse imageResponse = imageService.saveImage(image);
 
-            return new ResponseEntity<>(imageResponse, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(imageResponse, HttpStatus.OK);
 
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);

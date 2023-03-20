@@ -50,13 +50,18 @@
     </div>
 </nav>
 <!-- Page Header-->
-<header class="masthead" style="background-image: url('../../static/assets/img/post-bg.jpg')"
+<header class="masthead position-relative" id="headerImage" style="background-image: url('../../static/assets/img/post-bg.jpg')"
         th:style="${'background-image: url(/assets/img/post-bg.jpg)'}">
     <div class="container position-relative px-1 px-lg-1">
         <div class="post-heading">
             <h1 style="text-align: center">스터디 생성</h1>
         </div>
     </div>
+
+    <div class="container position-absolute bottom-0 px-1 px-lg-1 h-auto">
+        <button class="btn-light position-absolute bottom-0 end-0 mb-2" onclick="setHeaderImage()">이미지 변경</button>
+    </div>
+
 </header>
 <!-- Post Content-->
 <article class="h-auto">
@@ -154,8 +159,12 @@
                     <!-- 마크다운 작성 -->
                     <div th:replace="/form/formFragment :: markdownInput"></div>
 
+                    <input type="text" id="headerImageUrl" hidden />
+
                 </div>
             </form>
+
+            <input hidden id="realUpload" type="file" accept="image/*">
 
             <!-- 버튼 작성 -->
             <div class="mt-5 row">
