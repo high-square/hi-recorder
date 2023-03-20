@@ -1,4 +1,4 @@
-package highsquare.hirecoder.web.api;
+package highsquare.hirecoder.web.api.controller;
 
 import highsquare.hirecoder.domain.service.ImageService;
 import highsquare.hirecoder.dto.RegisterImageResponse;
@@ -24,7 +24,7 @@ public class RegisterImageController {
 
             RegisterImageResponse imageResponse = imageService.saveImage(image);
 
-            return new ResponseEntity<>(imageResponse, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(imageResponse, HttpStatus.OK);
 
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);

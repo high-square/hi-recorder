@@ -1,6 +1,5 @@
 package highsquare.hirecoder.web.controller;
 
-import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.service.*;
 import highsquare.hirecoder.dto.StudyCreationInfo;
 import highsquare.hirecoder.entity.Board;
@@ -9,7 +8,6 @@ import highsquare.hirecoder.entity.Study;
 import highsquare.hirecoder.web.form.StudyCreationForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpSession;
 import java.security.Principal;
 
 @Controller
@@ -36,14 +33,9 @@ public class StudyCreateFormController {
     private final ImageService imageService;
 
     @GetMapping("/create")
-    public String getRecruitBoardCreateForm(HttpSession session, Principal principal, Model model) {
-        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public String getRecruitBoardCreateForm(Principal principal, Model model) {
 
-        log.debug("principal.getName() : {}", principal.getName());
-        log.debug("sessionId : {}", session.getId());
-        // 테스트용 데이터
-
-        Long memberId = 1L;
+        Long memberId = Long.parseLong(principal.getName());
 
         if (memberId == null) {
             model.addAttribute("not_member", true);
@@ -58,9 +50,9 @@ public class StudyCreateFormController {
     }
 
     @PostMapping("/create")
-    public String postRecruitBoardCreateForm(@ModelAttribute StudyCreationForm studyCreationForm, BindingResult bindingResult, HttpSession session) {
+    public String postRecruitBoardCreateForm(@ModelAttribute StudyCreationForm studyCreationForm, BindingResult bindingResult, Principal principal) {
 
-        Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
+        Long memberId = Long.parseLong(principal.getName());
 
         if (memberId == null) {
             bindingResult.reject("access.form.not_member");
@@ -110,6 +102,7 @@ public class StudyCreateFormController {
 
         studyMemberService.registerMemberToStudy(study.getId(), memberId);
 
+        studyCreationForm.setOpen(true);
         Board board = boardService.createBoard(memberId, study.getId(), Kind.RECRUIT, studyCreationForm);
 
         imageService.connectBoardAndImage(board, studyCreationForm.getImages());

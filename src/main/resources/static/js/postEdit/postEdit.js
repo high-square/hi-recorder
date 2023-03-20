@@ -61,4 +61,22 @@ function submit() {
     document.querySelector("form").submit();
 }
 
+function setHeaderImage() {
+    const realUpload = document.querySelector('#realUpload');
+
+    realUpload.click();
+    realUpload.addEventListener("change", uploadImage);
+}
+
+function uploadImage(e) {
+    let file = e.currentTarget.files;
+    addImage(file[0], renderHeaderImage);
+    alert(file[0]);
+}
+
+function renderHeaderImage(headerImageUrl) {
+    document.querySelector("#headerImageUrl").value = headerImageUrl;
+    document.querySelector("#headerImage").style.backgroundImage = "url('" + headerImageUrl + "')";
+}
+
 
