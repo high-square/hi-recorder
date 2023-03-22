@@ -3,6 +3,7 @@ package highsquare.hirecoder.domain.repository;
 import highsquare.hirecoder.domain.repository.custom.BoardRepositoryCustom;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Kind;
+import net.bytebuddy.asm.Advice;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -32,4 +35,9 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
                                                           @Param("search") String searchKeyword,
                                                           Pageable pageable);
 
+    @Query(value = "select b from Board b where b.kind=:kind and b.createDate BETWEEN :start and :end order by b.viewCnt DESC")
+    List<Board> findTop5ByBoardList(@Param("start")LocalDateTime start,
+                                    @Param("end")LocalDateTime end,
+                                    @Param("kind") Kind kind,
+                                    Pageable pageable);
 }

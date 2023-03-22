@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -65,5 +63,20 @@ public class TagService {
     public void removeTags(Board board) {
         boardTagRepository.deleteByBoard(board);
 
+    }
+
+    // Dto로 수정 필요
+    public List<Map<String, Object>> getTagList() {
+        List<Object[]> tagCountList = boardTagRepository.findTagCountByBoardTag();
+        List<Map<String, Object>> popularTags = new ArrayList<>();
+        for (Object[] tagCount : tagCountList){
+            String tag = ((Tag) tagCount[0]).getContent().toString();
+            int count = ((Number) tagCount[1]).intValue();
+            Map<String, Object> tagMap = new HashMap<>();
+            tagMap.put("tag", tag);
+            tagMap.put("count", count);
+            popularTags.add(tagMap);
+        }
+        return popularTags;
     }
 }
