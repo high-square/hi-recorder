@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TokenProvider implements InitializingBean {
 
-    private static final String AUTHORITIES_KEY = "auth";
+    private static final String AUTHORITIES_KEY = "study";
 
     private final String secret;
 
@@ -82,10 +83,15 @@ public class TokenProvider implements InitializingBean {
 
         log.debug("claims : {}", claims.getSubject());
 
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+        Collection<? extends GrantedAuthority> authorities;
+        if (claims.get(AUTHORITIES_KEY).toString().isBlank()) {
+            authorities = new ArrayList<>();
+        } else {
+            authorities =
+                    Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
+        }
 
 
         // TODO: 2023-03-15 Password에 아무 값도 들어가지 않는다.

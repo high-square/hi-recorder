@@ -5,9 +5,15 @@ import highsquare.hirecoder.dto.StudyCreationInfo;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Study;
+import highsquare.hirecoder.security.jwt.JwtFilter;
+import highsquare.hirecoder.security.jwt.TokenProvider;
 import highsquare.hirecoder.web.form.StudyCreationForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +23,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -29,7 +41,7 @@ public class StudyCreateFormController {
     private final BoardService boardService;
     private final TagService tagService;
     private final StudyMemberService studyMemberService;
-
+    private final TokenProvider tokenProvider;
     private final ImageService imageService;
 
     @GetMapping("/create")
@@ -50,9 +62,9 @@ public class StudyCreateFormController {
     }
 
     @PostMapping("/create")
-    public String postRecruitBoardCreateForm(@ModelAttribute StudyCreationForm studyCreationForm, BindingResult bindingResult, Principal principal) {
+    public String postRecruitBoardCreateForm(@ModelAttribute StudyCreationForm studyCreationForm, BindingResult bindingResult, Authentication authentication, HttpServletResponse response) throws UnsupportedEncodingException {
 
-        Long memberId = Long.parseLong(principal.getName());
+        Long memberId = Long.parseLong(authentication.getName());
 
         if (memberId == null) {
             bindingResult.reject("access.form.not_member");
@@ -99,6 +111,15 @@ public class StudyCreateFormController {
 
         StudyCreationInfo info = new StudyCreationInfo(studyCreationForm, memberId);
         Study study = studyService.createStudy(info);
+
+        List<GrantedAuthority> authorities = new ArrayList<>(authentication.getAuthorities());
+        authorities.add(new SimpleGrantedAuthority(Long.toString(study.getId())));
+
+        String token = tokenProvider.createToken(new UsernamePasswordAuthenticationToken(authentication, "", authorities));
+
+        Cookie cookie = new Cookie(JwtFilter.AUTHORIZATION_HEADER, URLEncoder.encode("Bearer " + token, "utf-8"));
+        cookie.setPath("/");
+        response.addCookie(cookie);
 
         studyMemberService.registerMemberToStudy(study.getId(), memberId);
 
