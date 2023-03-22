@@ -1,17 +1,23 @@
 package highsquare.hirecoder.domain.service;
 
 import highsquare.hirecoder.domain.repository.BoardRepository;
+import highsquare.hirecoder.domain.repository.BoardTagRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Member;
+import highsquare.hirecoder.entity.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +30,8 @@ import static highsquare.hirecoder.entity.Kind.RECRUIT;
 public class BoardListService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+
+    private final BoardTagRepository boardTagRepository;
 
     public Page<Board> boardList(Pageable pageable){
         // 스터디 구인글 리스트
@@ -53,6 +61,19 @@ public class BoardListService {
 
         return boardRepository.findByStudyBoardSearch(memberIds, studyId, CONTENT, searchKeyword, pageable);
     }
+
+
+     public List<Board> getPopularBoards(Kind kind, Pageable pageable){
+
+         LocalDateTime today = LocalDateTime.now();
+         LocalDateTime lastWeek = today.minusDays(7);
+
+         return boardRepository.findTop5ByBoardList(lastWeek, today, kind, pageable);
+     }
+
+     public List<Tag> getTag(Long boardId){
+        return boardTagRepository.findTagByBoardId(boardId);
+     }
 
 
 }
