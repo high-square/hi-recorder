@@ -118,71 +118,28 @@
                         <h3 class="heading">인기 스터디</h3>
                         <div class="post-entry-sidebar">
                             <ul>
-                                <li>
-                                    <a href="">
+                                <div th:each="popularList : ${popularList}" class="blog-entry d-flex blog-entry-search-item">
+                                    <li>
                                         <img src="../../static/images/kyh_jsp.png" alt="Image placeholder" class="me-4 rounded">
                                         <div class="text">
-                                            <h4>인프런 김영한 강좌 자바 ORM 표준 JPA 프로그래밍 스터디</h4>
+                                            <a th:href="@{/boards/{kind}/{studyId}/{boardId}(kind=${popularList.kind},studyId=${popularList.study.id}, boardId=${popularList.id})}"><h4 th:text="${popularList.title}"></h4></a>
                                             <div class="post-meta">
-                                                <span class="mr-2">April 14th, 2023 </span>
+                                                <span class="mr-2" th:date="${popularList.createDate}"></span>
                                             </div>
                                         </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="">
-                                        <img src="../../static/images/326750-eng.png" alt="Image placeholder" class="me-4 rounded">
-                                        <div class="text">
-                                            <h4>JAVA 코딩 테스트 스터디</h4>
-                                            <div class="post-meta">
-                                                <span class="mr-2">April 14th, 2023 </span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="">
-                                        <img src="../../static/images/no_image.jpg" alt="Image placeholder" class="me-4 rounded">
-                                        <div class="text">
-                                            <h4>Title</h4>
-                                            <div class="post-meta">
-                                                <span class="mr-2">March 15, 2023 </span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
+                                    </li>
+                                </div>
+
                             </ul>
                         </div>
                     </div>
                     <!-- END sidebar-box -->
 
-                    <div class="sidebar-box">
-                        <h3 class="heading">Categories</h3>
-                        <ul class="categories">
-                            <li><a href="#">코딩테스트 <span>(12)</span></a></li>
-                            <li><a href="#">JPA <span>(22)</span></a></li>
-                            <li><a href="#">Spring <span>(37)</span></a></li>
-                            <li><a href="#">Java <span>(42)</span></a></li>
-                            <li><a href="#">Spring Boot <span>(14)</span></a></li>
-                        </ul>
-                    </div>
-                    <!-- END sidebar-box -->
 
                     <div class="sidebar-box">
                         <h3 class="heading">Tags</h3>
-                        <ul class="tags">
-                            <li><a href="#">모집중</a></li>
-                            <li><a href="#">오프라인</a></li>
-                            <li><a href="#">온라인</a></li>
-                            <li><a href="#">Spring</a></li>
-                            <li><a href="#">Java</a></li>
-                            <li><a href="#">SpringBoot</a></li>
-                            <li><a href="#">알고리즘</a></li>
-                            <li><a href="#">모집완료</a></li>
-                            <li><a href="#">JPA</a></li>
-                            <li><a href="#">사이드프로젝트</a></li>
-                            <li><a href="#">코딩테스트</a></li>
-                            <li><a href="#">자료구조</a></li>
+                        <ul class="tags" th:each="tags : ${tagList}">
+                            <li><a href="#"><span th:text="${tags.tag}"></span>(<span th:text="${tags.count}"></span>)</a></li>
                         </ul>
                     </div>
 
@@ -191,9 +148,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 
 <!-- Footer-->
