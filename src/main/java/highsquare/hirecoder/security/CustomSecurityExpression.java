@@ -6,13 +6,13 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.core.Authentication;
 
 @Slf4j
-public class CustomMethodeSecurityExpression extends SecurityExpressionRoot implements MethodSecurityExpressionOperations {
+public class CustomSecurityExpression extends SecurityExpressionRoot implements MethodSecurityExpressionOperations {
 
     private Object filterObject;
     private Object returnObject;
     private Authentication authentication;
 
-    public CustomMethodeSecurityExpression(Authentication authentication) {
+    public CustomSecurityExpression(Authentication authentication) {
         super(authentication);
         this.authentication = authentication;
     }
