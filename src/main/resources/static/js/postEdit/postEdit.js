@@ -71,7 +71,6 @@ function setHeaderImage() {
 function uploadImage(e) {
     let file = e.currentTarget.files;
     addImage(file[0], renderHeaderImage);
-    alert(file[0]);
 }
 
 function renderHeaderImage(headerImageUrl) {
