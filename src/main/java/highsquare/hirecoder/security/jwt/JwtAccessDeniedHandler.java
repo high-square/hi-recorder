@@ -1,5 +1,6 @@
 package highsquare.hirecoder.security.jwt;
 
+import highsquare.hirecoder.utils.ScriptUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -20,8 +21,8 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         log.debug(accessDeniedException.getMessage());
         accessDeniedException.printStackTrace();
-        Arrays.stream(request.getCookies()).filter((cookie -> cookie.getName().equals(AUTHORIZATION_HEADER)))
-                .findFirst().ifPresent((cookie)->cookie.setMaxAge(0));
+
+        ScriptUtils.alertAndBackPage(response, "잘못된 접근입니다.");
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
     }
 }
