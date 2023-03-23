@@ -59,6 +59,7 @@ public class LoginController {
 
         Cookie cookie = new Cookie(JwtFilter.AUTHORIZATION_HEADER, URLEncoder.encode("Bearer " + jwt, "utf-8"));
         cookie.setPath("/");
+
         response.addCookie(cookie);
 
         return "redirect:/";

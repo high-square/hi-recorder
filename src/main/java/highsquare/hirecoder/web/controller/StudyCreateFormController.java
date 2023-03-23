@@ -58,10 +58,11 @@ public class StudyCreateFormController {
     }
 
     @PostMapping("/create")
-    public String postRecruitBoardCreateForm(@ModelAttribute StudyCreationForm studyCreationForm, BindingResult bindingResult, HttpSession session) {
+    public String postRecruitBoardCreateForm(@ModelAttribute StudyCreationForm studyCreationForm, BindingResult bindingResult
+                                             ,Principal principal) {
 
-        Long memberId = (Long) session.getAttribute(SessionConstant.MEMBER_ID);
 
+        Long memberId = Long.parseLong(principal.getName());
         if (memberId == null) {
             bindingResult.reject("access.form.not_member");
         } else if (studyService.isTooManyToManage(memberId, MAX_STUDY_COUNT)) {
