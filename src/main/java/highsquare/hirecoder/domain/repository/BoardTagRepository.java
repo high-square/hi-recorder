@@ -16,4 +16,6 @@ public interface BoardTagRepository extends JpaRepository<BoardTag, Long> {
 
     public int deleteByBoard(Board board);
 
+    @Query("SELECT bt.tag, COUNT(bt.tag) AS cnt FROM BoardTag bt GROUP BY bt.tag ORDER BY cnt DESC")
+    List<Object[]> findTagCountByBoardTag();
 }

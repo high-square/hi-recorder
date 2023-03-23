@@ -30,9 +30,8 @@
 </head>
 <body>
 
-
 <!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+<nav class="navbar navbar-expand-lg navbar-light" id="mainNav" th:replace="/fragments/navFrag::navFrag">
     <div class="container px-4 px-lg-5">
         <a class="navbar-brand" href="../index.html">Start Bootstrap</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,13 +49,18 @@
     </div>
 </nav>
 <!-- Page Header-->
-<header class="masthead" style="background-image: url('../../static/assets/img/post-bg.jpg')"
+<header class="masthead position-relative" id="headerImage" style="background-image: url('../../static/assets/img/post-bg.jpg')"
         th:style="${'background-image: url(/assets/img/post-bg.jpg)'}">
     <div class="container position-relative px-1 px-lg-1">
         <div class="post-heading">
             <h1 th:text="${edit} ? #{text.form.title.edit} : #{text.form.title.create}" style="text-align: center">게시글 작성</h1>
         </div>
     </div>
+
+    <div class="container position-absolute bottom-0 px-1 px-lg-1 h-auto">
+        <button class="btn-light position-absolute bottom-0 end-0 mb-2" onclick="setHeaderImage()">이미지 변경</button>
+    </div>
+
 </header>
 <!-- Post Content-->
 <article class="h-auto">
@@ -78,11 +82,21 @@
                     <!-- 태그 작성 -->
                     <div th:replace="/form/formFragment :: tagInput"></div>
 
+                    <div class="form-check form-switch">
+                        <input th:field="*{open}" type="checkbox" id="public" value=true class="form-check-input">
+                        <label for="public" class="form-check-label">전체 공개</label>
+                    </div>
+
+
                     <!-- 마크다운 작성 -->
                     <div th:replace="/form/formFragment :: markdownInput"></div>
 
+                    <input type="text" id="headerImageUrl" hidden />
+
                 </div>
             </form>
+
+            <input hidden id="realUpload" type="file" accept="image/*">
 
             <!-- 버튼 작성 -->
             <div class="mt-5 row">

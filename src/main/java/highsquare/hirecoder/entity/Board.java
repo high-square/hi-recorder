@@ -33,33 +33,29 @@ public class Board extends TimeEntity {
 
     @Column(columnDefinition="TEXT")
     private String content;
-    // 파일
-    /**
-     * 파일 테이블을 따로 뺄 거면 여기에 파일 테이블에 해당하는 아이디가 들어가야 하고,
-     * 아니라면 file 의 변수에 filePath가 들어가야 함
-     */
-    private String file;
-    // 생성일시
-    // 수정일시
-    // 공개 여부
+
+    private String headImageUrl;
+
     private String publicYn;
-    // 스터디 아이디
 
     // 조회수
     private int viewCnt;
+
     // 좋아요 수
     private int likeCnt;
 
     @Enumerated(value = EnumType.STRING)
     private Kind kind;
 
-    public Board(Member member, Study study, String title, String content, Kind kind, String publicYn ,String file) {
+    public Board(Member member, Study study, String title, String content, String headImageUrl, boolean publicYn, Kind kind) {
         this.member = member;
         this.study = study;
         this.title = title;
         this.content = content;
-        this.file = file;
-        this.publicYn = publicYn;
+        this.headImageUrl = headImageUrl;
+        this.publicYn = publicYn ? "y" : "n";;
+        this.viewCnt = 0;
+        this.likeCnt = 0;
         this.kind = kind;
     }
 

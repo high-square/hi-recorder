@@ -38,15 +38,4 @@ public class MemberService {
 
         return member;
     }
-
-    @Transactional(readOnly = true)
-    public Optional<Member> getMemberWithAuthorities(String memberName) {
-        return memberRepository.findByName(memberName);
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<Member> getMyMemberWithAuthorities() {
-        return SecurityUtil.getCurrentMemberName()
-                .flatMap(memberRepository::findByName);
-    }
 }

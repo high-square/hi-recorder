@@ -37,7 +37,7 @@ public class InitData {
     private final UserAuthorityRepository userAuthorityRepository;
 
 
-    // @PostConstruct
+    //@PostConstruct
     public void init() {
 
         TransactionStatus ts = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());

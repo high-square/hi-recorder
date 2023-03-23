@@ -1,11 +1,10 @@
 package highsquare.hirecoder.config;
 
+import highsquare.hirecoder.security.CustomWebSecurityExpressionHandler;
 import highsquare.hirecoder.security.jwt.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -42,6 +41,8 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .mvcMatchers("/login").permitAll()
                 .mvcMatchers("/signup").permitAll()
+                .expressionHandler(new CustomWebSecurityExpressionHandler())
+                .mvcMatchers("/study/{studyId}/admin").access("isMemberManager(#studyId)")
                 .anyRequest().authenticated()
 
                 .and()
