@@ -48,7 +48,9 @@ public class TokenProvider implements InitializingBean {
 
     public String createToken(Authentication authentication) {
 
-        String authorities = authentication.getAuthorities().stream().collect(Collectors.toList()).get(0).getAuthority();
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
 
         log.info("token 생성 시 authorities : {}", authorities);
 
@@ -85,10 +87,10 @@ public class TokenProvider implements InitializingBean {
         if (claims.get(AUTHORITIES_KEY).toString().isBlank()) {
             authorities = new ArrayList<>();
         } else {
-            String authority = claims.get(AUTHORITIES_KEY).toString();
-            ArrayList arrayList = new ArrayList();
-            arrayList.add(new SimpleGrantedAuthority(authority));
-            authorities = arrayList;
+            authorities =
+                    Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
         }
 
 
