@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .mvcMatchers("/study/{studyId}/admin").access("isMemberManager(#studyId)")
                 .anyRequest().authenticated()
 
+
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider))
 
@@ -74,4 +75,5 @@ public class SecurityConfig {
             );
         };
     }
+
 }

@@ -22,4 +22,5 @@ public class Tag extends TimeEntity {
     public Tag(String content) {
         this.content = content;
     }
+
 }

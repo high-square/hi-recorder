@@ -117,7 +117,7 @@
                onclick="openDelete()" value="삭제하기">
       </span>
         </div>
-        <span class="col-xl-3" style="margin-left:600px" th:if="${studyManagerId!=memberId}">
+        <span class="col-xl-3" style="margin-left:600px" th:if="${kind.name().equals('RECRUIT')&&studyManagerId!=memberId}">
         <input type="button" class="w-100 btn btn-third btn-lg"
                onclick="applyForStudy()" value="스터디 신청하기">
       </span>

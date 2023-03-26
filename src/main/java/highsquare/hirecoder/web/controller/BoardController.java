@@ -1,8 +1,10 @@
 package highsquare.hirecoder.web.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.StudyMemberRepository;
 import highsquare.hirecoder.domain.service.*;
+import highsquare.hirecoder.dto.StudyAuthorities;
 import highsquare.hirecoder.entity.*;
 import highsquare.hirecoder.page.PageRequestDto;
 import highsquare.hirecoder.page.PageResultDto;
@@ -10,6 +12,8 @@ import highsquare.hirecoder.utils.ScriptUtils;
 import highsquare.hirecoder.web.form.BoardSelectedForm;
 import highsquare.hirecoder.web.form.CommentSelectedForm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +33,7 @@ import static highsquare.hirecoder.constant.PageConstant.*;
 @Controller
 @RequestMapping("/boards")
 @RequiredArgsConstructor
+@Slf4j
 public class BoardController {
 
     private final BoardService boardService;
@@ -38,11 +43,12 @@ public class BoardController {
 
     private final StudyService studyService;
 
-    private final StudyMemberRepository studyMemberRepository;
 
     private final BoardRepository boardRepository;
 
     private final TagService tagService;
+
+    private final ObjectMapper objectMapper;
 
 
     @GetMapping("/{kind}/{study_id}/{board_id}")
@@ -68,9 +74,15 @@ public class BoardController {
         //전체 공개 여부에 따라 멤버가 읽을 수 있는지 없는지 여부
         if (!boardService.isPublic(boardId)) {
 
-            if (!studyMemberRepository.existsMemberAndStudy(studyId, loginMemberId)) {
+            Authentication authentication = (Authentication) principal;
+            String authority = authentication.getAuthorities().stream().findFirst().get().getAuthority();
+            StudyAuthorities studyAuthorities = objectMapper.readValue(authority, StudyAuthorities.class);
+            log.debug("studyAuthorities {},{}",studyAuthorities.toString(),request.getRequestURL());
+
+            if (!studyAuthorities.getStudies().contains(studyId)) {
                 ScriptUtils.alertAndBackPage(response, "해당 스터디에 해당되지 않습니다.");
             }
+
         }
 
         // DB에서 id에 해당하는 board를 꺼내옴
