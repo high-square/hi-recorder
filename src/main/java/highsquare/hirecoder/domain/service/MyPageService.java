@@ -3,14 +3,14 @@ package highsquare.hirecoder.domain.service;
 import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.repository.StudyMemberRepository;
-import highsquare.hirecoder.entity.Board;
-import highsquare.hirecoder.entity.Member;
-import highsquare.hirecoder.entity.Study;
-import highsquare.hirecoder.entity.StudyMember;
+import highsquare.hirecoder.entity.*;
+import highsquare.hirecoder.utils.ScriptUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -43,9 +43,12 @@ public class MyPageService {
      * 스터디 탈퇴
      */
     @Transactional
-    public void leaveStudy(Long studyId, Long memberId) {
+    public void leaveStudy(Long studyId, Long memberId, HttpServletResponse response) throws IOException {
         StudyMember studyMember = studyMemberRepository.findStudyMemberByStudyIdAndMemberId(studyId, memberId);
-        studyMemberRepository.delete(studyMember);
+        if (studyMember==null) {
+            ScriptUtils.alert(response,"해당 스터디에 가입한 적이 없습니다.");
+        }
+        studyMember.setAttendState(AttendState.탈퇴);
     }
 
     /**

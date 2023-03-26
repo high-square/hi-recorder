@@ -38,7 +38,7 @@ public class BoardController {
 
     private final StudyService studyService;
 
-    private final StudyMemberRepository studyMemberRepository;
+    private final StudyMemberService studyMemberService;
 
     private final BoardRepository boardRepository;
 
@@ -68,7 +68,7 @@ public class BoardController {
         //전체 공개 여부에 따라 멤버가 읽을 수 있는지 없는지 여부
         if (!boardService.isPublic(boardId)) {
 
-            if (!studyMemberRepository.existsMemberAndStudy(studyId, loginMemberId)) {
+            if (!studyMemberService.doesMemberBelongToStudy(studyId, loginMemberId)) {
                 ScriptUtils.alertAndBackPage(response, "해당 스터디에 해당되지 않습니다.");
             }
         }

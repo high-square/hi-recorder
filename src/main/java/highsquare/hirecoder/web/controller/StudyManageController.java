@@ -40,6 +40,7 @@ public class StudyManageController {
     private final MessageForApplicationService messageForApplicationService;
 
 
+
     /**
      * 일반 멤버가 스터디 신청하기 버튼 클릭시 신청테이블에 등록되는 로직
      * 스터디에 신청할 때 사유테이블에 신청사유를 작성

@@ -50,5 +50,9 @@ public class StudyService {
         Study study = studyRepository.findById(studyId).get();
         return study.getName();
     }
+
+    public void deleteStudy(Study study) {
+        studyRepository.delete(study);
+    }
 }
 
