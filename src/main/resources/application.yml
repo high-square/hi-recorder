@@ -31,4 +31,5 @@ decorator:
 
 jwt:
   secret: Ji4CH3Ujc7QBH1SJCkCjrWxW80FInv1W5KVwjSThQMv7QqwIxGdPC7YkRAcvtXsaN0bfGCoo2tTqibpvcMhGYQ==
-  token-validity-in-seconds: 86400  # 24 * 60 * 60 하루 -> 초
+  token-validity-in-seconds: 900  # 60 * 15 15분 -> 초
+  refresh-token-validity-in-seconds: 1209600 #1209600 # 60 * 60 * 24 * 14 2주일 -> 초

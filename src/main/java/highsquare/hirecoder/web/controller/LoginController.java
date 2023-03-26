@@ -5,6 +5,7 @@ import highsquare.hirecoder.domain.service.MemberService;
 import highsquare.hirecoder.dto.TokenInfo;
 import highsquare.hirecoder.entity.Member;
 import highsquare.hirecoder.security.jwt.JwtFilter;
+import highsquare.hirecoder.security.jwt.RefreshTokenProvider;
 import highsquare.hirecoder.security.jwt.TokenProvider;
 import highsquare.hirecoder.web.form.LoginForm;
 import highsquare.hirecoder.web.form.SignUpForm;
@@ -32,6 +33,7 @@ import java.net.URLEncoder;
 @Slf4j
 public class LoginController {
 
+    private final RefreshTokenProvider refreshTokenProvider;
     private final TokenProvider tokenProvider;
     private final MemberService memberService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -47,7 +49,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String authorize(@Valid @ModelAttribute LoginForm loginForm, HttpServletResponse response) throws UnsupportedEncodingException {
+    public String authorize(@Valid @ModelAttribute LoginForm loginForm,HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
 
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword());
@@ -56,11 +58,16 @@ public class LoginController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.createToken(authentication);
+        String refreshToken = refreshTokenProvider.createToken(authentication,request.getRemoteAddr());
 
         Cookie cookie = new Cookie(JwtFilter.AUTHORIZATION_HEADER, URLEncoder.encode("Bearer " + jwt, "utf-8"));
         cookie.setPath("/");
+        Cookie refreshCookie = new Cookie(JwtFilter.REFRESH_HEADER, URLEncoder.encode(refreshToken, "utf-8"));
+        cookie.setPath("/");
 
         response.addCookie(cookie);
+        response.addCookie(refreshCookie);
+
 
         return "redirect:/";
     }
