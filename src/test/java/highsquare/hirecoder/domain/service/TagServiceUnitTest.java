@@ -39,7 +39,7 @@ class TagServiceUnitTest {
 
     @BeforeEach
     public void setUp() {
-        board = new Board(null, null, "boardTitle", null, null,null, null);
+        board = new Board(null, null, "boardTitle", null, null, true, null);
         board.setId(0L);
         tag1 = new Tag("tag1");
         tag2 = new Tag("tag2");

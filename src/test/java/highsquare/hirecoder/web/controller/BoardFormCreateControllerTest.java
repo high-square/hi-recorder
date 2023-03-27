@@ -110,7 +110,7 @@ class BoardFormCreateControllerTest {
                 .willReturn(true);
 
         BoardForm expectedCreateForm = new BoardForm(
-                "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo", null);
+                "helloTitle", List.of("tag1", "tag2"), true, "# hello jaeDoo", null, null);
 
         Board expectedBoard = new Board();
         expectedBoard.setId(1L);
@@ -146,7 +146,7 @@ class BoardFormCreateControllerTest {
                 .willReturn(false);
 
         BoardForm expectedCreateForm = new BoardForm(
-                "helloTitle", List.of("tag1", "tag2"), "# hello jaeDoo", null);
+                "helloTitle", List.of("tag1", "tag2"), true, "# hello jaeDoo", null, null);
 
         Board expectedBoard = new Board();
         expectedBoard.setId(1L);
