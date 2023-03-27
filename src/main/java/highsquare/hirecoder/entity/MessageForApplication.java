@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Getter @Setter
@@ -15,9 +12,11 @@ import javax.persistence.Table;
 @Table(name = "messageforapplication")
 public class MessageForApplication {
 
-    @Id
-    @Column(unique = true,name="message_id")
+    @Id @GeneratedValue
     private Long id;
+    @OneToOne
+    @JoinColumn(unique = true, name="apply_id")
+    private ApplyForStudy applyForStudy;
 
     @Column(name="appealmessage")
     private String appealMessage;
