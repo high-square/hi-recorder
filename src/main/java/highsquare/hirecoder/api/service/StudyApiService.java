@@ -1,4 +1,4 @@
-package highsquare.hirecoder.web.api.service;
+package highsquare.hirecoder.api.service;
 
 import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.dto.MyStudyResponse;

@@ -1,8 +1,7 @@
-package highsquare.hirecoder.web.api.controller;
+package highsquare.hirecoder.api.controller;
 
-import highsquare.hirecoder.domain.service.StudyService;
 import highsquare.hirecoder.dto.MyStudyResponse;
-import highsquare.hirecoder.web.api.service.StudyApiService;
+import highsquare.hirecoder.api.service.StudyApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

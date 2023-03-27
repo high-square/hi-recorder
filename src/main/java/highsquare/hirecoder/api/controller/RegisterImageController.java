@@ -1,4 +1,4 @@
-package highsquare.hirecoder.web.api.controller;
+package highsquare.hirecoder.api.controller;
 
 import highsquare.hirecoder.domain.service.ImageService;
 import highsquare.hirecoder.dto.RegisterImageResponse;
