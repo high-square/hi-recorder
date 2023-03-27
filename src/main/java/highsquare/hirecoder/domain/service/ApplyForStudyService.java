@@ -2,11 +2,9 @@ package highsquare.hirecoder.domain.service;
 
 import highsquare.hirecoder.domain.repository.ApplyForStudyRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
+import highsquare.hirecoder.domain.repository.MessageForApplicationRepository;
 import highsquare.hirecoder.domain.repository.StudyRepository;
-import highsquare.hirecoder.entity.ApplyForStudy;
-import highsquare.hirecoder.entity.AuditState;
-import highsquare.hirecoder.entity.Member;
-import highsquare.hirecoder.entity.Study;
+import highsquare.hirecoder.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +18,7 @@ public class ApplyForStudyService {
     private final ApplyForStudyRepository applyForStudyRepository;
     private final StudyRepository studyRepository;
     private final MemberRepository memberRepository;
+    private final MessageForApplicationRepository messageForApplicationRepository;
 
 
     public Long enrollApplyForStudy(Long studyId, Long memberId, String name) {
@@ -56,8 +55,13 @@ public class ApplyForStudyService {
         applyForStudyRepository.changeAuditState(applyForStudyId,AuditState.승인);
     }
 
-    public void reject(Long applyForStudyId) {
-        applyForStudyRepository.changeAuditState(applyForStudyId,AuditState.거절);
+    public void reject(Long applyForStudyId, String rejectMessage) {
+
+        applyForStudyRepository.changeAuditState(applyForStudyId, AuditState.거절);
+        MessageForApplication messageForApplication =
+                messageForApplicationRepository.findByApplyForStudyIdWithApplyForStudy(applyForStudyId);
+
+        messageForApplication.setRejectMessage(rejectMessage);
     }
 }
 

@@ -146,39 +146,24 @@ public class StudyManageController {
      * 스터디장이 신청 테이블의 목록에서 거절하는 로직
      * 스터디장이 거절했을 시 사유 테이블에 거절 메시지 작성
      */
-    @PatchMapping("/studyManage/manager/reject/{studyId}/{applyForStudyId}")
+    @PostMapping("/studyManage/manager/reject/{studyId}/{applyForStudyId}")
     public void reject(@PathVariable("studyId") Long studyId,
                            @PathVariable("applyForStudyId") Long applyForStudyId,
+                           @RequestParam String rejectReason,
                            HttpServletResponse response,
                            Principal principal,
                            Model model) throws IOException {
 
-        Long loginMemberId
-                = Long.parseLong(principal.getName());
-
-        // 해당 스터디 존재 여부
-        // 해당 스터디의 스터디 팀장인지 확인하는 로직
-        if (!studyService.isExistingStudy(studyId)) {
-            ScriptUtils.alert(response,"해당 스터디가 존재하지 않습니다.");
-        }
-
-        if(studyService.getStudyManagerId(studyId)!=loginMemberId
-        ) {
-            ScriptUtils.alert(response,"해당 스터디의 팀장이 아닙니다.");
-        }
+        Long memberId = Long.parseLong(principal.getName());
 
         // 신청테이블에 존재하는지, AuditState가 '대기'인지 확인하기
         if(!applyForStudyService.isValidApplication(applyForStudyId)) {
             ScriptUtils.alert(response,"유효한 신청이 아닙니다.");
         }
 
-
         // <---- 검증 종료
         // 신청 테이블의 AuditState를 '거절'로 바꾸는 로직
-        applyForStudyService.reject(applyForStudyId);
-
-
-
+        applyForStudyService.reject(applyForStudyId, rejectReason);
     }
 
     /**
@@ -287,6 +272,5 @@ public class StudyManageController {
         }
         return true;
     }
-
 
 }
