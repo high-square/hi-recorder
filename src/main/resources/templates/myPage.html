@@ -89,6 +89,11 @@
                         </tbody>
                     </table>
 
+                    <th:block th:each="page:${#numbers.sequence(startPage, endPage)}">
+                        <a th:if="${page != nowPage}" th:href="@{/study/myStudy(page=${page})}" th:text="${page}"></a>
+                        <strong th:if="${page==nowPage}" th:text="${page}" style="color:blue"></strong>
+                    </th:block>
+
 
                     <!-- Post preview-->
 <!--                    <div class="post-preview">-->

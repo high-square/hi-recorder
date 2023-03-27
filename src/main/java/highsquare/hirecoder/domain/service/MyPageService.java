@@ -3,15 +3,25 @@ package highsquare.hirecoder.domain.service;
 import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.repository.StudyMemberRepository;
-import highsquare.hirecoder.entity.Board;
-import highsquare.hirecoder.entity.Member;
-import highsquare.hirecoder.entity.Study;
-import highsquare.hirecoder.entity.StudyMember;
+import highsquare.hirecoder.entity.*;
+import highsquare.hirecoder.page.PageRequestDto;
+import highsquare.hirecoder.page.PageResultDto;
+import highsquare.hirecoder.web.form.CommentSelectedForm;
+import highsquare.hirecoder.web.form.MyStudyForm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static highsquare.hirecoder.constant.LikeCheckConstant.Like_Checked_Comment;
+import static highsquare.hirecoder.constant.LikeCheckConstant.Like_Unchecked_Comment;
 
 @Service
 @RequiredArgsConstructor
@@ -19,15 +29,35 @@ import java.util.List;
 public class MyPageService {
 
     private final StudyMemberRepository studyMemberRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * memberId -> studyMemberId -> study List 조회
-     * entity 수정?
-     * queryDsl? repository query?
-     * 한 번에 조인?
      */
-    public List<Study> findMyStudy(Long memberId) {
-        return studyMemberRepository.findAllStudyByMemberId(memberId);
+//    public List<Study> findMyStudy(Long memberId) {
+//        return studyMemberRepository.findAllStudyByMemberId(memberId);
+//    }
+
+    public PageResultDto<MyStudyForm, Study> pagingMyStudy(Long memberId, PageRequestDto requestDto) {
+        Pageable pageable = requestDto.getPageable(Sort.by("id").ascending());
+        Page<Study> result = studyMemberRepository.findAllStudyByMemberId(memberId, pageable);
+
+        Function<Study, MyStudyForm> fn = (entity -> studyToDto(entity));
+
+        return new PageResultDto<>(result, fn);
+    }
+
+    private MyStudyForm studyToDto(Study entity) {
+        MyStudyForm form = new MyStudyForm();
+        form.setId(entity.getId());
+        form.setName(entity.getName());
+        form.setActivityState(entity.getActivityState());
+        form.setStudyStartDate(entity.getStudyStartDate());
+        form.setStudyFinishDate(entity.getStudyFinishDate());
+        form.setCrewNumber(entity.getCrewNumber());
+        form.setMeetingType(entity.getMeetingType());
+
+        return form;
     }
 
     /**
@@ -51,7 +81,13 @@ public class MyPageService {
     /**
      * 회원 탈퇴
      */
-    public void deleteMember(Member member) {
-        // 이름만 변경? or delete?
+
+    /**
+     * memberId -> memberName 찾기
+     */
+    public String findNameById(Long memberId) {
+        System.out.println("memberId = " + memberId);
+        System.out.println("memberRepository.findNameById(memberId) = " + memberRepository.findNameById(memberId));
+        return memberRepository.findNameById(memberId);
     }
 }

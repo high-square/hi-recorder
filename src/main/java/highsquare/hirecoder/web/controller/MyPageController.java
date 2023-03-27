@@ -2,22 +2,25 @@ package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.domain.service.MyPageService;
 import highsquare.hirecoder.entity.*;
+import highsquare.hirecoder.page.PageRequestDto;
+import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.web.form.BoardListForm;
 import highsquare.hirecoder.web.form.CommentSelectedForm;
 import highsquare.hirecoder.web.form.MyStudyForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static highsquare.hirecoder.constant.PageConstant.DEFAULT_PAGE;
+import static highsquare.hirecoder.constant.PageConstant.DEFAULT_SIZE;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,29 +29,30 @@ public class MyPageController {
 
     private final MyPageService myPageService;
 
+
     @GetMapping("/myStudy")
-    public String myStudy(Model model, HttpSession session) {
+    public String myStudy(@RequestParam(defaultValue = "" + DEFAULT_PAGE) int page,
+                          @RequestParam(defaultValue = "" + DEFAULT_SIZE) int size,
+                          Model model, Principal principal) {
 
-        // session에서 member 꺼내옴
+        Long memberId = Long.parseLong(principal.getName());
 
-        // 현재 로그인에 관한 페이지가 없으므로 session 값에 강욱 멤버의 memberId와 memberName을 임의로 넣어둔다.
-        session.setAttribute("memberId",1L);//////////////로그인 구현 후 수정
-        session.setAttribute("memberName", "강욱");////////로그인 구현 후 수정
+        PageRequestDto requestDto = new PageRequestDto(page, 2);
+        PageResultDto<MyStudyForm, Study> myStudyForms = myPageService.pagingMyStudy(memberId, requestDto);
 
-        // db에서 memberId로 내 스터디 목록 저장
-        List<Study> myStudyList = myPageService.findMyStudy((Long) session.getAttribute("memberId"));
-        for (Study study : myStudyList) {
-            System.out.println("study.getName() = " + study.getName());
-//            study.getName() = 백엔드1팀
-//            study.getName() = 백엔드2팀
-        }
+        System.out.println("myStudyForms = " + myStudyForms.dtoList);
 
-        // Study 엔티티를 form으로 변환
-        List<MyStudyForm> myStudyFormList = myStudyList.stream().map(o -> new MyStudyForm(o.getId(), o.getName(), o.getActivityState(), o.getStudyStartDate(), o.getStudyFinishDate(), o.getCrewNumber(), o.getMeetingType()))
-                .collect(Collectors.toList());
+        model.addAttribute("data", myStudyForms.dtoList);
+        model.addAttribute("memberId", memberId);
 
-        model.addAttribute("data", myStudyFormList);
-        model.addAttribute("memberId", (Long) session.getAttribute("memberId"));
+        // 페이징 관련
+        int nowPage = myStudyForms.getPage();
+        int startPage = Math.max(nowPage - 3, 1);
+        int endPage = Math.min(nowPage + 3, myStudyForms.getEnd());
+
+        model.addAttribute("nowPage", nowPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
 
         return "myPage";
     }
@@ -57,24 +61,14 @@ public class MyPageController {
     public String myStudyPostList(@PathVariable(value="studyId") Long studyId,
                                   @PathVariable(value="memberId") Long memberId,
                                   Model model, HttpSession session) {
-        // session에 넣는 것?
 
-        // session에서 studyMember 꺼내옴
+        model.addAttribute("studyId", String.valueOf(studyId));
 
-        // 현재 로그인에 관한 페이지가 없으므로 session 값에 강욱 멤버의 memberId와 memberName을 임의로 넣어둔다.
-//        session.setAttribute("memberId",1L);
-        session.setAttribute("memberId", memberId);
-        session.setAttribute("memberName", "강욱");
-
-        model.addAttribute("memberName", "강욱");
-
-        // session에 studyId도 넣어준다.
-        session.setAttribute("studyId", studyId);
-
-        model.addAttribute("studyId", 5L);
+        String nameById = myPageService.findNameById(memberId);
+        model.addAttribute("memberName", String.valueOf(nameById));
 
         // db에서 memberId와 studyId가 일치하는 board를 찾는다. -> list
-        List<Board> myPosts = myPageService.findMyPosts((Long) session.getAttribute("studyId"), (Long) session.getAttribute("memberId"));
+        List<Board> myPosts = myPageService.findMyPosts(studyId, memberId);
         for (Board myPost : myPosts) {
             System.out.println("myPost.getTitle() = " + myPost.getTitle());
         }
