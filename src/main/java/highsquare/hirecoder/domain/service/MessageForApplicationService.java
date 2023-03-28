@@ -38,7 +38,11 @@ public class MessageForApplicationService {
 
     }
 
-    public void addMessage(Long applyForStudyId, String appealMessage) {
-        messageForApplicationRepository.addMessage(applyForStudyId,appealMessage);
+    public MessageForApplication addMessage(ApplyForStudy applyForStudy, String appealMessage) {
+
+        MessageForApplication messageForApplication
+                = new MessageForApplication(applyForStudy, appealMessage);
+
+        return messageForApplicationRepository.save(messageForApplication);
     }
 }

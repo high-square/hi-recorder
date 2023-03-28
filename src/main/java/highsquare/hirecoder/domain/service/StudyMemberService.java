@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,9 +20,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class StudyMemberService {
     private final StudyMemberRepository studyMemberRepository;
-
     private final StudyRepository studyRepository;
-
     private final MemberRepository memberRepository;
 
     public boolean doesMemberBelongToStudy(Long studyId, Long memberId) {
@@ -85,5 +82,17 @@ public class StudyMemberService {
     public void changeAttendState(Long studyMemberId, AttendState attendState) {
         StudyMember findStudyMember = studyMemberRepository.findById(studyMemberId).get();
         findStudyMember.setAttendState(attendState);
+    }
+
+    public AttendState getAttendState(Long studyId, Long memberId) {
+        
+        StudyMember studyMember = studyMemberRepository.findStudyMemberByStudyIdAndMemberId(studyId, memberId);
+        
+        if (studyMember != null) return studyMember.getAttendState();
+        else return null;
+    }
+
+    public int getBelongedStudyCount(Long memberId) {
+        return studyMemberRepository.checkMembersStudyCount(memberId);
     }
 }

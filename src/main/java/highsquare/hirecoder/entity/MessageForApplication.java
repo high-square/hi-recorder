@@ -24,4 +24,8 @@ public class MessageForApplication {
     @Column(name="rejectmessage")
     private String rejectMessage;
 
+    public MessageForApplication(ApplyForStudy applyForStudy, String appealMessage) {
+        this.applyForStudy = applyForStudy;
+        this.appealMessage = appealMessage;
+    }
 }

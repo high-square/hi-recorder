@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class ApplyForStudyService {
     private final MessageForApplicationRepository messageForApplicationRepository;
 
 
-    public Long enrollApplyForStudy(Long studyId, Long memberId, String name) {
+    public ApplyForStudy enrollApplyForStudy(Long studyId, Long memberId, String name) {
 
         Study study = studyRepository.findById(studyId).get();
         Member member = memberRepository.findById(memberId).get();
@@ -32,11 +34,12 @@ public class ApplyForStudyService {
         applyForStudy.setAuditstate(AuditState.대기);
 
         ApplyForStudy savedApplyForStudy = applyForStudyRepository.save(applyForStudy);
-        return savedApplyForStudy.getId();
+        return savedApplyForStudy;
     }
 
     public boolean isValidApplication(Long applyForStudyId) {
-        if (applyForStudyId!=null) {
+
+        if (applyForStudyId != null) {
             ApplyForStudy applyForStudy = applyForStudyRepository.findById(applyForStudyId).orElse(null);
 
             if (applyForStudy==null) {
@@ -62,6 +65,10 @@ public class ApplyForStudyService {
                 messageForApplicationRepository.findByApplyForStudyIdWithApplyForStudy(applyForStudyId);
 
         messageForApplication.setRejectMessage(rejectMessage);
+    }
+
+    public Optional<ApplyForStudy> findApplyForStudyByMemberAndStudy(Long memberId, Long studyId) {
+        return applyForStudyRepository.findFirstByMember_IdAndStudy_Id(memberId, studyId);
     }
 }
 

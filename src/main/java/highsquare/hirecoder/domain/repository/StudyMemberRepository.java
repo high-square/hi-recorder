@@ -22,10 +22,7 @@ public interface StudyMemberRepository extends JpaRepository<StudyMember, Long>,
     List<Board> findAllBoardByStudyIdAndMemberId(@Param("studyId") Long studyId, @Param("memberId") Long memberId);
 
     StudyMember findStudyMemberByStudyIdAndMemberId(Long studyId, Long memberId);
-
-    @Query("select sm.attendState from StudyMember sm where sm.study.id=:studyId and sm.member.id=:memberId")
-    String findAuditState(@Param("studyId")Long studyId, @Param("memberId") Long memberId);
-
+    
     @Query("select count(sm) from StudyMember sm where sm.member.id=:memberId and sm.attendState='참여'")
     int checkMembersStudyCount(@Param("memberId")Long memberId);
 }
