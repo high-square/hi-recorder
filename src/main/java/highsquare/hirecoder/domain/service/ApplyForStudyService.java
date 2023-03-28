@@ -67,8 +67,8 @@ public class ApplyForStudyService {
         messageForApplication.setRejectMessage(rejectMessage);
     }
 
-    public Optional<ApplyForStudy> findApplyForStudyByMemberAndStudy(Long memberId, Long studyId) {
-        return applyForStudyRepository.findFirstByMember_IdAndStudy_Id(memberId, studyId);
+    public Optional<ApplyForStudy> findApplyForStudyByMemberAndStudy(Long studyId, Long memberId) {
+        return applyForStudyRepository.findByStudyIdAndMemberId(studyId, memberId);
     }
 }
 

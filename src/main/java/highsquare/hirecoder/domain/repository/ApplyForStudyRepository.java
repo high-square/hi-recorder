@@ -1,5 +1,6 @@
 package highsquare.hirecoder.domain.repository;
 
+import highsquare.hirecoder.domain.repository.custom.ApplyForStudyRepositoryCustom;
 import highsquare.hirecoder.entity.ApplyForStudy;
 import highsquare.hirecoder.entity.AuditState;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -10,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface ApplyForStudyRepository extends JpaRepository<ApplyForStudy, Long> {
+public interface ApplyForStudyRepository extends JpaRepository<ApplyForStudy, Long>, ApplyForStudyRepositoryCustom {
 
 
 
@@ -21,6 +22,4 @@ public interface ApplyForStudyRepository extends JpaRepository<ApplyForStudy, Lo
     @EntityGraph(attributePaths = {"study","member"})
     @Query("select ap from ApplyForStudy ap where ap.id=:applyForStudyId ")
     Optional<ApplyForStudy> getForCheckMemberStudy(@Param("applyForStudyId")Long applyForStudyId);
-
-    Optional<ApplyForStudy> findFirstByMember_IdAndStudy_Id(Long memberId, Long studyId);
 }
