@@ -18,9 +18,9 @@ public interface ApplyForStudyRepository extends JpaRepository<ApplyForStudy, Lo
     @Query("update ApplyForStudy ap set ap.auditstate=:auditState where ap.id=:applyForStudyId")
     void changeAuditState(@Param("applyForStudyId") Long applyForStudyId,@Param("auditState") AuditState auditState);
 
-
     @EntityGraph(attributePaths = {"study","member"})
     @Query("select ap from ApplyForStudy ap where ap.id=:applyForStudyId ")
     Optional<ApplyForStudy> getForCheckMemberStudy(@Param("applyForStudyId")Long applyForStudyId);
 
+    Optional<ApplyForStudy> findFirstByMember_IdAndStudy_Id(Long memberId, Long studyId);
 }

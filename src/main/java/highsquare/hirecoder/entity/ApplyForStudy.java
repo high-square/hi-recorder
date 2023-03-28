@@ -30,4 +30,10 @@ public class ApplyForStudy {
 
     @Enumerated(value = STRING)
     private AuditState auditstate;
+
+    public ApplyForStudy(Member member, Study study, AuditState auditstate) {
+        this.member = member;
+        this.study = study;
+        this.auditstate = auditstate;
+    }
 }

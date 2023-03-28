@@ -33,6 +33,8 @@ public class InitData {
     private final MemberRepository memberRepository;
     private final StudyRepository studyRepository;
     private final StudyMemberRepository studyMemberRepository;
+    private final ApplyForStudyRepository applyForStudyRepository;
+    private final MessageForApplicationRepository messageForApplicationRepository;
 
     //@PostConstruct
     public void init() {
@@ -79,6 +81,17 @@ public class InitData {
         Comment comment7 = setComment(member3, board1, "글 못읽었습니다 - 경림", 6);
         Comment comment8 = setComment(member4, board2, "글 못읽었습니다 - 효진", 6);
 
+        // ----------------스터디 신청------------------
+        List<ApplyForStudy> applyForStudies = List.of(
+                new ApplyForStudy(member3, study1, AuditState.대기),
+                new ApplyForStudy(member2, study1, AuditState.승인),
+                new ApplyForStudy(member2, study2, AuditState.거절));
+
+        List<MessageForApplication> messageForApplications = List.of(
+                new MessageForApplication(applyForStudies.get(0), "스터디 참여를 희망합니다."),
+                new MessageForApplication(applyForStudies.get(1), "스터디 가입시켜 주세요."),
+                new MessageForApplication(applyForStudies.get(2), "열심히 하겠습니다.")
+        );
 
         // ----------------DB 저장-----------------
         persistMember(member1, member2, member3, member4);
@@ -86,6 +99,8 @@ public class InitData {
         persistStudyMember(studyMember1, studyMember2, studyMember3, studyMember4, studyMember5);
         persistBoard(board1, board2, board3, board4, board5);
         persistComment(comment1, comment2, comment3, comment4, comment5, comment6, comment7, comment8);
+        applyForStudyRepository.saveAll(applyForStudies);
+        messageForApplicationRepository.saveAll(messageForApplications);
 
         platformTransactionManager.commit(ts);
     }

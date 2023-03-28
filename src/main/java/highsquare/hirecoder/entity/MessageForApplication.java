@@ -28,4 +28,10 @@ public class MessageForApplication {
         this.applyForStudy = applyForStudy;
         this.appealMessage = appealMessage;
     }
+
+    public MessageForApplication(ApplyForStudy applyForStudy, String appealMessage, String rejectMessage) {
+        this.applyForStudy = applyForStudy;
+        this.appealMessage = appealMessage;
+        this.rejectMessage = rejectMessage;
+    }
 }
