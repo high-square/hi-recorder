@@ -86,7 +86,7 @@ public class StudyManageController {
 
         // 해당 스터디와 멤버가 존재하는지 확인(로그인 검증에서 멤버 존재 확인)
         if (!studyService.isExistingStudy(studyId)) {
-            ScriptUtils.alert(response, " 해당 스터디가 존재하지 않습니다.");
+            ScriptUtils.alertAndBackPage(response, " 해당 스터디가 존재하지 않습니다.");
         }
 
         // 스터디 멤버 테이블에서 studyId와 memberId를 검색조건으로 AttendState 상태 들고 올텐데
@@ -94,21 +94,24 @@ public class StudyManageController {
         // 존재하지 않을 시 신청 테이블을 생성함
         if (validateMemberAttendState(studyId, loginMemberId, response)) {
             // 해당 멤버의 스터디 갯수 제한 검증 로직
-            if (validateBelongedStudyCount(loginMemberId)) {
-                // appealMessage 검증로직
-                if (!validMessage(appealMessage, model)) {
-                    model.addAttribute("studyId", studyId);
-
-                    String studyName = studyService.getStudyNameById(studyId);
-                    model.addAttribute("studyName", studyName);
-                    return "form/messageForApply";
-                }
-                ApplyForStudy applyForStudy = applyForStudyService.enrollApplyForStudy(studyId, loginMemberId, AuditState.대기.name());
-                messageForApplicationService.addMessage(applyForStudy, appealMessage);
-            } else {
+            if (!validateBelongedStudyCount(loginMemberId)) {
                 ScriptUtils.alert(response,"가입할 수 있는 스터디 최대 갯수를 초과하셨습니다.");
             }
         }
+
+        // appealMessage 검증로직
+        if (!validMessage(appealMessage, model)) {
+            model.addAttribute("studyId", studyId);
+
+            String studyName = studyService.getStudyNameById(studyId);
+            model.addAttribute("studyName", studyName);
+            return "form/messageForApply";
+        }
+
+        // 검증 로직 종료
+
+        ApplyForStudy applyForStudy = applyForStudyService.enrollApplyForStudy(studyId, loginMemberId, AuditState.대기.name());
+        messageForApplicationService.addMessage(applyForStudy, appealMessage);
 
         return "redirect:/study/myStudy";
     }
@@ -134,34 +137,26 @@ public class StudyManageController {
                            @PathVariable("applyForStudyId") Long applyForStudyId,
                            HttpServletResponse response) throws IOException {
 
-        boolean canApproval = true;
-
         // 해당 스터디 존재여부
-        if (!studyService.isExistingStudy(studyId)) {
+        if (studyService.isExistingStudy(studyId)) {
+            if (applyForStudyService.isValidApplication(applyForStudyId)) {
+
+                // 신청 테이블의 AuditState를 '승인'으로 바꾸는 로직
+                applyForStudyService.approval(applyForStudyId);
+                // 해당 studyId와 memberId를 가지고 StudyMember에 '참여'로 insert 추가
+                studyMemberService.saveStudyMember(studyId, memberId);
+
+            } else {
+                ScriptUtils.alert(response,"유효한 신청이 아닙니다.");
+            }
+        } else {
             ScriptUtils.alert(response,"해당 스터디가 존재하지 않습니다.");
-            canApproval = false;
-        }
-
-        if(!applyForStudyService.isValidApplication(applyForStudyId)) {
-            ScriptUtils.alert(response,"유효한 신청이 아닙니다.");
-            canApproval = true;
-        }
-
-        // <---- 검증 종료
-
-        if (canApproval) {
-
-            // 신청 테이블의 AuditState를 '승인'으로 바꾸는 로직
-            applyForStudyService.approval(applyForStudyId);
-
-            // 해당 studyId와 memberId를 가지고 StudyMember에 '참여'로 insert 추가
-            studyMemberService.saveStudyMember(studyId, memberId);
         }
     }
 
     @GetMapping("/studyManage/manager/reject/{studyId}/{applyForStudyId}")
     @ResponseBody
-    public ResponseEntity isRejectable(@PathVariable("applyForStudyId") Long applyForStudyId) throws IOException {
+    public ResponseEntity<?> isRejectable(@PathVariable("applyForStudyId") Long applyForStudyId) {
 
         // 신청테이블에 존재하는지, AuditState가 '대기'인지 확인하기
         if(!applyForStudyService.isValidApplication(applyForStudyId)) {
