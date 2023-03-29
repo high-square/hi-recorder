@@ -3,11 +3,14 @@ package highsquare.hirecoder.domain.service;
 import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.repository.StudyMemberRepository;
 import highsquare.hirecoder.domain.repository.StudyRepository;
+import highsquare.hirecoder.dto.MemberInfo;
 import highsquare.hirecoder.entity.AttendState;
 import highsquare.hirecoder.entity.Member;
 import highsquare.hirecoder.entity.Study;
 import highsquare.hirecoder.entity.StudyMember;
+import highsquare.hirecoder.page.PageResultDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -94,5 +97,9 @@ public class StudyMemberService {
 
     public int getBelongedStudyCount(Long memberId) {
         return studyMemberRepository.checkMembersStudyCount(memberId);
+    }
+
+    public PageResultDto<MemberInfo, Member> ManageStudyMember(Long studyId, Pageable pageable) {
+        return new PageResultDto<>(studyMemberRepository.searchStudyMemberInfo(studyId, pageable));
     }
 }

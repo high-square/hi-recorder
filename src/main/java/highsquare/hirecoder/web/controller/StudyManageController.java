@@ -1,16 +1,19 @@
 package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.domain.service.ApplyForStudyService;
-import highsquare.hirecoder.domain.service.MessageForApplicationService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.StudyService;
-import highsquare.hirecoder.entity.ApplyForStudy;
+import highsquare.hirecoder.dto.MemberPagingRequest;
+import highsquare.hirecoder.dto.MemberInfo;
 import highsquare.hirecoder.entity.AttendState;
-import highsquare.hirecoder.entity.AuditState;
+import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.utils.ScriptUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,39 +26,55 @@ import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.security.Principal;
 
-import static highsquare.hirecoder.constant.MessageConstant.MAX_APPEALMESSAGE_LENGTH;
-import static highsquare.hirecoder.constant.MessageConstant.MIN_APPEALMESSAGE_LENGTH;
-import static highsquare.hirecoder.constant.StudyCountConstant.STUDY_COUNT_MAX;
-
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/studyManage/manager/{studyId}")
 @Slf4j
 public class StudyManageController {
     private final StudyMemberService studyMemberService;
-
     private final ApplyForStudyService applyForStudyService;
     private final StudyService studyService;
-    private final MessageForApplicationService messageForApplicationService;
-//
-//    @GetMapping("studyManage/manager/{studyId}")
-//    public String getManagerMainPage()
 
-    /**
-     * 스터디장이 자신의 스터디 페이지에서 신청 테이블을 읽어옴
-     * 페이징 처리 필요
-     */
+    // TODO: 2023-03-29 스터디 매니저 메인 페이지 작성 필요
+    @GetMapping
+    public String getManagerMainPage() {
+        return "/admin/adminMain";
+    }
 
-    /**
-     * 일반 멤버가 myPage에서 자신이 신청한 신청 테이블을 읽어옴
-     * 페이징 처리 필요
-     */
+    @GetMapping("/memberList")
+    @ResponseBody
+    public PageResultDto<MemberInfo, ?> getStudyMemberListPage(@ModelAttribute MemberPagingRequest memberPagingRequest,
+                                                                    @PathVariable("studyId") Long studyId,
+                                                                    BindingResult bindingResult, Model model) {
+
+        Sort sort = Sort.by(memberPagingRequest.getSort().toString());
+
+        Pageable pageable = PageRequest.of(memberPagingRequest.getPage() - 1, memberPagingRequest.getSize(),
+                                    memberPagingRequest.getIsAsc() == 1 ? sort.ascending() : sort.descending());
+
+        return studyMemberService.ManageStudyMember(studyId, pageable);
+//        return "/admin/admin-member";
+    }
+
+    @GetMapping("/applyList")
+    public String getStudyApplyListPage(@ModelAttribute MemberPagingRequest memberPagingRequest,
+                                        @PathVariable("studyId") Long studyId,
+                                        BindingResult bindingResult, Model model) {
+
+        Sort sort = Sort.by(memberPagingRequest.getSort().toString());
+
+        Pageable pageable = PageRequest.of(memberPagingRequest.getPage() - 1, memberPagingRequest.getSize(),
+                memberPagingRequest.getIsAsc() == 1 ? sort.ascending() : sort.descending());
+
+        return "/admin/admin-apply";
+    }
 
     /**
      * 스터디장이 신청 테이블의 목록에서 승인하는 로직
      * memberId, studyId는 applyForStudyId에 해당하는 신청 테이블의 컬럼 값임(스터디장의 memberId값이 아님)
      * 우선 ScriptUtils를 이용하여 간단하게 로직 작성함(map에 오류를 넣어서 페이지로 반환시키든 리펙토링 필요)
      */
-    @PatchMapping("/studyManage/manager/{studyId}/approval/{memberId}/{applyForStudyId}")
+    @PatchMapping("/approval/{memberId}/{applyForStudyId}")
     public void approval(@PathVariable("studyId") Long studyId,
                            @PathVariable("memberId") Long memberId,
                            @PathVariable("applyForStudyId") Long applyForStudyId,
@@ -78,7 +97,7 @@ public class StudyManageController {
         }
     }
 
-    @GetMapping("/studyManage/manager/{studyId}/reject/{applyForStudyId}")
+    @GetMapping("/reject/{applyForStudyId}")
     @ResponseBody
     public ResponseEntity<?> isRejectable(@PathVariable("applyForStudyId") Long applyForStudyId) {
 
@@ -94,7 +113,7 @@ public class StudyManageController {
      * 스터디장이 신청 테이블의 목록에서 거절하는 로직
      * 스터디장이 거절했을 시 사유 테이블에 거절 메시지 작성
      */
-    @PostMapping("/studyManage/manager/{studyId}/reject/{applyForStudyId}")
+    @PostMapping("/reject/{applyForStudyId}")
     public void reject(@PathVariable("applyForStudyId") Long applyForStudyId,
                        @NotBlank @Range(min = 10, max = 500) @ModelAttribute("rejectReason")
                        String rejectReason,
@@ -122,7 +141,7 @@ public class StudyManageController {
     /**
      * 스터디장의 스터디 현황 페이지에서 현재 속해있는 스터디의 구성원을 강퇴시키는 기능
      */
-    @PatchMapping("/studyManage/manager/{studyId}/kickout/{studyMemberId}")
+    @PatchMapping("/kickout/{studyMemberId}")
     public void kickOut(@PathVariable("studyId") Long studyId,
                           @PathVariable("studyMemberId") Long studyMemberId,
                           HttpServletResponse response,
