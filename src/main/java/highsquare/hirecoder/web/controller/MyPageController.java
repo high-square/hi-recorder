@@ -6,6 +6,7 @@ import highsquare.hirecoder.page.PageRequestDto;
 import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.web.form.BoardListForm;
 import highsquare.hirecoder.web.form.CommentSelectedForm;
+import highsquare.hirecoder.web.form.MyApplyStudyForm;
 import highsquare.hirecoder.web.form.MyStudyForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -31,28 +32,43 @@ public class MyPageController {
 
 
     @GetMapping("/myStudy")
-    public String myStudy(@RequestParam(defaultValue = "" + DEFAULT_PAGE) int page,
-                          @RequestParam(defaultValue = "" + DEFAULT_SIZE) int size,
+    public String myStudy(@RequestParam(defaultValue = "" + DEFAULT_PAGE) int myStudyPage,
+                          @RequestParam(defaultValue = "" + DEFAULT_PAGE) int applyingStudyPage,
                           Model model, Principal principal) {
 
         Long memberId = Long.parseLong(principal.getName());
 
-        PageRequestDto requestDto = new PageRequestDto(page, 2);
-        PageResultDto<MyStudyForm, Study> myStudyForms = myPageService.pagingMyStudy(memberId, requestDto);
-
-        System.out.println("myStudyForms = " + myStudyForms.dtoList);
-
-        model.addAttribute("data", myStudyForms.dtoList);
         model.addAttribute("memberId", memberId);
 
-        // 페이징 관련
-        int nowPage = myStudyForms.getPage();
-        int startPage = Math.max(nowPage - 3, 1);
-        int endPage = Math.min(nowPage + 3, myStudyForms.getEnd());
+        // 진행 중인 스터디 목록
+        PageRequestDto myStudyRequestDto = new PageRequestDto(myStudyPage, 2);
+        PageResultDto<MyStudyForm, Study> myStudyForms = myPageService.pagingMyStudy(memberId, myStudyRequestDto);
 
-        model.addAttribute("nowPage", nowPage);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
+        model.addAttribute("myStudyForms", myStudyForms.dtoList);
+
+        // 페이징 관련
+        int myStudyNowPage = myStudyForms.getPage();
+        int myStudyStartPage = Math.max(myStudyNowPage - 3, 1);
+        int myStudyEndPage = Math.min(myStudyNowPage + 3, myStudyForms.getEnd());
+
+        model.addAttribute("myStudyNowPage", myStudyNowPage);
+        model.addAttribute("myStudyStartPage", myStudyStartPage);
+        model.addAttribute("myStudyEndPage", myStudyEndPage);
+
+        // 신청한 스터디 목록
+        PageRequestDto applyingStudyRequestDto = new PageRequestDto(applyingStudyPage, 2);
+        PageResultDto<MyApplyStudyForm, ApplyForStudy> myApplyingStudyForms = myPageService.pagingMyApplyingStudy(memberId, applyingStudyRequestDto);
+
+        model.addAttribute("applyingStudyForms", myApplyingStudyForms.dtoList);
+
+        // 페이징 관련
+        int applyingStudyNowPage = myApplyingStudyForms.getPage();
+        int applyingStudyStartPage = Math.max(applyingStudyNowPage - 3, 1);
+        int applyingStudyEndPage = Math.min(applyingStudyNowPage + 3, myApplyingStudyForms.getEnd());
+
+        model.addAttribute("applyingStudyNowPage", applyingStudyNowPage);
+        model.addAttribute("applyingStudyStartPage", applyingStudyStartPage);
+        model.addAttribute("applyingStudyEndPage", applyingStudyEndPage);
 
         return "myPage";
     }
