@@ -54,15 +54,15 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepositoryCustom {
     public Page<MemberInfo> searchStudyMemberInfo(Long studyId, Pageable pageable) {
 
         List<MemberInfo> content = queryFactory.select(constructor(MemberInfo.class,
-                        studyMember.member.id, studyMember.member.name, board.count(), comment.count(), studyMember.attendState.stringValue()))
+                        member.id, member.name, board.count(), comment.count(), studyMember.attendState.stringValue()))
                 .from(studyMember)
-                .join(study).on(studyMember.study.id.eq(study.id), study.id.eq(studyId))
-                .join(member).on(studyMember.member.id.eq(member.id))
-                .leftJoin(board).on(study.id.eq(board.study.id), member.id.eq(board.member.id)).fetchJoin()
-                .leftJoin(comment).on(comment.board.id.eq(board.id)).fetchJoin()
+                .where(studyMember.study.id.eq(studyId))
+                .join(studyMember.member, member)
+                .leftJoin(board).on(studyMember.study.id.eq(board.study.id), member.id.eq(board.member.id)).fetchJoin()
+                .leftJoin(comment).on(comment.board.id.eq(board.id), member.id.eq(comment.member.id)).fetchJoin()
+                .groupBy(member)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .groupBy(studyMember)
                 .orderBy(memberInfoSort(pageable))
                 .fetch();
 

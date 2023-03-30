@@ -14,7 +14,7 @@ import static javax.persistence.FetchType.LAZY;
 @Getter @Setter
 @NoArgsConstructor
 @Table(name = "applyforstudy")
-public class ApplyForStudy {
+public class ApplyForStudy extends TimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "apply_id")

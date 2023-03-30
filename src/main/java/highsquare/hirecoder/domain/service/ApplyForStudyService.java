@@ -4,8 +4,12 @@ import highsquare.hirecoder.domain.repository.ApplyForStudyRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.repository.MessageForApplicationRepository;
 import highsquare.hirecoder.domain.repository.StudyRepository;
+import highsquare.hirecoder.dto.ApplyInfo;
 import highsquare.hirecoder.entity.*;
+import highsquare.hirecoder.page.PageResultDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,6 +73,12 @@ public class ApplyForStudyService {
 
     public Optional<ApplyForStudy> findApplyForStudyByMemberAndStudy(Long studyId, Long memberId) {
         return applyForStudyRepository.findByStudyIdAndMemberId(studyId, memberId);
+    }
+
+    public PageResultDto<ApplyInfo,?> ManageApplyForStudy(Long studyId, Pageable pageable) {
+        Page<ApplyInfo> applyInfoPage = applyForStudyRepository.searchApplyInfo(studyId, pageable);
+
+        return new PageResultDto<>(applyInfoPage);
     }
 }
 

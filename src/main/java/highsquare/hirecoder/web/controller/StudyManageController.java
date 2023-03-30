@@ -3,6 +3,8 @@ package highsquare.hirecoder.web.controller;
 import highsquare.hirecoder.domain.service.ApplyForStudyService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.StudyService;
+import highsquare.hirecoder.dto.ApplyInfo;
+import highsquare.hirecoder.dto.ApplyPagingRequest;
 import highsquare.hirecoder.dto.MemberPagingRequest;
 import highsquare.hirecoder.dto.MemberInfo;
 import highsquare.hirecoder.entity.AttendState;
@@ -41,6 +43,7 @@ public class StudyManageController {
         return "/admin/adminMain";
     }
 
+    // TODO: 2023-03-30 테스트를 위해 ResponseBody를 걸어두었습니다. 이제 뷰에 연결해야 합니다.
     @GetMapping("/memberList")
     @ResponseBody
     public PageResultDto<MemberInfo, ?> getStudyMemberListPage(@ModelAttribute MemberPagingRequest memberPagingRequest,
@@ -56,17 +59,20 @@ public class StudyManageController {
 //        return "/admin/admin-member";
     }
 
+    // TODO: 2023-03-30 테스트를 위해 ResponseBody를 걸어두었습니다. 이제 뷰에 연결해야 합니다.
     @GetMapping("/applyList")
-    public String getStudyApplyListPage(@ModelAttribute MemberPagingRequest memberPagingRequest,
-                                        @PathVariable("studyId") Long studyId,
-                                        BindingResult bindingResult, Model model) {
+    @ResponseBody
+    public PageResultDto<ApplyInfo, ?> getStudyApplyListPage(@ModelAttribute ApplyPagingRequest applyPagingRequest,
+                                                             @PathVariable("studyId") Long studyId,
+                                                             BindingResult bindingResult, Model model) {
 
-        Sort sort = Sort.by(memberPagingRequest.getSort().toString());
+        Sort sort = Sort.by(applyPagingRequest.getSort().toString());
 
-        Pageable pageable = PageRequest.of(memberPagingRequest.getPage() - 1, memberPagingRequest.getSize(),
-                memberPagingRequest.getIsAsc() == 1 ? sort.ascending() : sort.descending());
+        Pageable pageable = PageRequest.of(applyPagingRequest.getPage() - 1, applyPagingRequest.getSize(),
+                applyPagingRequest.getIsAsc() == 1 ? sort.ascending() : sort.descending());
 
-        return "/admin/admin-apply";
+        return applyForStudyService.ManageApplyForStudy(studyId, pageable);
+//        return "/admin/admin-apply";
     }
 
     /**
