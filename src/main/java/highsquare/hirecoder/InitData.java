@@ -10,6 +10,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.annotation.PostConstruct;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static highsquare.hirecoder.entity.ActivityState.진행전;
@@ -36,112 +37,117 @@ public class InitData {
     private final ApplyForStudyRepository applyForStudyRepository;
     private final MessageForApplicationRepository messageForApplicationRepository;
 
-    //@PostConstruct
+    @PostConstruct
     public void init() {
 
         TransactionStatus ts = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
 
         // ----------------멤버-----------------
-        Member member1 = setMember("김강욱", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", "kimkangwook@naver.com");
-        Member member2 = setMember("송재원", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", "jaewon@naver.com");
-        Member member3 = setMember("박경림", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", "rim@naver.com");
-        Member member4 = setMember("이효진", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", "hyojin@naver.com");
+        List<Member> members = List.of(
+                setMember("김강욱", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", "kimkangwook@naver.com"),
+                setMember("송재원", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", "jaewon@naver.com"),
+                setMember("박경림", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", "rim@naver.com"),
+                setMember("이효진", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", "hyojin@naver.com"),
 
-            // ----------------스터디-----------------
-        Study study1 = setStudyData("백엔드1팀", member1, 4, 진행중, 모집완료, 오프라인);
-        Study study2 = setStudyData("백엔드2팀", member2, 5, 진행전, 모집중, 온라인);
+                setMember("aaa", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", null),
+                setMember("bbb", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", null),
+                setMember("ccc", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", null),
+                setMember("ddd", "$2y$04$yzTsYmYmgOLVSrOY1eiIm.Zupgpsukn.poLZL6cZqWsl1DK1dX.xi", null)
+        );
+
+
+        // ----------------스터디-----------------
+        List<Study> studies = List.of(
+                setStudyData("백엔드1팀", members.get(0), 4, 진행중, 모집완료, 오프라인),
+                setStudyData("백엔드2팀", members.get(2), 5, 진행전, 모집중, 온라인),
+
+                setStudyData("백엔드3팀", members.get(4), 5, 진행전, 모집중, 온라인),
+                setStudyData("백엔드4팀", members.get(6), 5, 진행전, 모집중, 온라인)
+        );
 
 
         // ----------------스터디-멤버-----------------
-        StudyMember studyMember1 = setStudy(member1, study1);
-        StudyMember studyMember2 = setStudy(member2, study1);
-        StudyMember studyMember3 = setStudy(member3, study2);
-        StudyMember studyMember4 = setStudy(member4, study2);
-        StudyMember studyMember5 = setStudy(member1, study2);
+        List<StudyMember> studyMembers = List.of(
+                setStudy(members.get(0), studies.get(0)),
+                setStudy(members.get(1), studies.get(0)),
+                setStudy(members.get(2), studies.get(1)),
+                setStudy(members.get(3), studies.get(1)),
+                setStudy(members.get(0), studies.get(1)),
+
+                setStudy(members.get(5), studies.get(2)),
+                setStudy(members.get(4), studies.get(2)),
+                setStudy(members.get(6), studies.get(2)),
+                setStudy(members.get(6), studies.get(3))
+        );
 
 
         // ----------------게시글-----------------
-        Board board1 = setBoard(member1, study1, "공부할사람 모집합니다 1", "y",3, 5,"# 1. Content", CONTENT);
-        Board board2 = setBoard(member2, study1, "공부할사람 모집합니다 2", "y",3, 5,"반갑습니다 !!", CONTENT);
-        Board board3 = setBoard(member3, study2, "공부할사람 모집합니다 3", "n",3, 5,"반갑습니다 !!", CONTENT);
-        Board board4 = setBoard(member4, study2, "공부할사람 모집합니다 4", "n",3, 5,"반갑습니다 !!", CONTENT);
-        Board board5 = setBoard(member1, study1, "인프런 김영한 강좌 자바 ORM 표준 JPA 프로그래밍 스터디", "y",5, 10,
-                "안녕하세요 오프라인 스터디 인원 구인합니다. 연락 주세요. </p>", RECRUIT);
-
+        List<Board> boards = List.of(
+                setBoard(members.get(0), studies.get(0), "공부할사람 모집합니다 1", "y",3, 5,"# 1. Content", CONTENT),
+                setBoard(members.get(1), studies.get(0), "공부할사람 모집합니다 2", "y",3, 5,"반갑습니다 !!", CONTENT),
+                setBoard(members.get(2), studies.get(1), "공부할사람 모집합니다 3", "n",3, 5,"반갑습니다 !!", CONTENT),
+                setBoard(members.get(3), studies.get(1), "공부할사람 모집합니다 4", "n",3, 5,"반갑습니다 !!", CONTENT),
+                setBoard(members.get(0), studies.get(0), "인프런 김영한 강좌 자바 ORM 표준 JPA 프로그래밍 스터디", "y",5, 10,
+                "안녕하세요 오프라인 스터디 인원 구인합니다. 연락 주세요. </p>", RECRUIT),
+                setBoard(members.get(4), studies.get(2), "JAVA 기초 스터디", "y",5, 10,
+                        "안녕하세요 오프라인 스터디 인원 구인합니다. 연락 주세요. </p>", RECRUIT),
+                setBoard(members.get(6), studies.get(3), "스프링 스터디", "y",5, 10,
+                        "안녕하세요 오프라인 스터디 인원 구인합니다. 연락 주세요. </p>", RECRUIT)
+        );
 
 
         // ----------------댓글-----------------
-        Comment comment1 = setComment(member1, board2, "글 잘읽었습니다 - 김강욱", 6);
-        Comment comment2 = setComment(member2, board3, "글 잘읽었습니다 - 재원", 6);
-        Comment comment3 = setComment(member3, board4, "글 잘읽었습니다 - 경림", 6);
-        Comment comment4 = setComment(member4, board1, "글 잘읽었습니다 - 효진", 6);
+        List<Comment> comments = List.of(
+            setComment(members.get(0), boards.get(1), "글 잘읽었습니다 - 김강욱", 6),
+            setComment(members.get(1), boards.get(2), "글 잘읽었습니다 - 재원", 6),
+            setComment(members.get(2), boards.get(3), "글 잘읽었습니다 - 경림", 6),
+            setComment(members.get(3), boards.get(0), "글 잘읽었습니다 - 효진", 6),
 
-        Comment comment5 = setComment(member1, board3, "글 못읽었습니다 - 김강욱", 6);
-        Comment comment6 = setComment(member2, board4, "글 못읽었습니다 - 재원", 6);
-        Comment comment7 = setComment(member3, board1, "글 못읽었습니다 - 경림", 6);
-        Comment comment8 = setComment(member4, board2, "글 못읽었습니다 - 효진", 6);
+            setComment(members.get(0), boards.get(2), "글 못읽었습니다 - 김강욱", 6),
+            setComment(members.get(1), boards.get(3), "글 못읽었습니다 - 재원", 6),
+            setComment(members.get(2), boards.get(0), "글 못읽었습니다 - 경림", 6),
+            setComment(members.get(3), boards.get(1), "글 못읽었습니다 - 효진", 6)
+        );
 
         // ----------------스터디 신청------------------
         List<ApplyForStudy> applyForStudies = List.of(
-                new ApplyForStudy(member3, study1, AuditState.대기),
-                new ApplyForStudy(member2, study1, AuditState.승인),
-                new ApplyForStudy(member2, study2, AuditState.거절));
+                new ApplyForStudy(members.get(2), studies.get(0), AuditState.대기),
+                new ApplyForStudy(members.get(1), studies.get(0), AuditState.승인),
+                new ApplyForStudy(members.get(1), studies.get(1), AuditState.거절),
+
+                new ApplyForStudy(members.get(0), studies.get(3), AuditState.대기),
+                new ApplyForStudy(members.get(1), studies.get(3), AuditState.대기),
+                new ApplyForStudy(members.get(2), studies.get(3), AuditState.대기),
+                new ApplyForStudy(members.get(3), studies.get(3), AuditState.대기),
+                new ApplyForStudy(members.get(4), studies.get(3), AuditState.대기),
+                new ApplyForStudy(members.get(5), studies.get(3), AuditState.대기),
+                new ApplyForStudy(members.get(7), studies.get(3), AuditState.대기)
+        );
 
         List<MessageForApplication> messageForApplications = List.of(
                 new MessageForApplication(applyForStudies.get(0), "스터디 참여를 희망합니다."),
                 new MessageForApplication(applyForStudies.get(1), "스터디 가입시켜 주세요."),
-                new MessageForApplication(applyForStudies.get(2), "열심히 하겠습니다.")
+                new MessageForApplication(applyForStudies.get(2), "열심히 하겠습니다."),
+
+                new MessageForApplication(applyForStudies.get(3), "열심히 하겠습니다."),
+                new MessageForApplication(applyForStudies.get(4), "열심히 하겠습니다."),
+                new MessageForApplication(applyForStudies.get(5), "열심히 하겠습니다."),
+                new MessageForApplication(applyForStudies.get(6), "열심히 하겠습니다."),
+                new MessageForApplication(applyForStudies.get(7), "열심히 하겠습니다."),
+                new MessageForApplication(applyForStudies.get(8), "열심히 하겠습니다."),
+                new MessageForApplication(applyForStudies.get(9), "열심히 하겠습니다.")
         );
 
         // ----------------DB 저장-----------------
-        persistMember(member1, member2, member3, member4);
-        persistStudy(study1, study2);
-        persistStudyMember(studyMember1, studyMember2, studyMember3, studyMember4, studyMember5);
-        persistBoard(board1, board2, board3, board4, board5);
-        persistComment(comment1, comment2, comment3, comment4, comment5, comment6, comment7, comment8);
+        memberRepository.saveAll(members);
+        studyRepository.saveAll(studies);
+        studyMemberRepository.saveAll(studyMembers);
+        boardRepository.saveAll(boards);
+        commentRepository.saveAll(comments);
         applyForStudyRepository.saveAll(applyForStudies);
         messageForApplicationRepository.saveAll(messageForApplications);
 
         platformTransactionManager.commit(ts);
-    }
-
-    private void persistComment(Comment comment1, Comment comment2, Comment comment3, Comment comment4, Comment comment5, Comment comment6, Comment comment7, Comment comment8) {
-        commentRepository.save(comment1);
-        commentRepository.save(comment2);
-        commentRepository.save(comment3);
-        commentRepository.save(comment4);
-        commentRepository.save(comment5);
-        commentRepository.save(comment6);
-        commentRepository.save(comment7);
-        commentRepository.save(comment8);
-    }
-
-    private void persistStudyMember(StudyMember studyMember1, StudyMember studyMember2, StudyMember studyMember3, StudyMember studyMember4, StudyMember studyMember5) {
-        studyMemberRepository.save(studyMember1);
-        studyMemberRepository.save(studyMember2);
-        studyMemberRepository.save(studyMember3);
-        studyMemberRepository.save(studyMember4);
-        studyMemberRepository.save(studyMember5);
-    }
-
-    private void persistStudy(Study study1, Study study2) {
-        studyRepository.save(study1);
-        studyRepository.save(study2);
-    }
-
-    private void persistBoard(Board board1, Board board2, Board board3, Board board4, Board board5) {
-        boardRepository.save(board1);
-        boardRepository.save(board2);
-        boardRepository.save(board3);
-        boardRepository.save(board4);
-        boardRepository.save(board5);
-    }
-
-    private void persistMember(Member member1, Member member2, Member member3, Member member4) {
-        memberRepository.save(member1);
-        memberRepository.save(member2);
-        memberRepository.save(member3);
-        memberRepository.save(member4);
     }
 
     private static Comment setComment(Member member1, Board board2, String content, int likeCnt) {
@@ -197,6 +203,5 @@ public class InitData {
 
         return member;
     }
-
 
 }
