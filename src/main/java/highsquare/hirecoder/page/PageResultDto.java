@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.function.Function;
@@ -30,6 +31,9 @@ public class PageResultDto<DTO, EN> {
     boolean first, last; //첫 페이지인지, 마지막 페이지인지 체크
 
     private boolean prev,next; //이전 페이지, 다음 페이지 있는지 체크
+
+    private String sort;
+    private boolean isAsc;
 
     private List<Integer> pageList;
 
@@ -71,5 +75,9 @@ public class PageResultDto<DTO, EN> {
         next = totalPages > tempEnd;
 
         pageList = IntStream.rangeClosed(start,end).boxed().collect(Collectors.toList());
+
+        sort = pageable.getSort().stream().findFirst().map(Sort.Order::getProperty).orElse(null);
+
+        isAsc = pageable.getSort().stream().findFirst().map((order)-> order.getDirection().isAscending()).orElse(true);
     }
 }

@@ -101,4 +101,11 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepositoryCustom {
         return null;
     }
 
+    @Override
+    public List<StudyMember> getMyStudies(Long memberId) {
+        return queryFactory.selectFrom(studyMember)
+                .where(studyMember.member.id.eq(memberId))
+                .join(studyMember.study, study).fetchJoin()
+                .fetch();
+    }
 }

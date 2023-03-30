@@ -59,20 +59,22 @@ public class StudyManageController {
 //        return "/admin/admin-member";
     }
 
-    // TODO: 2023-03-30 테스트를 위해 ResponseBody를 걸어두었습니다. 이제 뷰에 연결해야 합니다.
     @GetMapping("/applyList")
-    @ResponseBody
-    public PageResultDto<ApplyInfo, ?> getStudyApplyListPage(@ModelAttribute ApplyPagingRequest applyPagingRequest,
-                                                             @PathVariable("studyId") Long studyId,
-                                                             BindingResult bindingResult, Model model) {
+    public String getStudyApplyListPage(@ModelAttribute ApplyPagingRequest applyPagingRequest,
+                                        @PathVariable("studyId") Long studyId,
+                                        Model model) {
 
         Sort sort = Sort.by(applyPagingRequest.getSort().toString());
 
         Pageable pageable = PageRequest.of(applyPagingRequest.getPage() - 1, applyPagingRequest.getSize(),
                 applyPagingRequest.getIsAsc() == 1 ? sort.ascending() : sort.descending());
 
-        return applyForStudyService.ManageApplyForStudy(studyId, pageable);
-//        return "/admin/admin-apply";
+        PageResultDto<ApplyInfo, ?> applyInfoPageResultDto
+                = applyForStudyService.ManageApplyForStudy(studyId, pageable);
+
+        model.addAttribute("applyInfo", applyInfoPageResultDto);
+
+        return "/admin/admin-apply";
     }
 
     /**
