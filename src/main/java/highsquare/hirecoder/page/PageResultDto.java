@@ -44,6 +44,12 @@ public class PageResultDto<DTO, EN> {
         makePageList(result.getPageable());
     }
 
+    public PageResultDto(Page<DTO> dtoPage) {
+        dtoList = dtoPage.toList();
+        totalPages = dtoPage.getTotalPages();
+        makePageList(dtoPage.getPageable());
+    }
+
     private void makePageList(Pageable pageable){
 
         this.page = pageable.getPageNumber() + 1; //0부터 시작하므로 1을 추가

@@ -58,9 +58,8 @@
         <div class="my-5">
           <h1 class="my-4 display-4" th:text="${studyName}"></h1>
 
-          <form action="/studyManage/enroll" method="post">
+          <form action="#" method="post">
             <div class="form-floating">
-              <input type="hidden" name="studyId" th:value="${studyId}">
               <textarea class="form-control" id="appealMessage" name="appealMessage" placeholder="100글자 이내로 작성해주세요" style="height: 12rem">[[${rejectedMessage}]]</textarea>
               <label for="appealMessage">신청 사유 작성란</label>
               <span th:if="${invalidMessageLength==true}" class="field-error">사유는 1글자 이상 100글자 이하로 작성해주세요!</span>
