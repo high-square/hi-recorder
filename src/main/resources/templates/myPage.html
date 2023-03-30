@@ -54,10 +54,11 @@
         <!-- Main Content-->
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
-                <div th:if="${data.isEmpty()}" class="col-md-10 col-lg-8 col-xl-7">
+                <div th:if="${myStudyForms.isEmpty()}" class="col-md-10 col-lg-8 col-xl-7">
                     가입한 스터디가 없습니다.
                 </div>
-                <div th:if="${data != null and !data.isEmpty()}" class="col-md-10 col-lg-8 col-xl-7">
+                <div th:if="${myStudyForms != null and !myStudyForms.isEmpty()}" class="col-md-10 col-lg-8 col-xl-7">
+                    <h2>진행 중인 스터디</h2>
                     <table>
                         <thead>
                         <tr>
@@ -70,7 +71,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="data : ${data}">
+                        <tr th:each="data : ${myStudyForms}">
                             <td th:text="${data.name}"></td>
                             <td th:text="${data.meetingType}"></td>
                             <td th:text="${data.crewNumber}"></td>
@@ -89,26 +90,43 @@
                         </tbody>
                     </table>
 
-                    <th:block th:each="page:${#numbers.sequence(startPage, endPage)}">
-                        <a th:if="${page != nowPage}" th:href="@{/study/myStudy(page=${page})}" th:text="${page}"></a>
-                        <strong th:if="${page==nowPage}" th:text="${page}" style="color:blue"></strong>
+                    <th:block th:each="page:${#numbers.sequence(myStudyStartPage, myStudyEndPage)}">
+                        <a th:if="${page != myStudyNowPage}" th:href="@{/study/myStudy(myStudyPage=${page})}" th:text="${page}"></a>
+                        <strong th:if="${page==myStudyNowPage}" th:text="${page}" style="color:blue"></strong>
                     </th:block>
-
-
-                    <!-- Post preview-->
-<!--                    <div class="post-preview">-->
-<!--                        <a th:href="@{/study/${date[0].id}">-->
-<!--                            <h2 class="post-title">[[${data[0].name}]]</h2>-->
-<!--                            <h3 class="post-subtitle">세부 정보</h3>-->
-<!--                        </a>-->
-<!--                        <button>탈퇴</button>-->
-<!--                    </div>-->
-
-                    <!-- Divider-->
-                    <hr class="my-4" />
-                    <!-- Pager-->
-                    <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
                 </div>
+
+                <!-- Divider-->
+                <hr class="my-4" />
+
+                <div th:if="${applyingStudyForms.isEmpty()}" class="col-md-10 col-lg-8 col-xl-7">
+                    신청한 스터디가 없습니다.
+                </div>
+                <div th:if="${applyingStudyForms != null and !applyingStudyForms.isEmpty()}" class="col-md-10 col-lg-8 col-xl-7">
+                    <h2>신청한 스터디</h2>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>스터디 번호</th>
+                            <th>스터디명</th>
+                            <th>신청 상태</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="data2 : ${applyingStudyForms}">
+                            <td th:text="${data2.studyId}"></td>
+                            <td th:text="${data2.studyName}"></td>
+                            <td th:text="${data2.auditstate}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <th:block th:each="page2:${#numbers.sequence(applyingStudyStartPage, applyingStudyEndPage)}">
+                        <a th:if="${page2 != applyingStudyNowPage}" th:href="@{/study/myStudy(applyingStudyPage=${page2})}" th:text="${page2}"></a>
+                        <strong th:if="${page2==applyingStudyNowPage}" th:text="${page2}" style="color:blue"></strong>
+                    </th:block>
+                </div>
+
             </div>
         </div>
         <!-- Footer-->
