@@ -1,5 +1,7 @@
 package highsquare.hirecoder.web.controller;
 
+import highsquare.hirecoder.domain.repository.BoardRepository;
+import highsquare.hirecoder.domain.repository.StudyMemberRepository;
 import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.domain.service.MyPageService;
 import highsquare.hirecoder.domain.service.StudyService;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,19 +39,19 @@ public class MyPageController {
 
     private final StudyRepository studyRepository;
 
+    private final StudyMemberRepository studyMemberRepository;
+
+    private final BoardRepository boardRepository;
+
     private final JwtRenewal jwtRenewal;
 
     @GetMapping("/myStudy")
-    public String myStudy(Model model, HttpSession session) {
+    public String myStudy(Model model, Principal principal, HttpSession session) {
 
-        // session에서 member 꺼내옴
-
-        // 현재 로그인에 관한 페이지가 없으므로 session 값에 강욱 멤버의 memberId와 memberName을 임의로 넣어둔다.
-        session.setAttribute("memberId",1L);//////////////로그인 구현 후 수정
-        session.setAttribute("memberName", "강욱");////////로그인 구현 후 수정
+        Long loginMemberId = Long.parseLong(principal.getName());
 
         // db에서 memberId로 내 스터디 목록 저장
-        List<Study> myStudyList = myPageService.findMyStudy((Long) session.getAttribute("memberId"));
+        List<Study> myStudyList = myPageService.findMyStudy(loginMemberId);
         for (Study study : myStudyList) {
             System.out.println("study.getName() = " + study.getName());
 //            study.getName() = 백엔드1팀
@@ -60,7 +63,7 @@ public class MyPageController {
                 .collect(Collectors.toList());
 
         model.addAttribute("data", myStudyFormList);
-        model.addAttribute("memberId", (Long) session.getAttribute("memberId"));
+        model.addAttribute("memberId", loginMemberId);
 
         return "myPage";
     }
@@ -127,7 +130,7 @@ public class MyPageController {
 
             Study study = studyRepository.findById(studyId).get();
 
-            if (study.getCrewNumber()>1) {
+            if (studyMemberRepository.checkStudysMemberCount(studyId)>1) {
                 ScriptUtils.alert(response,"스터디 매니저는 스터디원이 모두 탈퇴한 후 스터디를 삭제할 수 있습니다.");
             }
 

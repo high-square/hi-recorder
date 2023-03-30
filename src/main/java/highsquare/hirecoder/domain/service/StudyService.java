@@ -5,6 +5,7 @@ import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.dto.StudyCreationInfo;
 import highsquare.hirecoder.entity.Member;
 import highsquare.hirecoder.entity.Study;
+import highsquare.hirecoder.entity.StudyMember;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,14 @@ public class StudyService {
     private final StudyRepository studyRepository;
     private final MemberRepository memberRepository;
 
+    private final StudyMemberService studyMemberService;
+
     public boolean isTooManyToManage(Long memberId, int maxStudyCount) {
         return studyRepository.findAllByManager_Id(memberId).size() >= maxStudyCount;
     }
 
+
+    @Transactional
     public Study createStudy(StudyCreationInfo info) {
         Optional<Member> optionalManager = memberRepository.findById(info.getManagerId());
 
@@ -34,7 +39,10 @@ public class StudyService {
               info.getMeetingType(), optionalManager.orElse(null)
         );
 
-        return studyRepository.save(study);
+        Study savedStudy = studyRepository.save(study);
+        studyMemberService.saveStudyMember(savedStudy.getId(),info.getManagerId());
+
+        return savedStudy;
 
     }
 
@@ -51,6 +59,7 @@ public class StudyService {
         return study.getName();
     }
 
+    @Transactional
     public void deleteStudy(Study study) {
         studyRepository.delete(study);
     }
