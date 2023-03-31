@@ -7,8 +7,10 @@ import net.bytebuddy.asm.Advice;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDate;
@@ -41,6 +43,8 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
                                     @Param("kind") Kind kind,
                                     Pageable pageable);
 
+    @Modifying
+    @Transactional
     @Query("update Board b set b.likeCnt=:likeCnt where b.id=:boardId")
     void updateLikeCnt(@Param("boardId") Long boardId, @Param("likeCnt") Integer likeCnt);
 }
