@@ -20,7 +20,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
                                            JwtAccessDeniedHandler jwtAccessDeniedHandler,
-                                           TokenProvider tokenProvider) throws Exception {
+                                           TokenProvider tokenProvider,
+                                           RefreshTokenProvider refreshTokenProvider) throws Exception {
         http
                 .csrf().disable()
 
@@ -46,7 +47,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
 
                 .and()
-                .apply(new JwtSecurityConfig(tokenProvider))
+                .apply(new JwtSecurityConfig(tokenProvider,refreshTokenProvider))
 
                 .and()
                 .logout()

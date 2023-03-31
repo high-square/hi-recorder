@@ -2,6 +2,7 @@ package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.repository.BoardRepository;
+import highsquare.hirecoder.domain.repository.CommentRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.service.CommentService;
 import highsquare.hirecoder.domain.service.LikeOnCommentService;
@@ -31,6 +32,8 @@ public class CommentController {
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final CommentService commentService;
+
+    private final CommentRepository commentRepository;
 
     private final LikeOnCommentService likeOnCommentService;
 
@@ -222,6 +225,7 @@ public class CommentController {
 
         LikeOnComment likeOnComment = likeOnCommentService.updateLike(commentId, loginMemberId);
         Integer likeCnt = likeOnCommentService.countLikeCnt(commentId);
+        commentRepository.updateLikeCnt(commentId, likeCnt);
         map.put("likeCheck", String.valueOf(likeOnComment.getLikeCheck()));
         map.put("likeCnt", String.valueOf(likeCnt));
 

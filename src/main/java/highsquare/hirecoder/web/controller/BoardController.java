@@ -36,10 +36,15 @@ public class BoardController {
 
     private final BoardService boardService;
     private final CommentService commentService;
+
     private final LikeOnBoardService likeOnBoardService;
+
     private final StudyService studyService;
+
     private final StudyMemberRepository studyMemberRepository;
+
     private final BoardRepository boardRepository;
+
     private final TagService tagService;
     private final StudyMemberService studyMemberService;
     private final MessageForApplicationService messageForApplicationService;
@@ -69,7 +74,7 @@ public class BoardController {
         //전체 공개 여부에 따라 멤버가 읽을 수 있는지 없는지 여부
         if (!boardService.isPublic(boardId)) {
 
-            if (!studyMemberRepository.existsMemberAndStudy(studyId, loginMemberId)) {
+            if (!studyMemberService.doesMemberBelongToStudy(studyId, loginMemberId)) {
                 ScriptUtils.alertAndBackPage(response, "해당 스터디에 해당되지 않습니다.");
             }
         }
@@ -158,11 +163,13 @@ public class BoardController {
 
         Long loginMemberId = Long.parseLong(principal.getName());
 
+
         if ((boardRepository.findById(boardId).orElse(null) == null)) { // 게시글 존재 여부 확인 로직
             map.put("notExistBoard", "해당 게시글이 존재하지 않습니다.");
         } else {
             LikeOnBoard likeOnBoard = likeOnBoardService.updateLike(boardId, loginMemberId);
             Integer likeCnt = likeOnBoardService.countLikeCnt(boardId);
+            boardRepository.updateLikeCnt(boardId,likeCnt);
             map.put("likeCheck", String.valueOf(likeOnBoard.getLikeCheck()));
             map.put("likeCnt", String.valueOf(likeCnt));
         }

@@ -28,7 +28,8 @@ public class StudyMemberService {
 
     public boolean doesMemberBelongToStudy(Long studyId, Long memberId) {
         return isIdNotNull(studyId, memberId) &&
-                studyMemberRepository.existsMemberAndStudy(studyId, memberId);
+                studyMemberRepository.existsMemberAndStudy(studyId, memberId)&&
+                (studyMemberRepository.findAuditState(studyId, memberId).equals("참여"));
     }
 
     public List<Study> getAllMembersStudy(Long memberId) {
@@ -51,6 +52,7 @@ public class StudyMemberService {
         StudyMember studyMember = new StudyMember();
         studyMember.setStudy(study);
         studyMember.setMember(member);
+        studyMember.setAttendState(AttendState.참여);
 
         studyMemberRepository.save(studyMember);
     }

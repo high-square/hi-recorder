@@ -89,6 +89,7 @@ public class StudyManageController {
     @PatchMapping("/approval/{memberId}/{applyForStudyId}")
     public void approval(@PathVariable("studyId") Long studyId,
                            @PathVariable("memberId") Long memberId,
+                           Principal principal,
                            @PathVariable("applyForStudyId") Long applyForStudyId,
                            HttpServletResponse response) throws IOException {
 

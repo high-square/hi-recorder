@@ -11,6 +11,8 @@ import highsquare.hirecoder.page.PageRequestDto;
 import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.web.form.MyApplyStudyForm;
 import highsquare.hirecoder.web.form.MyStudyForm;
+import highsquare.hirecoder.entity.*;
+import highsquare.hirecoder.utils.ScriptUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Function;
 
@@ -90,9 +94,12 @@ public class MyPageService {
      * 스터디 탈퇴
      */
     @Transactional
-    public void leaveStudy(Long studyId, Long memberId) {
+    public void leaveStudy(Long studyId, Long memberId, HttpServletResponse response) throws IOException {
         StudyMember studyMember = studyMemberRepository.findStudyMemberByStudyIdAndMemberId(studyId, memberId);
-        studyMemberRepository.delete(studyMember);
+        if (studyMember==null) {
+            ScriptUtils.alert(response,"해당 스터디에 가입한 적이 없습니다.");
+        }
+        studyMember.setAttendState(AttendState.탈퇴);
     }
 
     /**

@@ -1,5 +1,6 @@
 package highsquare.hirecoder.security.jwt;
 
+import highsquare.hirecoder.security.exception.ExpiredTokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -114,6 +115,7 @@ public class TokenProvider implements InitializingBean {
             throw e;
         } catch (ExpiredJwtException e) {
             log.warn("만료된 JWT 토큰입니다.");
+            throw new ExpiredTokenException("만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
             log.warn("지원되지 않는 토큰입니다.");
         } catch (IllegalArgumentException e) {

@@ -7,6 +7,7 @@ import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Study;
 import highsquare.hirecoder.security.jwt.JwtFilter;
 import highsquare.hirecoder.security.jwt.TokenProvider;
+import highsquare.hirecoder.security.util.JwtRenewal;
 import highsquare.hirecoder.web.form.StudyCreationForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,9 @@ public class StudyCreateFormController {
     private final StudyMemberService studyMemberService;
     private final TokenProvider tokenProvider;
     private final ImageService imageService;
+
+    private final JwtRenewal jwtRenewal;
+
 
     @GetMapping("/create")
     public String getRecruitBoardCreateForm(Principal principal, Model model) {
@@ -112,14 +116,13 @@ public class StudyCreateFormController {
         StudyCreationInfo info = new StudyCreationInfo(studyCreationForm, memberId);
         Study study = studyService.createStudy(info);
 
-        List<GrantedAuthority> authorities = new ArrayList<>(authentication.getAuthorities());
-        authorities.add(new SimpleGrantedAuthority(Long.toString(study.getId())));
+        /**
+         * 스터디 매니저 권한 추가 작업
+         */
 
-        String token = tokenProvider.createToken(new UsernamePasswordAuthenticationToken(authentication, "", authorities));
+        jwtRenewal.managerInjection(response,authentication, study.getId());
 
-        Cookie cookie = new Cookie(JwtFilter.AUTHORIZATION_HEADER, URLEncoder.encode("Bearer " + token, "utf-8"));
-        cookie.setPath("/");
-        response.addCookie(cookie);
+
 
         studyMemberService.registerMemberToStudy(study.getId(), memberId);
 
