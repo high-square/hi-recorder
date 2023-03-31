@@ -8,6 +8,7 @@ import highsquare.hirecoder.dto.ApplyPagingRequest;
 import highsquare.hirecoder.dto.MemberPagingRequest;
 import highsquare.hirecoder.dto.MemberInfo;
 import highsquare.hirecoder.entity.AttendState;
+import highsquare.hirecoder.entity.Member;
 import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.utils.ScriptUtils;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +46,7 @@ public class StudyManageController {
 
     // TODO: 2023-03-30 테스트를 위해 ResponseBody를 걸어두었습니다. 이제 뷰에 연결해야 합니다.
     @GetMapping("/memberList")
-    @ResponseBody
-    public PageResultDto<MemberInfo, ?> getStudyMemberListPage(@ModelAttribute MemberPagingRequest memberPagingRequest,
+    public String getStudyMemberListPage(@ModelAttribute MemberPagingRequest memberPagingRequest,
                                                                     @PathVariable("studyId") Long studyId,
                                                                     BindingResult bindingResult, Model model) {
 
@@ -55,8 +55,12 @@ public class StudyManageController {
         Pageable pageable = PageRequest.of(memberPagingRequest.getPage() - 1, memberPagingRequest.getSize(),
                                     memberPagingRequest.getIsAsc() == 1 ? sort.ascending() : sort.descending());
 
-        return studyMemberService.ManageStudyMember(studyId, pageable);
-//        return "/admin/admin-member";
+        PageResultDto<MemberInfo, ?> pageResultDto
+                = studyMemberService.ManageStudyMember(studyId, pageable);
+
+        model.addAttribute("memberInfo", pageResultDto);
+
+        return "/admin/admin-member";
     }
 
     @GetMapping("/applyList")

@@ -91,12 +91,12 @@
       </a>
       <ul id="member-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
         <li>
-          <a href="admin-apply.html" class="active">
+          <a href="#" class="active">
             <i class="bi bi-circle"></i><span>신청관리</span>
           </a>
         </li>
         <li>
-          <a href="admin-member.html">
+          <a href="admin-member.html" th:href="@{${#httpServletRequest.requestURI + '/../memberList'}}">
             <i class="bi bi-circle"></i><span>회원관리</span>
           </a>
         </li>

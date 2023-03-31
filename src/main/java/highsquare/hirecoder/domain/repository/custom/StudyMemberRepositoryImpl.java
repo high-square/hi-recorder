@@ -54,13 +54,13 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepositoryCustom {
     public Page<MemberInfo> searchStudyMemberInfo(Long studyId, Pageable pageable) {
 
         List<MemberInfo> content = queryFactory.select(constructor(MemberInfo.class,
-                        member.id, member.name, board.count(), comment.count(), studyMember.attendState.stringValue()))
+                        member.id, member.name, board.count(), comment.count(), studyMember.member.eq(studyMember.study.manager), studyMember.attendState.stringValue()))
                 .from(studyMember)
-                .where(studyMember.study.id.eq(studyId))
+                .join(studyMember.study, study).on(study.id.eq(studyId))
                 .join(studyMember.member, member)
                 .leftJoin(board).on(studyMember.study.id.eq(board.study.id), member.id.eq(board.member.id)).fetchJoin()
                 .leftJoin(comment).on(comment.board.id.eq(board.id), member.id.eq(comment.member.id)).fetchJoin()
-                .groupBy(member)
+                .groupBy(member.id)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(memberInfoSort(pageable))
@@ -93,7 +93,7 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepositoryCustom {
                     case ATTEND:
                         return new OrderSpecifier<>(direction, studyMember.attendState);
                     case MANAGER:
-                        return new OrderSpecifier<>(direction, study.manager.id.eq(member.id));
+                        return new OrderSpecifier<>(direction, study.manager.id);
                 }
             }
         }
