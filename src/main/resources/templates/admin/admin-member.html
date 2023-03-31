@@ -9,24 +9,24 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="../../static/admin/assets/img/favicon.png" th:href="@{../static/admin/assets/img/favicon.png}" rel="icon">
-  <link href="../../static/admin/admin/assets/img/apple-touch-icon.png" th:href="@{../static/admin/assets/img/apple-touch-icon.png}" rel="apple-touch-icon">
+  <link href="../../static/admin/assets/img/favicon.png" th:href="@{/admin/assets/img/favicon.png}" rel="icon">
+  <link href="../../static/admin/admin/assets/img/apple-touch-icon.png" th:href="@{/admin/assets/img/apple-touch-icon.png}" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-  <link href="../../static/admin/assets/vendor/bootstrap/css/bootstrap.min.css" th:href="@{../static/admin/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" th:href="@{../static/admin/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/boxicons/css/boxicons.min.css" th:href="@{../static/admin/assets/vendor/boxicons/css/boxicons.min.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/quill/quill.snow.css" th:href="@{../static/admin/assets/vendor/quill/quill.snow.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/quill/quill.bubble.css" th:href="@{../static/admin/assets/vendor/quill/quill.bubble.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/remixicon/remixicon.css" th:href="@{../static/admin/assets/vendor/remixicon/remixicon.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/simple-datatables/style.css" th:href="@{../static/admin/assets/vendor/simple-datatables/style.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/bootstrap/css/bootstrap.min.css" th:href="@{/admin/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" th:href="@{/admin/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/boxicons/css/boxicons.min.css" th:href="@{/admin/assets/vendor/boxicons/css/boxicons.min.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/quill/quill.snow.css" th:href="@{/admin/assets/vendor/quill/quill.snow.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/quill/quill.bubble.css" th:href="@{/admin/assets/vendor/quill/quill.bubble.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/remixicon/remixicon.css" th:href="@{/admin/assets/vendor/remixicon/remixicon.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/simple-datatables/style.css" th:href="@{/admin/assets/vendor/simple-datatables/style.css}" rel="stylesheet">
 
   <!-- Template Main CSS File -->
-  <link href="../../static/admin/assets/css/style.css" th:href="@{../static/admin/assets/img/favicon.png}" rel="stylesheet">
+  <link href="../../static/admin/assets/css/style.css" th:href="@{/admin/assets/css/style.css}" rel="stylesheet">
 
   <!-- =======================================================
   * Template Name: NiceAdmin - v2.4.1
@@ -46,8 +46,6 @@
     }
   </style>
 </head>
-<body>
-
 <body>
 
 <!-- ======= Header ======= -->
@@ -132,57 +130,27 @@
           <div class="card-body">
             <h5 class="card-title">회원 관리</h5>
 
-            <table class="table table-borderless datatable">
+            <table class="table">
               <thead>
               <tr>
-                <th scope="col">#</th>
-                <th scope="col">Member</th>
-                <th scope="col">총 게시글 수</th>
-                <th scope="col">총 댓글 수</th>
-                <th scope="col">마지막 접속일</th>
-                <th scope="col">Status</th>
+                <th scope="col"><a th:href="@{${#httpServletRequest.requestURL}(page=${1}, size=${memberInfo.getSize()}, isAsc=${memberInfo.isAsc() and 'ID' == memberInfo.getSort() ? 0 : 1}, sort='ID')}" style="color: black">#</a></th>
+                <th scope="col"><a th:href="@{${#httpServletRequest.requestURL}(page=${1}, size=${memberInfo.getSize()}, isAsc=${memberInfo.isAsc() and 'NAME' == memberInfo.getSort() ? 0 : 1}, sort='NAME')}" style="color: black">이름</a></th>
+                <th scope="col"><a th:href="@{${#httpServletRequest.requestURL}(page=${1}, size=${memberInfo.getSize()}, isAsc=${memberInfo.isAsc() and 'WRITE_COUNT' == memberInfo.getSort() ? 0 : 1}, sort='WRITE_COUNT')}" style="color: black">총 게시글</a></th>
+                <th scope="col"><a th:href="@{${#httpServletRequest.requestURL}(page=${1}, size=${memberInfo.getSize()}, isAsc=${memberInfo.isAsc() and 'COMMENT_COUNT' == memberInfo.getSort() ? 0 : 1}, sort='COMMENT_COUNT')}" style="color: black">총 댓글</a></th>
+                <th scope="col"><a th:href="@{${#httpServletRequest.requestURL}(page=${1}, size=${memberInfo.getSize()}, isAsc=${memberInfo.isAsc() and 'MANAGER' == memberInfo.getSort() ? 0 : 1}, sort='MANAGER')}" style="color: black">권한</a></th>
+                <th scope="col"><a th:href="@{${#httpServletRequest.requestURL}(page=${1}, size=${memberInfo.getSize()}, isAsc=${memberInfo.isAsc() and 'ATTEND' == memberInfo.getSort() ? 0 : 1}, sort='ATTEND')}" style="color: black">STATUS</a></th>
+                <th scope="col">강퇴</th>
               </tr>
               </thead>
               <tbody>
-              <tr>
-                <th scope="row"><a href="#">#2457</a></th>
-                <td>이효진</td>
-                <td>15</td>
-                <td>40</td>
-                <td>2023-03-21</td>
-                <td><button class="btn btn-outline-warning btn-sm rounded-pill">탈퇴</button></td>
-              </tr>
-              <tr>
-                <th scope="row"><a href="#">#2457</a></th>
-                <td>이효진</td>
-                <td>15</td>
-                <td>40</td>
-                <td>2023-03-21</td>
-                <td><button class="btn btn-outline-warning btn-sm rounded-pill">탈퇴</button></td>
-              </tr>
-              <tr>
-                <th scope="row"><a href="#">#2457</a></th>
-                <td>이효진</td>
-                <td>15</td>
-                <td>40</td>
-                <td>2023-03-21</td>
-                <td><button class="btn btn-outline-warning btn-sm rounded-pill">탈퇴</button></td>
-              </tr>
-              <tr>
-                <th scope="row"><a href="#">#2457</a></th>
-                <td>이효진</td>
-                <td>15</td>
-                <td>40</td>
-                <td>2023-03-21</td>
-                <td><button class="btn btn-outline-warning btn-sm rounded-pill">탈퇴</button></td>
-              </tr>
-              <tr>
-                <th scope="row"><a href="#">#2457</a></th>
-                <td>이효진</td>
-                <td>15</td>
-                <td>40</td>
-                <td>2023-03-21</td>
-                <td><button class="btn btn-outline-warning btn-sm rounded-pill">탈퇴</button></td>
+              <tr th:each="member : ${memberInfo.dtoList}">
+                <th scope="row" th:text="${member.id}">#2147</th>
+                <td th:text="${member.name}">Bridie Kessler</td>
+                <td th:text="${member.totalWrite}">5</td>
+                <td th:text="${member.totalComment}">5</td>
+                <td th:text="${member.manager ? 'MANAGER' : 'USER'}">USER</td>
+                <td th:text="${member.attendState}">참석</td>
+                <td><button class="btn btn-outline-danger btn-sm rounded-pill">강퇴</button></td>
               </tr>
               </tbody>
             </table>
@@ -214,16 +182,16 @@
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
-<script src="../../static/admin/assets/vendor/apexcharts/apexcharts.min.js" th:href="@{../static/admin/assets/vendor/apexcharts/apexcharts.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js" th:href="@{../static/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/chart.js/chart.min.js" th:href="@{../static/admin/assets/vendor/chart.js/chart.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/echarts/echarts.min.js" th:href="@{../static/admin/assets/vendor/echarts/echarts.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/quill/quill.min.js" th:href="@{../static/admin/assets/vendor/quill/quill.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/simple-datatables/simple-datatables.js" th:href="@{../static/admin/assets/vendor/simple-datatables/simple-datatables.js}" ></script>
-<script src="../../static/admin/assets/vendor/tinymce/tinymce.min.js" th:href="@{../static/admin/assets/vendor/tinymce/tinymce.min.js}" ></script>
+<script src="../../static/admin/assets/vendor/apexcharts/apexcharts.min.js" th:href="@{/admin/assets/vendor/apexcharts/apexcharts.min.js}" ></script>
+<script src="../../static/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js" th:href="@{/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}" ></script>
+<script src="../../static/admin/assets/vendor/chart.js/chart.min.js" th:href="@{/admin/assets/vendor/chart.js/chart.min.js}" ></script>
+<script src="../../static/admin/assets/vendor/echarts/echarts.min.js" th:href="@{/admin/assets/vendor/echarts/echarts.min.js}" ></script>
+<script src="../../static/admin/assets/vendor/quill/quill.min.js" th:href="@{/admin/assets/vendor/quill/quill.min.js}" ></script>
+<script src="../../static/admin/assets/vendor/simple-datatables/simple-datatables.js" th:href="@{/admin/assets/vendor/simple-datatables/simple-datatables.js}" ></script>
+<script src="../../static/admin/assets/vendor/tinymce/tinymce.min.js" th:href="@{/admin/assets/vendor/tinymce/tinymce.min.js}" ></script>
 
 <!-- Template Main JS File -->
-<script src="../../static/admin/assets/js/main.js" th:href="@{../static/admin/assets/js/main.js}" ></script>
+<script src="../../static/admin/assets/js/main.js" th:href="@{/admin/assets/js/main.js}" ></script>
 
 </body>
 </html>

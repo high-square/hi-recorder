@@ -70,7 +70,8 @@ public class SecurityConfig {
                     "/favicon.ico",
                     "/css/**",
                     "/js/**",
-                    "/images/**"
+                    "/images/**",
+                    "/admin/**"
             );
         };
     }

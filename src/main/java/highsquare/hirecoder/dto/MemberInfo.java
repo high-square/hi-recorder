@@ -10,5 +10,6 @@ public class MemberInfo {
     private String name;
     private Long totalWrite;
     private Long totalComment;
+    private boolean isManager;
     private String attendState;
 }

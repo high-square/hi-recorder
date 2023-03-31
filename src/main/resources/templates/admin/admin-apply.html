@@ -9,24 +9,32 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="../../static/admin/assets/img/favicon.png" th:href="@{../static/admin/assets/img/favicon.png}" rel="icon">
-  <link href="../../static/admin/admin/assets/img/apple-touch-icon.png" th:href="@{../static/admin/assets/img/apple-touch-icon.png}" rel="apple-touch-icon">
+  <link href="../../static/admin/assets/img/favicon.png" th:href="@{/admin/assets/img/favicon.png}" rel="icon">
+  <link href="../../static/admin/admin/assets/img/apple-touch-icon.png" th:href="@{/admin/assets/img/apple-touch-icon.png}" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-  <link href="../../static/admin/assets/vendor/bootstrap/css/bootstrap.min.css" th:href="@{../static/admin/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" th:href="@{../static/admin/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/boxicons/css/boxicons.min.css" th:href="@{../static/admin/assets/vendor/boxicons/css/boxicons.min.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/quill/quill.snow.css" th:href="@{../static/admin/assets/vendor/quill/quill.snow.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/quill/quill.bubble.css" th:href="@{../static/admin/assets/vendor/quill/quill.bubble.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/remixicon/remixicon.css" th:href="@{../static/admin/assets/vendor/remixicon/remixicon.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/simple-datatables/style.css" th:href="@{../static/admin/assets/vendor/simple-datatables/style.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/bootstrap/css/bootstrap.min.css" th:href="@{/admin/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" th:href="@{/admin/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/boxicons/css/boxicons.min.css" th:href="@{/admin/assets/vendor/boxicons/css/boxicons.min.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/quill/quill.snow.css" th:href="@{/admin/assets/vendor/quill/quill.snow.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/quill/quill.bubble.css" th:href="@{/admin/assets/vendor/quill/quill.bubble.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/remixicon/remixicon.css" th:href="@{/admin/assets/vendor/remixicon/remixicon.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/simple-datatables/style.css" th:href="@{/admin/assets/vendor/simple-datatables/style.css}" rel="stylesheet">
 
   <!-- Template Main CSS File -->
-  <link href="../../static/admin/assets/css/style.css" th:href="@{../static/admin/assets/img/favicon.png}" rel="stylesheet">
+  <link href="../../static/admin/assets/css/style.css" th:href="@{/admin/assets/css/style.css}" rel="stylesheet">
+
+  <script src="../../static/admin/assets/vendor/apexcharts/apexcharts.min.js" th:src="@{/admin/assets/vendor/apexcharts/apexcharts.min.js}" ></script>
+  <script src="../../static/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js" th:src="@{/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}" ></script>
+  <script src="../../static/admin/assets/vendor/chart.js/chart.min.js" th:src="@{/admin/assets/vendor/chart.js/chart.min.js}" ></script>
+  <script src="../../static/admin/assets/vendor/echarts/echarts.min.js" th:src="@{/admin/assets/vendor/echarts/echarts.min.js}" ></script>
+  <script src="../../static/admin/assets/vendor/quill/quill.min.js" th:src="@{/admin/assets/vendor/quill/quill.min.js}" ></script>
+  <script src="../../static/admin/assets/vendor/simple-datatables/simple-datatables.js" th:src="@{/admin/assets/vendor/simple-datatables/simple-datatables.js}" ></script>
+  <script src="../../static/admin/assets/vendor/tinymce/tinymce.min.js" th:src="@{/admin/assets/vendor/tinymce/tinymce.min.js}" ></script>
 
   <!-- =======================================================
   * Template Name: NiceAdmin - v2.4.1
@@ -83,12 +91,12 @@
       </a>
       <ul id="member-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
         <li>
-          <a href="admin-apply.html" class="active">
+          <a href="#" class="active">
             <i class="bi bi-circle"></i><span>신청관리</span>
           </a>
         </li>
         <li>
-          <a href="admin-member.html">
+          <a href="admin-member.html" th:href="@{${#httpServletRequest.requestURI + '/../memberList'}}">
             <i class="bi bi-circle"></i><span>회원관리</span>
           </a>
         </li>
@@ -117,57 +125,38 @@
       <div class="col-12">
         <div class="card recent-sales overflow-auto">
           <div class="card-body">
-            <h5 class="card-title">가입 신청 <span>| Today</span></h5>
+            <h5 class="card-title">가입 신청 <span>| Apply</span></h5>
 
-            <table class="table table-borderless datatable">
+            <table class="table">
               <thead>
               <tr>
-                <th scope="col">#</th>
-                <th scope="col">Member</th>
-                <th scope="col">신청 사유</th>
-                <th scope="col">Date</th>
+                <th scope="col"><a th:href="@{${#httpServletRequest.requestURL}(page=${1}, size=${applyInfo.getSize()}, isAsc=${applyInfo.isAsc() and 'ID' == applyInfo.getSort() ? 0 : 1}, sort='ID')}" style="color: black">#</a></th>
+                <th scope="col"><a th:href="@{${#httpServletRequest.requestURL}(page=${1}, size=${applyInfo.getSize()}, isAsc=${applyInfo.isAsc() and 'MEMBER_NAME' == applyInfo.getSort() ? 0 : 1}, sort='MEMBER_NAME')}" style="color: black">Member</a></th>
+                <th scope="col"><a th:href="@{${#httpServletRequest.requestURL}(page=${1}, size=${applyInfo.getSize()}, isAsc=${applyInfo.isAsc() and 'REASON' == applyInfo.getSort() ? 0 : 1}, sort='REASON')}" style="color: black">신청 사유</a></th>
+                <th scope="col"><a th:href="@{${#httpServletRequest.requestURL}(page=${1}, size=${applyInfo.getSize()}, isAsc=${applyInfo.isAsc() and 'EMAIL' == applyInfo.getSort() ? 0 : 1}, sort='EMAIL')}" style="color: black">Email</a></th>
+                <th scope="col"><a th:href="@{${#httpServletRequest.requestURL}(page=${1}, size=${applyInfo.getSize()}, isAsc=${applyInfo.isAsc() and 'DATE' == applyInfo.getSort() ? 0 : 1}, sort='DATE')}" style="color: black">Date</a></th>
                 <th scope="col">Status</th>
               </tr>
               </thead>
               <tbody>
-              <tr>
-                <th scope="row"><a href="#">#2457</a></th>
-                <td>이효진</td>
-                <td><a href="#" class="text-primary">스터디라도 붙여주세요</a></td>
-                <td>2023-03-10</td>
-                <td><button class="btn btn-outline-success btn-sm rounded-pill">수락</button>
-                  <button class="btn btn-outline-danger btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#scrollingModal">거절</button></td>
-              </tr>
-              <tr>
-                <th scope="row"><a href="#">#2147</a></th>
-                <td>Bridie Kessler</td>
-                <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
-                <td>2023-03-10</td>
-                <td><button class="btn btn-outline-success btn-sm rounded-pill">수락</button> <button class="btn btn-outline-danger btn-sm rounded-pill">거절</button></td>
-              </tr>
-              <tr>
-                <th scope="row"><a href="#">#2049</a></th>
-                <td>Ashleigh Langosh</td>
-                <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                <td>2023-03-10</td>
-                <td><button class="btn btn-outline-success btn-sm rounded-pill">수락</button> <button class="btn btn-outline-danger btn-sm rounded-pill">거절</button></td>
-              </tr>
-              <tr>
-                <th scope="row"><a href="#">#2644</a></th>
-                <td>Angus Grady</td>
-                <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                <td>2023-03-10</td>
-                <td><button class="btn btn-outline-success btn-sm rounded-pill">수락</button> <button class="btn btn-outline-danger btn-sm rounded-pill">거절</button></td>
-              </tr>
-              <tr>
-                <th scope="row"><a href="#">#2644</a></th>
-                <td>Raheem Lehner</td>
-                <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                <td>2023-03-10</td>
+              <tr th:each="apply : ${applyInfo.dtoList}">
+                <th scope="row" th:text="${apply.applyId}">#2147</th>
+                <td th:text="${apply.memberName}">Bridie Kessler</td>
+                <td th:text="${apply.reason}">Blanditiis dolor omnis similique</td>
+                <td th:text="${apply.email}"></td>
+                <td th:text="${apply.date}">2023-03-10</td>
                 <td><button class="btn btn-outline-success btn-sm rounded-pill">수락</button> <button class="btn btn-outline-danger btn-sm rounded-pill">거절</button></td>
               </tr>
               </tbody>
             </table>
+
+            <ul class="pagination justify-content-center">
+              <li class="page-item" th:each="page : ${applyInfo.getPageList()}">
+                <a class="page-link" th:text="${page}"
+                   th:href="@{${#httpServletRequest.getRequestURL().toString()}(page=${page}, size=${applyInfo.getSize()}, isAsc=${applyInfo.isAsc() ? 1 : 0}, sort=${applyInfo.getSort()})}">
+                </a>
+              </li>
+            </ul>
 
           </div>
 
@@ -198,9 +187,6 @@
     </div>
   </div><!-- End Scrolling Modal-->
 
-  </div>
-  </div>
-
 </main><!-- End #main -->
 
 <!-- ======= Footer ======= -->
@@ -219,17 +205,11 @@
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-<!-- Vendor JS Files -->
-<script src="../../static/admin/assets/vendor/apexcharts/apexcharts.min.js" th:href="@{../static/admin/assets/vendor/apexcharts/apexcharts.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js" th:href="@{../static/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/chart.js/chart.min.js" th:href="@{../static/admin/assets/vendor/chart.js/chart.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/echarts/echarts.min.js" th:href="@{../static/admin/assets/vendor/echarts/echarts.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/quill/quill.min.js" th:href="@{../static/admin/assets/vendor/quill/quill.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/simple-datatables/simple-datatables.js" th:href="@{../static/admin/assets/vendor/simple-datatables/simple-datatables.js}" ></script>
-<script src="../../static/admin/assets/vendor/tinymce/tinymce.min.js" th:href="@{../static/admin/assets/vendor/tinymce/tinymce.min.js}" ></script>
+
 
 <!-- Template Main JS File -->
-<script src="../../static/admin/assets/js/main.js" th:href="@{../static/admin/assets/js/main.js}" ></script>
+<script src="../../static/admin/assets/js/main.js" th:src="@{/admin/assets/js/main.js}" ></script>
 
 </body>
+<!-- Vendor JS Files -->
 </html>

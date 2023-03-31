@@ -8,6 +8,7 @@ import highsquare.hirecoder.dto.ApplyPagingRequest;
 import highsquare.hirecoder.dto.MemberPagingRequest;
 import highsquare.hirecoder.dto.MemberInfo;
 import highsquare.hirecoder.entity.AttendState;
+import highsquare.hirecoder.entity.Member;
 import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.utils.ScriptUtils;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +46,7 @@ public class StudyManageController {
 
     // TODO: 2023-03-30 테스트를 위해 ResponseBody를 걸어두었습니다. 이제 뷰에 연결해야 합니다.
     @GetMapping("/memberList")
-    @ResponseBody
-    public PageResultDto<MemberInfo, ?> getStudyMemberListPage(@ModelAttribute MemberPagingRequest memberPagingRequest,
+    public String getStudyMemberListPage(@ModelAttribute MemberPagingRequest memberPagingRequest,
                                                                     @PathVariable("studyId") Long studyId,
                                                                     BindingResult bindingResult, Model model) {
 
@@ -55,24 +55,30 @@ public class StudyManageController {
         Pageable pageable = PageRequest.of(memberPagingRequest.getPage() - 1, memberPagingRequest.getSize(),
                                     memberPagingRequest.getIsAsc() == 1 ? sort.ascending() : sort.descending());
 
-        return studyMemberService.ManageStudyMember(studyId, pageable);
-//        return "/admin/admin-member";
+        PageResultDto<MemberInfo, ?> pageResultDto
+                = studyMemberService.ManageStudyMember(studyId, pageable);
+
+        model.addAttribute("memberInfo", pageResultDto);
+
+        return "/admin/admin-member";
     }
 
-    // TODO: 2023-03-30 테스트를 위해 ResponseBody를 걸어두었습니다. 이제 뷰에 연결해야 합니다.
     @GetMapping("/applyList")
-    @ResponseBody
-    public PageResultDto<ApplyInfo, ?> getStudyApplyListPage(@ModelAttribute ApplyPagingRequest applyPagingRequest,
-                                                             @PathVariable("studyId") Long studyId,
-                                                             BindingResult bindingResult, Model model) {
+    public String getStudyApplyListPage(@ModelAttribute ApplyPagingRequest applyPagingRequest,
+                                        @PathVariable("studyId") Long studyId,
+                                        Model model) {
 
         Sort sort = Sort.by(applyPagingRequest.getSort().toString());
 
         Pageable pageable = PageRequest.of(applyPagingRequest.getPage() - 1, applyPagingRequest.getSize(),
                 applyPagingRequest.getIsAsc() == 1 ? sort.ascending() : sort.descending());
 
-        return applyForStudyService.ManageApplyForStudy(studyId, pageable);
-//        return "/admin/admin-apply";
+        PageResultDto<ApplyInfo, ?> applyInfoPageResultDto
+                = applyForStudyService.ManageApplyForStudy(studyId, pageable);
+
+        model.addAttribute("applyInfo", applyInfoPageResultDto);
+
+        return "/admin/admin-apply";
     }
 
     /**

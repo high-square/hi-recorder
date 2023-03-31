@@ -13,9 +13,7 @@ import static highsquare.hirecoder.constant.PageConstant.DEFAULT_SIZE;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplyPagingRequest {
-    @NotNull
     private int page = DEFAULT_PAGE;
-    @NotNull
     private int size = DEFAULT_SIZE;
     private int isAsc = 1;
     private ApplySort sort = ApplySort.ID;

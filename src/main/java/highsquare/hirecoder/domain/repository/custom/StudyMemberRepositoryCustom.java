@@ -13,6 +13,8 @@ public interface StudyMemberRepositoryCustom {
 
     public List<StudyMember> getAllMembersStudy(Long member_id);
 
+    public List<StudyMember> getMyStudies(Long memberId);
+
     public Page<MemberInfo> searchStudyMemberInfo(Long studyId, Pageable pageable);
 
 }

@@ -99,7 +99,7 @@ public class StudyMemberService {
         return studyMemberRepository.checkMembersStudyCount(memberId);
     }
 
-    public PageResultDto<MemberInfo, Member> ManageStudyMember(Long studyId, Pageable pageable) {
+    public PageResultDto<MemberInfo, ?> ManageStudyMember(Long studyId, Pageable pageable) {
         return new PageResultDto<>(studyMemberRepository.searchStudyMemberInfo(studyId, pageable));
     }
 }
