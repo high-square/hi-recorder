@@ -40,4 +40,7 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
                                     @Param("end")LocalDateTime end,
                                     @Param("kind") Kind kind,
                                     Pageable pageable);
+
+    @Query("update Board b set b.likeCnt=:likeCnt where b.id=:boardId")
+    void updateLikeCnt(@Param("boardId") Long boardId, @Param("likeCnt") Integer likeCnt);
 }

@@ -163,11 +163,13 @@ public class BoardController {
 
         Long loginMemberId = Long.parseLong(principal.getName());
 
+
         if ((boardRepository.findById(boardId).orElse(null) == null)) { // 게시글 존재 여부 확인 로직
             map.put("notExistBoard", "해당 게시글이 존재하지 않습니다.");
         } else {
             LikeOnBoard likeOnBoard = likeOnBoardService.updateLike(boardId, loginMemberId);
             Integer likeCnt = likeOnBoardService.countLikeCnt(boardId);
+            boardRepository.updateLikeCnt(boardId,likeCnt);
             map.put("likeCheck", String.valueOf(likeOnBoard.getLikeCheck()));
             map.put("likeCnt", String.valueOf(likeCnt));
         }

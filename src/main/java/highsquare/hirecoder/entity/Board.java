@@ -63,8 +63,5 @@ public class Board extends TimeEntity {
         viewCnt++;
     }
 
-    public void likeCntPlus() {
-        likeCnt++;
-    }
 
 }
