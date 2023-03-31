@@ -59,7 +59,7 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepositoryCustom {
                 .join(studyMember.study, study).on(study.id.eq(studyId))
                 .join(studyMember.member, member)
                 .leftJoin(board).on(studyMember.study.id.eq(board.study.id), member.id.eq(board.member.id)).fetchJoin()
-                .leftJoin(comment).on(comment.board.id.eq(board.id), member.id.eq(comment.member.id)).fetchJoin()
+                .leftJoin(comment).on(board.study.eq(study), member.id.eq(comment.member.id)).fetchJoin()
                 .groupBy(member.id)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
