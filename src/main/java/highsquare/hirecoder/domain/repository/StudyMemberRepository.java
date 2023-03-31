@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface StudyMemberRepository extends JpaRepository<StudyMember, Long>, StudyMemberRepositoryCustom {
 
-    @Query("select sm.study from StudyMember sm where sm.member.id =:memberId")
+    @Query("select sm.study from StudyMember sm where sm.member.id =:memberId and sm.attendState='참여'")
     Page<Study> findAllStudyByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
     @Query("select b from Board b where b.study.id =:studyId and b.member.id =:memberId")
