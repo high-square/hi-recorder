@@ -64,7 +64,7 @@ public class MyPageService {
      */
     public PageResultDto<MyApplyStudyForm, ApplyForStudy> pagingMyApplyingStudy(Long memberId, PageRequestDto requestDto) {
         Pageable pageable = requestDto.getPageable(Sort.by("id").ascending());
-        Page<ApplyForStudy> result = applyForStudyRepository.findAllByMemberId(memberId, pageable);
+        Page<ApplyForStudy> result = applyForStudyRepository.findAllStudyByMemberId(memberId, pageable);
 
         Function<ApplyForStudy, MyApplyStudyForm> fn = (entity -> applyStudyToDto(entity));
 
