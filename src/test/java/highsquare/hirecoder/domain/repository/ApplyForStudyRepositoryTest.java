@@ -10,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import javax.persistence.EntityManager;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.*;
 
 
@@ -21,6 +23,9 @@ class ApplyForStudyRepositoryTest {
 
     @Autowired
     ApplyForStudyRepository applyForStudyRepository;
+
+    @Autowired MemberRepository memberRepository;
+    @Autowired StudyRepository studyRepository;
 
 //    @Test
 //    void enrollApplyForStudyTest() {
@@ -78,5 +83,29 @@ class ApplyForStudyRepositoryTest {
         assertThat(findApplyForStudy.getStudy().getId()).isEqualTo(study.getId());
         assertThat(findApplyForStudy.getMember().getId()).isEqualTo(member.getId());
     }
+
+    @Test
+    public void findByMemberIdAndStudyIdTest() {
+        // given
+        Member member = new Member();
+        member.setPassword("tttt");
+        memberRepository.save(member);
+
+        Study study = new Study();
+        studyRepository.save(study);
+
+        ApplyForStudy applyForStudy = new ApplyForStudy();
+        applyForStudy.setMember(member);
+        applyForStudy.setStudy(study);
+        applyForStudyRepository.save(applyForStudy);
+
+        // when
+        Optional<ApplyForStudy> foundApplyForStudy = applyForStudyRepository.findFirstByMember_IdAndStudy_Id(member.getId(), study.getId());
+
+        // then
+        assertThat(foundApplyForStudy.get().getStudy()).isEqualTo(study);
+        assertThat(foundApplyForStudy.get().getMember()).isEqualTo(member);
+    }
+
 
 }

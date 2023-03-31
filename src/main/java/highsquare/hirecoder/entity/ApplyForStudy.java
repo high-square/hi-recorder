@@ -14,7 +14,7 @@ import static javax.persistence.FetchType.LAZY;
 @Getter @Setter
 @NoArgsConstructor
 @Table(name = "applyforstudy")
-public class ApplyForStudy {
+public class ApplyForStudy extends TimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "apply_id")
@@ -30,4 +30,10 @@ public class ApplyForStudy {
 
     @Enumerated(value = STRING)
     private AuditState auditstate;
+
+    public ApplyForStudy(Member member, Study study, AuditState auditstate) {
+        this.member = member;
+        this.study = study;
+        this.auditstate = auditstate;
+    }
 }

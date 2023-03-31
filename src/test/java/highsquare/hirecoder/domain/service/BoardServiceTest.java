@@ -41,7 +41,7 @@ class BoardServiceTest {
         study.setName("ABC");
         Study savedStudy = studyRepository.save(study);
 
-        BoardForm BoardForm = new BoardForm("Hello", null, "# hello JaeDoo", null);
+        BoardForm BoardForm = new BoardForm("Hello", null, true, "# hello JaeDoo", null, null);
 
         // when
 

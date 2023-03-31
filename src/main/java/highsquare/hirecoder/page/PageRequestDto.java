@@ -13,7 +13,6 @@ public class PageRequestDto {
     private int page;
     private int size;
 
-
     public Pageable getPageable(Sort sort) {
         return PageRequest.of(page-1, size, sort);
     }

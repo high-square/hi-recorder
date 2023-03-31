@@ -1,7 +1,8 @@
-package highsquare.hirecoder.web.api.service;
+package highsquare.hirecoder.api.service;
 
-import highsquare.hirecoder.domain.repository.StudyRepository;
+import highsquare.hirecoder.domain.repository.StudyMemberRepository;
 import highsquare.hirecoder.dto.MyStudyResponse;
+import highsquare.hirecoder.entity.StudyMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,11 +15,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StudyApiService {
 
-    private final StudyRepository studyRepository;
+    private final StudyMemberRepository studyMemberRepository;
 
     public List<MyStudyResponse> getMyStudies(Long memberId) {
-        return studyRepository.findAllByManager_Id(memberId)
+        return studyMemberRepository.getMyStudies(memberId)
                 .stream()
+                .map(StudyMember::getStudy)
                 .map((study)->new MyStudyResponse(study.getId(), study.getName()))
                 .collect(Collectors.toList());
     }

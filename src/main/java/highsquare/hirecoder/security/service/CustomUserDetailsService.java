@@ -1,9 +1,7 @@
 package highsquare.hirecoder.security.service;
 
 import highsquare.hirecoder.domain.repository.MemberRepository;
-import highsquare.hirecoder.domain.repository.StudyMemberRepository;
 import highsquare.hirecoder.domain.repository.StudyRepository;
-import highsquare.hirecoder.domain.repository.UserAuthorityRepository;
 import highsquare.hirecoder.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

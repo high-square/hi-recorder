@@ -6,26 +6,32 @@ import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.domain.service.MyPageService;
 import highsquare.hirecoder.domain.service.StudyService;
 import highsquare.hirecoder.entity.*;
+import highsquare.hirecoder.page.PageRequestDto;
+import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.security.jwt.TokenProvider;
 import highsquare.hirecoder.security.util.JwtRenewal;
 import highsquare.hirecoder.utils.ScriptUtils;
 import highsquare.hirecoder.web.form.BoardListForm;
+import highsquare.hirecoder.web.form.CommentSelectedForm;
+import highsquare.hirecoder.web.form.MyApplyStudyForm;
 import highsquare.hirecoder.web.form.MyStudyForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static highsquare.hirecoder.constant.PageConstant.DEFAULT_PAGE;
+import static highsquare.hirecoder.constant.PageConstant.DEFAULT_SIZE;
 
 @Controller
 @RequiredArgsConstructor
@@ -46,24 +52,43 @@ public class MyPageController {
     private final JwtRenewal jwtRenewal;
 
     @GetMapping("/myStudy")
-    public String myStudy(Model model, Principal principal, HttpSession session) {
+    public String myStudy(@RequestParam(defaultValue = "" + DEFAULT_PAGE) int myStudyPage,
+                          @RequestParam(defaultValue = "" + DEFAULT_PAGE) int applyingStudyPage,
+                          Model model, Principal principal) {
 
-        Long loginMemberId = Long.parseLong(principal.getName());
+        Long memberId = Long.parseLong(principal.getName());
 
-        // db에서 memberId로 내 스터디 목록 저장
-        List<Study> myStudyList = myPageService.findMyStudy(loginMemberId);
-        for (Study study : myStudyList) {
-            System.out.println("study.getName() = " + study.getName());
-//            study.getName() = 백엔드1팀
-//            study.getName() = 백엔드2팀
-        }
+        model.addAttribute("memberId", memberId);
 
-        // Study 엔티티를 form으로 변환
-        List<MyStudyForm> myStudyFormList = myStudyList.stream().map(o -> new MyStudyForm(o.getId(), o.getName(), o.getActivityState(), o.getStudyStartDate(), o.getStudyFinishDate(), o.getCrewNumber(), o.getMeetingType()))
-                .collect(Collectors.toList());
+        // 진행 중인 스터디 목록
+        PageRequestDto myStudyRequestDto = new PageRequestDto(myStudyPage, 2);
+        PageResultDto<MyStudyForm, Study> myStudyForms = myPageService.pagingMyStudy(memberId, myStudyRequestDto);
 
-        model.addAttribute("data", myStudyFormList);
-        model.addAttribute("memberId", loginMemberId);
+        model.addAttribute("myStudyForms", myStudyForms.dtoList);
+
+        // 페이징 관련
+        int myStudyNowPage = myStudyForms.getPage();
+        int myStudyStartPage = Math.max(myStudyNowPage - 3, 1);
+        int myStudyEndPage = Math.min(myStudyNowPage + 3, myStudyForms.getEnd());
+
+        model.addAttribute("myStudyNowPage", myStudyNowPage);
+        model.addAttribute("myStudyStartPage", myStudyStartPage);
+        model.addAttribute("myStudyEndPage", myStudyEndPage);
+
+        // 신청한 스터디 목록
+        PageRequestDto applyingStudyRequestDto = new PageRequestDto(applyingStudyPage, 2);
+        PageResultDto<MyApplyStudyForm, ApplyForStudy> myApplyingStudyForms = myPageService.pagingMyApplyingStudy(memberId, applyingStudyRequestDto);
+
+        model.addAttribute("applyingStudyForms", myApplyingStudyForms.dtoList);
+
+        // 페이징 관련
+        int applyingStudyNowPage = myApplyingStudyForms.getPage();
+        int applyingStudyStartPage = Math.max(applyingStudyNowPage - 3, 1);
+        int applyingStudyEndPage = Math.min(applyingStudyNowPage + 3, myApplyingStudyForms.getEnd());
+
+        model.addAttribute("applyingStudyNowPage", applyingStudyNowPage);
+        model.addAttribute("applyingStudyStartPage", applyingStudyStartPage);
+        model.addAttribute("applyingStudyEndPage", applyingStudyEndPage);
 
         return "myPage";
     }
@@ -76,20 +101,13 @@ public class MyPageController {
 
         // session에서 studyMember 꺼내옴
 
-        // 현재 로그인에 관한 페이지가 없으므로 session 값에 강욱 멤버의 memberId와 memberName을 임의로 넣어둔다.
-//        session.setAttribute("memberId",1L);
-        session.setAttribute("memberId", memberId);
-        session.setAttribute("memberName", "강욱");
+        model.addAttribute("studyId", String.valueOf(studyId));
 
-        model.addAttribute("memberName", "강욱");
-
-        // session에 studyId도 넣어준다.
-        session.setAttribute("studyId", studyId);
-
-        model.addAttribute("studyId", 5L);
+        String nameById = myPageService.findNameById(memberId);
+        model.addAttribute("memberName", String.valueOf(nameById));
 
         // db에서 memberId와 studyId가 일치하는 board를 찾는다. -> list
-        List<Board> myPosts = myPageService.findMyPosts((Long) session.getAttribute("studyId"), (Long) session.getAttribute("memberId"));
+        List<Board> myPosts = myPageService.findMyPosts(studyId, memberId);
         for (Board myPost : myPosts) {
             System.out.println("myPost.getTitle() = " + myPost.getTitle());
         }

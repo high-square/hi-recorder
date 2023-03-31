@@ -1,15 +1,25 @@
 package highsquare.hirecoder.domain.repository.custom;
 
-import com.querydsl.core.QueryFactory;
+import com.querydsl.core.types.EntityPath;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import highsquare.hirecoder.entity.QStudy;
+import highsquare.hirecoder.dto.MemberInfo;
+import highsquare.hirecoder.dto.MemberSort;
+import highsquare.hirecoder.entity.QMember;
 import highsquare.hirecoder.entity.StudyMember;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityManager;
-import javax.validation.constraints.NotNull;
-
 import java.util.List;
 
+import static com.querydsl.core.types.Projections.constructor;
+import static highsquare.hirecoder.entity.QBoard.board;
+import static highsquare.hirecoder.entity.QComment.comment;
+import static highsquare.hirecoder.entity.QMember.member;
 import static highsquare.hirecoder.entity.QStudy.study;
 import static highsquare.hirecoder.entity.QStudyMember.studyMember;
 
@@ -40,4 +50,62 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepositoryCustom {
                 .fetchJoin().fetch();
     }
 
+    @Override
+    public Page<MemberInfo> searchStudyMemberInfo(Long studyId, Pageable pageable) {
+
+        List<MemberInfo> content = queryFactory.select(constructor(MemberInfo.class,
+                        member.id, member.name, board.count(), comment.count(), studyMember.member.eq(studyMember.study.manager), studyMember.attendState.stringValue()))
+                .from(studyMember)
+                .join(studyMember.study, study).on(study.id.eq(studyId))
+                .join(studyMember.member, member)
+                .leftJoin(board).on(studyMember.study.id.eq(board.study.id), member.id.eq(board.member.id)).fetchJoin()
+                .leftJoin(comment).on(comment.board.id.eq(board.id), member.id.eq(comment.member.id)).fetchJoin()
+                .groupBy(member.id)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(memberInfoSort(pageable))
+                .fetch();
+
+        Long count = queryFactory.select(studyMember.count())
+                .from(studyMember)
+                .join(study).on(studyMember.study.id.eq(studyId))
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, count);
+    }
+
+    private OrderSpecifier<?> memberInfoSort(Pageable pageable) {
+        Sort sort = pageable.getSort();
+
+        if (!sort.isEmpty()) {
+            for (Sort.Order order : sort) {
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+
+                switch (MemberSort.valueOf(order.getProperty())) {
+                    case ID:
+                        return new OrderSpecifier<>(direction, member.id);
+                    case NAME:
+                        return new OrderSpecifier<>(direction, member.name);
+                    case WRITE_COUNT:
+                        return new OrderSpecifier<>(direction, board.count());
+                    case COMMENT_COUNT:
+                        return new OrderSpecifier<>(direction, comment.count());
+                    case ATTEND:
+                        return new OrderSpecifier<>(direction, studyMember.attendState);
+                    case MANAGER:
+                        return new OrderSpecifier<>(direction, study.manager.id);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<StudyMember> getMyStudies(Long memberId) {
+        return queryFactory.selectFrom(studyMember)
+                .where(studyMember.member.id.eq(memberId))
+                .join(studyMember.study, study).fetchJoin()
+                .fetch();
+    }
 }

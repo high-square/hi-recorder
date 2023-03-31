@@ -31,7 +31,6 @@ public class CommentService {
     private final LikeOnCommentService likeOnCommentService;
 
 
-
     public Long addComment(Comment comment) {
         Comment newComment = commentRepository.save(comment);
         return newComment.getId();
