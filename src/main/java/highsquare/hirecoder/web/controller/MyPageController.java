@@ -16,6 +16,7 @@ import highsquare.hirecoder.web.form.CommentSelectedForm;
 import highsquare.hirecoder.web.form.MyApplyStudyForm;
 import highsquare.hirecoder.web.form.MyStudyForm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +35,7 @@ import static highsquare.hirecoder.constant.PageConstant.DEFAULT_SIZE;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/study")
+@Slf4j
 public class MyPageController {
 
     private final MyPageService myPageService;
@@ -91,6 +93,7 @@ public class MyPageController {
         return "myPage";
     }
 
+    
     @GetMapping("/{studyId}/{memberId}")
     public String myStudyPostList(@PathVariable(value="studyId") Long studyId,
                                   @PathVariable(value="memberId") Long memberId,
@@ -104,10 +107,11 @@ public class MyPageController {
         // db에서 memberId와 studyId가 일치하는 board를 찾는다. -> list
         List<Board> myPosts = myPageService.findMyPosts(studyId, memberId);
         for (Board myPost : myPosts) {
-            System.out.println("myPost.getTitle() = " + myPost.getTitle());
+            log.info("myPost.getTitle() = {}", myPost.getTitle());
         }
-        
+
         // dto로 변환
+        // TODO: 2023-04-02 페이징 필요
         List<BoardListForm> boardListFormList = myPosts.stream().map(o -> new BoardListForm(o.getId(), o.getTitle()))
                 .collect(Collectors.toList());
 
@@ -156,11 +160,6 @@ public class MyPageController {
             // leaveStudy 호출
             myPageService.leaveStudy(studyId, memberId,response);
         }
-
-
-
-
-
 
         return "redirect:/study/myStudy";
     }

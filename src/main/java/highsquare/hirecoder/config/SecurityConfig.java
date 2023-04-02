@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static highsquare.hirecoder.constant.CookieConstant.AUTHORIZATION_HEADER;
+
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
@@ -55,7 +57,7 @@ public class SecurityConfig {
 
                 .and()
                 .logout()
-                .deleteCookies(JwtFilter.AUTHORIZATION_HEADER);
+                .deleteCookies(AUTHORIZATION_HEADER);
 
         return http.build();
     }

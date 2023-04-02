@@ -37,7 +37,7 @@ public class InitData {
     private final ApplyForStudyRepository applyForStudyRepository;
     private final MessageForApplicationRepository messageForApplicationRepository;
 
-//    @PostConstruct
+    @PostConstruct
     public void init() {
 
         TransactionStatus ts = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());

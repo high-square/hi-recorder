@@ -22,12 +22,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import static highsquare.hirecoder.constant.TokenConstant.AUTHORITIES_KEY;
+
 
 @Component
 @Slf4j
 public class TokenProvider implements InitializingBean {
-
-    private static final String AUTHORITIES_KEY = "study";
 
     private final String secret;
 
@@ -57,10 +57,6 @@ public class TokenProvider implements InitializingBean {
 
         long now = System.currentTimeMillis();
 
-        /* TODO: 2023-03-15 토큰 재할당 문제
-        * 현재는 하나의 토큰만을 발급하고 재할당하는 로직이 전혀 없다.
-        * 그래서 expired된 토큰이 쿠키에 계속 남아있게 되고 접근을 차단한다.
-        * 토큰을 재할당하기 위해 Refresh Token 전략을 함께 사용해야 한다.  */
 
         String token = Jwts.builder()
                 .setSubject(authentication.getName())
@@ -94,13 +90,6 @@ public class TokenProvider implements InitializingBean {
                             .collect(Collectors.toList());
         }
 
-
-        // TODO: 2023-03-15 Password에 아무 값도 들어가지 않는다.
-        /*
-           TODO: 2023-03-15 JWT 토큰에 멤버 아이디를 넣는 방법은 무엇일까?
-              - Controller에서 Principal을 통해 바로 memberId를 가져오고 싶다.
-              - memberRepository를 통해 검증 수행 및 ID를 가져오는 로직이 필요하다.
-        */
         User principal = new User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);

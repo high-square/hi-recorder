@@ -17,6 +17,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import static highsquare.hirecoder.constant.CookieConstant.AUTHORIZATION_HEADER;
+
 @RequiredArgsConstructor
 @Component
 @Slf4j
@@ -57,7 +59,7 @@ public class JwtRenewal {
         String token = tokenProvider.createToken(new UsernamePasswordAuthenticationToken(authentication, "", authorities));
 
         try {
-            Cookie cookie = new Cookie(JwtFilter.AUTHORIZATION_HEADER, URLEncoder.encode("Bearer " + token, "utf-8"));
+            Cookie cookie = new Cookie(AUTHORIZATION_HEADER, URLEncoder.encode("Bearer " + token, "utf-8"));
             cookie.setPath("/");
             response.addCookie(cookie);
         } catch (UnsupportedEncodingException ue ){
