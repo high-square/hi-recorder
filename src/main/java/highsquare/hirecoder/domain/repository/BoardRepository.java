@@ -47,4 +47,7 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
     @Transactional
     @Query("update Board b set b.likeCnt=:likeCnt where b.id=:boardId")
     void updateLikeCnt(@Param("boardId") Long boardId, @Param("likeCnt") Integer likeCnt);
+
+    @Query("select b from Board b where b.study.id =:studyId and b.member.id =:memberId")
+    List<Board> findAllBoardByStudyIdAndMemberId(@Param("studyId") Long studyId, @Param("memberId") Long memberId);
 }

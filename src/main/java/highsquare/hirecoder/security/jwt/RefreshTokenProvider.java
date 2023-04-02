@@ -22,13 +22,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import static highsquare.hirecoder.constant.TokenConstant.AUTHORITIES_KEY;
+
 @Component
 @Slf4j
 public class RefreshTokenProvider implements InitializingBean {
 
     private static final String IP_ADDRESS_KEY = "ipAddress";
 
-    private static final String AUTHORITIES_KEY = "study";
     private final String secret;
 
     private final long tokenValidityInMilliseconds;

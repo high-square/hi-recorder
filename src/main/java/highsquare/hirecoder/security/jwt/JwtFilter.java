@@ -18,13 +18,14 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
 
+import static highsquare.hirecoder.constant.CookieConstant.AUTHORIZATION_HEADER;
+import static highsquare.hirecoder.constant.CookieConstant.REFRESH_HEADER;
+
 @Slf4j
 @RequiredArgsConstructor
 public class JwtFilter implements Filter {
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    public static final String REFRESH_HEADER = "Refresh";
 
     private final TokenProvider tokenProvider;
 
@@ -60,7 +61,7 @@ public class JwtFilter implements Filter {
                             authentication.getName(), requestURI);
 
                     String renewToken = tokenProvider.createToken(authentication);
-                    Cookie cookie = new Cookie(JwtFilter.AUTHORIZATION_HEADER, URLEncoder.encode("Bearer " + renewToken, "utf-8"));
+                    Cookie cookie = new Cookie(AUTHORIZATION_HEADER, URLEncoder.encode("Bearer " + renewToken, "utf-8"));
                     cookie.setPath("/");
 
                     httpServletResponse.addCookie(cookie);

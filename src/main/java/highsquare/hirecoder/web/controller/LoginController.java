@@ -28,6 +28,9 @@ import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import static highsquare.hirecoder.constant.CookieConstant.AUTHORIZATION_HEADER;
+import static highsquare.hirecoder.constant.CookieConstant.REFRESH_HEADER;
+
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -61,9 +64,9 @@ public class LoginController {
         String jwt = tokenProvider.createToken(authentication);
         String refreshToken = refreshTokenProvider.createToken(authentication,request.getRemoteAddr());
 
-        Cookie cookie = new Cookie(JwtFilter.AUTHORIZATION_HEADER, URLEncoder.encode("Bearer " + jwt, "utf-8"));
+        Cookie cookie = new Cookie(AUTHORIZATION_HEADER, URLEncoder.encode("Bearer " + jwt, "utf-8"));
         cookie.setPath("/");
-        Cookie refreshCookie = new Cookie(JwtFilter.REFRESH_HEADER, URLEncoder.encode(refreshToken, "utf-8"));
+        Cookie refreshCookie = new Cookie(REFRESH_HEADER, URLEncoder.encode(refreshToken, "utf-8"));
         cookie.setPath("/");
 
         response.addCookie(cookie);

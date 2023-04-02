@@ -18,5 +18,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByName(String name);
 
     @Query("select m.name from Member m where m.id = :memberId")
-    String findNameById(Long memberId);
+    String findNameById(@Param("memberId") Long memberId);
 }

@@ -1,6 +1,7 @@
 package highsquare.hirecoder.domain.service;
 
 import highsquare.hirecoder.domain.repository.ApplyForStudyRepository;
+import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.repository.StudyMemberRepository;
 import highsquare.hirecoder.entity.ApplyForStudy;
@@ -33,6 +34,7 @@ public class MyPageService {
     private final StudyMemberRepository studyMemberRepository;
     private final MemberRepository memberRepository;
     private final ApplyForStudyRepository applyForStudyRepository;
+    private final BoardRepository boardRepository;
 
     /**
      * memberId -> studyMemberId -> study List 조회
@@ -87,7 +89,7 @@ public class MyPageService {
      * studyMember.study.id == board.study.id
      */
     public List<Board> findMyPosts(Long studyId, Long memberId) {
-        return studyMemberRepository.findAllBoardByStudyIdAndMemberId(studyId, memberId);
+        return boardRepository.findAllBoardByStudyIdAndMemberId(studyId, memberId);
     }
 
     /**

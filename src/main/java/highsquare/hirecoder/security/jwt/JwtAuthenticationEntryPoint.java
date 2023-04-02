@@ -10,9 +10,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 
-import static highsquare.hirecoder.security.jwt.JwtFilter.AUTHORIZATION_HEADER;
+import static highsquare.hirecoder.constant.CookieConstant.AUTHORIZATION_HEADER;
 
 @Component
 @Slf4j
