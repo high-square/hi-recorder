@@ -78,17 +78,15 @@ public class BoardService {
         Cookie[] cookies = request.getCookies();
         log.info("cookies null? {}", cookies == null);
 
-        // 세션이 없어서 기본적으로 제공되는 쿠키가 없음. 아마 앞단에서 로그인 세션 적용하면 쿠키생김
-        if (cookies==null) {
-            Cookie cookie = new Cookie(UUID.randomUUID().toString(), "아무거나쿠키");
-            response.addCookie(cookie);
-        }
-
-        for (Cookie cookie : cookies) {
-            if(cookie.getName().equals("postView")) {
-                oldCookie=cookie;
+        if (cookies!=null) {
+            for (Cookie cookie : cookies) {
+                if(cookie.getName().equals("postView")) {
+                    oldCookie=cookie;
+                }
             }
         }
+
+
 
         if (oldCookie!=null) {
             // 쿠키의 값을 확인해서 게시글 번호가 포함되지 않을 시 값에 게시글 번호를 붙여주고 저장함

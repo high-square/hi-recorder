@@ -49,7 +49,8 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String authorize(@Valid @ModelAttribute LoginForm loginForm,HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+    public String authorize(@Valid @ModelAttribute LoginForm loginForm,
+                            HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
 
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword());

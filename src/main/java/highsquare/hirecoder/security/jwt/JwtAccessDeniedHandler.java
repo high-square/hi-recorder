@@ -20,7 +20,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         log.debug(accessDeniedException.getMessage());
-        accessDeniedException.printStackTrace();
 
         ScriptUtils.alertAndBackPage(response, "잘못된 접근입니다.");
         response.sendError(HttpServletResponse.SC_FORBIDDEN);

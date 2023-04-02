@@ -62,7 +62,15 @@ public class InitData {
                 setStudyData("백엔드2팀", members.get(2), 5, 진행전, 모집중, 온라인),
 
                 setStudyData("백엔드3팀", members.get(4), 5, 진행전, 모집중, 온라인),
-                setStudyData("백엔드4팀", members.get(6), 5, 진행전, 모집중, 온라인)
+                setStudyData("백엔드4팀", members.get(6), 5, 진행전, 모집중, 온라인),
+
+                setStudyData("백엔드5팀", members.get(0), 5, 진행전, 모집중, 온라인),
+                setStudyData("백엔드6팀", members.get(2), 5, 진행전, 모집중, 온라인),
+
+                setStudyData("백엔드7팀", members.get(4), 5, 진행전, 모집중, 온라인),
+                setStudyData("백엔드8팀", members.get(6), 5, 진행전, 모집중, 온라인)
+
+
         );
 
 
@@ -92,6 +100,14 @@ public class InitData {
                 setBoard(members.get(4), studies.get(2), "JAVA 기초 스터디", "y",5, 10,
                         "안녕하세요 오프라인 스터디 인원 구인합니다. 연락 주세요. </p>", RECRUIT),
                 setBoard(members.get(6), studies.get(3), "스프링 스터디", "y",5, 10,
+                        "안녕하세요 오프라인 스터디 인원 구인합니다. 연락 주세요. </p>", RECRUIT),
+                setBoard(members.get(0), studies.get(4), "스프링 스터디", "y",5, 10,
+                        "안녕하세요 오프라인 스터디 인원 구인합니다. 연락 주세요. </p>", RECRUIT),
+                setBoard(members.get(2), studies.get(5), "스프링 스터디", "y",5, 10,
+                        "안녕하세요 오프라인 스터디 인원 구인합니다. 연락 주세요. </p>", RECRUIT),
+                setBoard(members.get(4), studies.get(6), "스프링 스터디", "y",5, 10,
+                        "안녕하세요 오프라인 스터디 인원 구인합니다. 연락 주세요. </p>", RECRUIT),
+                setBoard(members.get(6), studies.get(7), "스프링 스터디", "y",5, 10,
                         "안녕하세요 오프라인 스터디 인원 구인합니다. 연락 주세요. </p>", RECRUIT)
         );
 

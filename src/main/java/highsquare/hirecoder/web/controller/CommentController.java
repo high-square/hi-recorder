@@ -1,6 +1,5 @@
 package highsquare.hirecoder.web.controller;
 
-import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.CommentRepository;
 import highsquare.hirecoder.domain.repository.MemberRepository;
@@ -145,7 +144,7 @@ public class CommentController {
     @ResponseBody
     public Map<String, String> updateComment(@PathVariable("commentId") Long commentId,
                                              @RequestParam String commentContent,
-                                             Principal principal, Model model) {
+                                             Principal principal) {
 
         Long loginMemberId = Long.parseLong(principal.getName());
 

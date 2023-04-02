@@ -30,6 +30,9 @@ public class SecurityConfig {
                 .accessDeniedHandler(jwtAccessDeniedHandler)
 
                 .and()
+                .apply(new JwtSecurityConfig(tokenProvider,refreshTokenProvider))
+
+                .and()
                 .headers()
                 .frameOptions()
                 .sameOrigin()
@@ -37,6 +40,8 @@ public class SecurityConfig {
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+
 
                 .and()
                 .authorizeRequests()
@@ -46,8 +51,7 @@ public class SecurityConfig {
                 .mvcMatchers("/study/{studyId}/admin").access("isMemberManager(#studyId)")
                 .anyRequest().authenticated()
 
-                .and()
-                .apply(new JwtSecurityConfig(tokenProvider,refreshTokenProvider))
+
 
                 .and()
                 .logout()

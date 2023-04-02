@@ -124,7 +124,6 @@ public class StudyCreateFormController {
 
 
 
-        studyMemberService.registerMemberToStudy(study.getId(), memberId);
 
         studyCreationForm.setOpen(true);
         Board board = boardService.createBoard(memberId, study.getId(), Kind.RECRUIT, studyCreationForm);

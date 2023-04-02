@@ -8,10 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +20,7 @@ import java.util.Arrays;
 
 @Slf4j
 @RequiredArgsConstructor
-public class JwtFilter extends GenericFilterBean {
+public class JwtFilter implements Filter {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
@@ -51,6 +48,7 @@ public class JwtFilter extends GenericFilterBean {
                         authentication.getName(), requestURI);
             } else {
                 log.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+//                httpServletResponse.sendRedirect("/login?redirectedURL="+requestURI);
             }
         } catch (ExpiredTokenException ete) {
 
