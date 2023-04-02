@@ -21,7 +21,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.debug(authException.getMessage());
-        authException.printStackTrace();
 
         Cookie cookie = new Cookie(AUTHORIZATION_HEADER, null);
         cookie.setMaxAge(0);

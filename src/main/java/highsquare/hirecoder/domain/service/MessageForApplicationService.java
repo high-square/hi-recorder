@@ -1,6 +1,5 @@
 package highsquare.hirecoder.domain.service;
 
-import highsquare.hirecoder.constant.SessionConstant;
 import highsquare.hirecoder.domain.repository.ApplyForStudyRepository;
 import highsquare.hirecoder.domain.repository.MessageForApplicationRepository;
 import highsquare.hirecoder.entity.ApplyForStudy;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpSession;
 
 @Service
 @Transactional

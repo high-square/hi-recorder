@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface StudyRepository extends JpaRepository<Study, Long>, StudyRepositoryCustom {
 
-    public List<Study> findAllByManager_Id(Long managerId);
+    @Query("select s from Study s where s.manager.id=:managerId")
+    List<Study> findAllByManager_Id(@Param("managerId")Long managerId);
 
 }

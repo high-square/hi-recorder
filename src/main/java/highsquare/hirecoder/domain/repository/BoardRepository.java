@@ -25,7 +25,7 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
     Page<Board> findStudyAll(@Param("kind") Kind kind, Pageable pageable);
 
     @Query(value = "select b from Board b join fetch b.study s where (b.title LIKE %:search% OR b.content LIKE %:search%) AND b.kind = :kind",
-            countQuery = "select count(b) from Board b join b.study s where b.kind = :kind")
+            countQuery = "select count(b) from Board b join b.study s where (b.title LIKE %:search% OR b.content LIKE %:search%) AND b.kind = :kind")
     Page<Board> findBySearch(@Param("search") String searchKeyword, @Param("kind")Kind kind, Pageable pageable);
 
     Page<Board> findByMemberIdInAndStudyIdAndKind(List<Long> memberIds, Long studyId, Kind kind, Pageable pageable);

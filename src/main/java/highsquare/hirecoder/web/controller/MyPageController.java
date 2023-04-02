@@ -21,9 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.io.IOException;
 import java.security.Principal;
@@ -96,10 +94,7 @@ public class MyPageController {
     @GetMapping("/{studyId}/{memberId}")
     public String myStudyPostList(@PathVariable(value="studyId") Long studyId,
                                   @PathVariable(value="memberId") Long memberId,
-                                  Model model, HttpSession session) {
-        // session에 넣는 것?
-
-        // session에서 studyMember 꺼내옴
+                                  Model model) {
 
         model.addAttribute("studyId", String.valueOf(studyId));
 

@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
@@ -41,7 +40,6 @@ public class BoardController {
 
     private final StudyService studyService;
 
-    private final StudyMemberRepository studyMemberRepository;
 
     private final BoardRepository boardRepository;
 
@@ -71,6 +69,8 @@ public class BoardController {
         }
 
 
+
+
         //전체 공개 여부에 따라 멤버가 읽을 수 있는지 없는지 여부
         if (!boardService.isPublic(boardId)) {
 
@@ -81,6 +81,13 @@ public class BoardController {
 
         // DB에서 id에 해당하는 board를 꺼내옴
         Board board = boardService.getBoard(boardId, request, response);
+
+        //Kind와 board의 kind가 같은지 비교
+        if(!kind.equals(board.getKind())) {
+            return "redirect:/boards/" + board.getKind() + "/{study_id}/{board_id}";
+        }
+
+
         // 해당 스터디의 매니저 id를 꺼내옴
         if (kind.name().equals("RECRUIT")) {
             Long studyManagerId = studyService.getStudyManagerId(studyId);
@@ -128,7 +135,6 @@ public class BoardController {
         model.addAttribute("studyId", studyId);
         model.addAttribute("tags", tags);
         model.addAttribute("commentsTotalCounts", commentsTotalCounts);
-        model.addAttribute("kind", kind);
         model.addAttribute("memberId", loginMemberId);
         return "boards/board";
     }

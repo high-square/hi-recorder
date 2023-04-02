@@ -15,7 +15,7 @@
           type="text/css"/>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
           rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
 
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/css/styles.css" rel="stylesheet"/>
@@ -50,7 +50,8 @@
             <div class="col-md-10 col-lg-8 col-xl-7">
                 <div class="site-heading">
                     <h1>
-                        <a th:href="@{/study/{studyId} (studyId=${studyId})}" th:text="|${board.studyName} 게시판|"></a></h1>
+                        <a th:href="@{/study/{studyId} (studyId=${studyId})}" th:text="|${board.studyName} 게시판|"></a>
+                    </h1>
                     <span class="subheading">환영합니다</span>
                 </div>
             </div>
@@ -115,24 +116,24 @@
             <span class="col-xl-3">
         <input type="button" class="w-100 btn btn-fourth btn-lg" th:if="${board.memberId==memberId}"
                onclick="openDelete()" value="삭제하기">
-      </span>
+            </span>
         </div>
-        <span class="col-xl-3" style="margin-left:600px" th:if="${studyManagerId!=memberId}">
+        <span class="col-xl-3" style="margin-left:600px" th:if="${studyManagerId!=memberId && board.kind.equals('RECRUIT')}">
         <input type="button" class="w-100 btn btn-third btn-lg"
                onclick="applyForStudy()" value="스터디 신청하기">
-      </span>
+        </span>
         <hr class="lh-lg" style="margin-top: 50px"/>
 
 
         <article class="mb-4">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7" th:id="viewer">
-                    </div>
+                    <div class="row gx-4 gx-lg-5 justify-content-center">
+                        <div class="col-md-10 col-lg-8 col-xl-7" th:id="viewer">
+                        </div>
 
+                    </div>
                 </div>
-            </div>
             </div>
         </article>
 
@@ -175,12 +176,12 @@
             <script th:inline="javascript" th:if="${contentMaxLength}">
                 console.log('댓글길이 max');
                 alert([[#{max.comment.content_length}]]);
-                document.getElementById('newComment').value=[[${rejectedContent}]];
+                document.getElementById('newComment').value = [[${rejectedContent}]];
             </script>
             <script th:inline="javascript" th:if="${contentMinLength}">
                 console.log('댓글길이 min');
                 alert([[#{min.comment.content_length}]]);
-                document.getElementById('newComment').value=[[${rejectedContent}]];
+                document.getElementById('newComment').value = [[${rejectedContent}]];
             </script>
             <script th:inline="javascript" th:if="${notExistBoard}">
                 alert([[#{invalid.boardId}]]);
@@ -304,15 +305,6 @@
                                 <span th:class="'commentLikeCount'+${content.id}" th:text="${content.likeCount}"></span>
                             </h4>
                             <p class="card-text fw-bold" th:text="${content.content}"></p>
-                            <!--해당 댓글 작성자이면 보이는 수정, 삭제 버튼 구현 -->
-                            <th:block th:if="${memberId==content.memberId}">
-                                <textarea th:id="'toBeComment'+${content.id}" cols="15" rows="2" class="form-control"
-                                          placeholder="수정 가능합니다."></textarea>
-                                <input type="button" class="updatebtn"
-                                       th:onclick="|javascript:commentUpdate(${content.id})|" value="수정">
-                                <input type="button" class="deletebtn"
-                                       th:onclick="|javascript:commentDelete(${content.id})|" value="삭제">
-                            </th:block>
                         </div>
                     </div>
                 </section>
@@ -393,21 +385,21 @@
                     url: "/boards/like",
                     data: {'board_id': board_id},
                 }).done(function (data) {
-                    if (data.notLoginMember!=null) {
+                    if (data.notLoginMember != null) {
                         var r = confirm(data.notLoginMember);
                         if (r == true) {
                             location.href = '/login';
                         }
-                    }else if(data.notExistBoard!=null) {
-                            alert(data.notExistBoard);
-                        } else {
-                            if (data.likeCheck==1) {
-                                $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-after.png");
-                            } else if(data.likeCheck==0){
-                                $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-before.png");
-                            }
-                            $("#boardLikeCnt").text(data.likeCnt);
+                    } else if (data.notExistBoard != null) {
+                        alert(data.notExistBoard);
+                    } else {
+                        if (data.likeCheck == 1) {
+                            $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-after.png");
+                        } else if (data.likeCheck == 0) {
+                            $(".boardLikeImg").attr("src", "/assets/img/like-icon-file-before.png");
                         }
+                        $("#boardLikeCnt").text(data.likeCnt);
+                    }
 
 
                 });
@@ -432,7 +424,7 @@
                     url: "/comments/like",
                     data: {'comment_id': commentId},
                 }).done(function (data) {
-                    if (data.notExistComment!=null) {
+                    if (data.notExistComment != null) {
                         alert(data.notExistComment);
                     } else {
                         var commentLike = ".commentLikeImg" + commentId;
@@ -455,14 +447,14 @@
     openEdit = function () {
         var r = confirm("수정하시겠습니까?");
         if (r == true) {
-            location.href = '/boards/content/[[${studyId}]]/[[${board.id}]]/edit';
+            location.href = location.pathname + '/edit';
         }
     }
 
     openDelete = function () {
         var r = confirm("삭제하시겠습니까?");
         if (r == true) {
-            location.href = '/boards/content/[[${studyId}]]/[[${board.id}]]/delete';
+            location.href = location.pathname + '/delete';
         }
     }
 
@@ -497,7 +489,7 @@
                 url: "/comments/count",
                 data: {"board_id": [[${board.id}]]}
             }).done(function (data) {
-                if (data==-1) {
+                if (data == -1) {
                     alert("해당 게시글은 존재하지 않습니다.");
                 }
                 $("#commentsCount").text(data + '개의 댓글');
@@ -546,7 +538,7 @@
         $.ajax({
             method: "GET",
             url: "/comments",
-            data: {"page": pageNumber, "boardId": boardId },
+            data: {"page": pageNumber, "boardId": boardId},
         }).done(function (fragment) {
             $("#commentTable").replaceWith(fragment);
         })
@@ -585,6 +577,7 @@
         var commentId = commentId;
         var toBeComment = 'toBeComment' + commentId;
         var commentContent = document.getElementById(toBeComment).value;
+        console.log(commentContent);
         var r = confirm("댓글을 수정하시겠습니까?");
         if (r == true) {
             $.ajax({
@@ -594,15 +587,14 @@
                 async: false,
                 success: function (data) {
                     console.log(data);
-                    if (data.notExistComment!=null) {
+                    if (data.notExistComment != null) {
                         alert(data.notExistComment);
-                    } else if (data.notWriter!=null) {
+                    } else if (data.notWriter != null) {
                         alert(data.notWriter);
-                    } else if (data.blankContent!=null) {
+                    } else if (data.blankContent != null) {
                         alert(data.blankContent);
-                    } else if (data.tooLongContent!=null) {
+                    } else if (data.tooLongContent != null) {
                         alert(data.tooLongContent);
-                        document.getElementById(toBeComment).value=
                         document.getElementById(toBeComment).value.substring(0, 200);
                     } else {
                         alert("댓글이 수정되었습니다!");
@@ -631,11 +623,11 @@
                 async: false,
                 success: function (data) {
                     console.log(data);
-                    if (data.notExistComment!=null) {
+                    if (data.notExistComment != null) {
                         alert(data.notExistComment);
-                    } else if (data.notWriter!=null) {
+                    } else if (data.notWriter != null) {
                         alert(data.notWriter);
-                    }  else {
+                    } else {
                         alert("댓글이 삭제되었습니다!");
                         turnAllComments();
                         pageAll(1);
@@ -661,16 +653,12 @@
     }
 
     // 스터디 신청하기
-    applyForStudy = function() {
+    applyForStudy = function () {
         var r = confirm("해당 스터디에 가입하시겠습니까?");
         if (r == true) {
             location.href += "/enroll";
         }
     }
-
-
-
-
 
 
 </script>
