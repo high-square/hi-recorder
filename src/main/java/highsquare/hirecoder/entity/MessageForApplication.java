@@ -9,19 +9,19 @@ import javax.persistence.*;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-@Table(name = "messageforapplication")
+@Table(name = "message_for_application")
 public class MessageForApplication {
 
     @Id @GeneratedValue
     private Long id;
     @OneToOne
-    @JoinColumn(unique = true, name="apply_id")
+    @JoinColumn(unique = true, name="apply_id", foreignKey = @ForeignKey(name = "FK_APPLY_FOR_STUDY__MESSAGE_FOR_APPLICATION"))
     private ApplyForStudy applyForStudy;
 
-    @Column(name="appealmessage")
+    @Column(name="appeal_message")
     private String appealMessage;
 
-    @Column(name="rejectmessage")
+    @Column(name="reject_message")
     private String rejectMessage;
 
     public MessageForApplication(ApplyForStudy applyForStudy, String appealMessage) {

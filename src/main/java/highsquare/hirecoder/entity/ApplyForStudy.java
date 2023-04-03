@@ -13,7 +13,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-@Table(name = "applyforstudy")
+@Table(name = "apply_for_study")
 public class ApplyForStudy extends TimeEntity {
 
     @Id @GeneratedValue
@@ -21,11 +21,11 @@ public class ApplyForStudy extends TimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "FK_MEMBER__APPLY_FOR_STUDY"))
     private Member member;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "study_id")
+    @JoinColumn(name = "study_id", foreignKey = @ForeignKey(name = "FK_STUDY__APPLY_FOR_STUDY"))
     private Study study;
 
     @Enumerated(value = STRING)

@@ -17,7 +17,7 @@ public class BoardImage extends TimeEntity {
     private Image image;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
+    @JoinColumn(name = "board_id", foreignKey = @ForeignKey(name = "FK_BOARD__BOARD_IMAGE"))
     private Board board;
 
     public BoardImage(UUID uuid, Image image, Board board) {

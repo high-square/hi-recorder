@@ -17,11 +17,11 @@ public class BoardTag {
     private Long id;
 
     @ManyToOne(fetch= LAZY)
-    @JoinColumn(name="tag_id")
+    @JoinColumn(name="tag_id", foreignKey = @ForeignKey(name = "FK_TAG__BOARD_TAG"))
     private Tag tag;
 
     @ManyToOne(fetch=LAZY)
-    @JoinColumn(name="board_id")
+    @JoinColumn(name="board_id", foreignKey = @ForeignKey(name = "FK_BOARD__BOARD_TAG"))
     private Board board;
 
     public BoardTag(Tag tag, Board board) {

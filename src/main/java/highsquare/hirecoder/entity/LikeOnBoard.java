@@ -20,11 +20,11 @@ public class LikeOnBoard extends TimeEntity {
     private Long id;
 
     @ManyToOne(fetch= LAZY)
-    @JoinColumn(name="member_id")
+    @JoinColumn(name="member_id", foreignKey = @ForeignKey(name = "FK_MEMBER__LIKE_ON_BOARD"))
     private Member member;
 
     @ManyToOne(fetch= LAZY)
-    @JoinColumn(name="board_id")
+    @JoinColumn(name="board_id", foreignKey = @ForeignKey(name = "FK_BOARD__LIKE_ON_BOARD"))
     private Board board;
 
     // 0이면 좋아요 클릭 x, 1이면 좋아요 클릭 o
