@@ -1,16 +1,13 @@
-package highsquare.hirecoder;
+package highsquare.hirecoder.init;
 
 import highsquare.hirecoder.domain.repository.*;
 import highsquare.hirecoder.entity.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.annotation.PostConstruct;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import static highsquare.hirecoder.entity.ActivityState.진행전;
@@ -22,12 +19,8 @@ import static highsquare.hirecoder.entity.MeetingType.온라인;
 import static highsquare.hirecoder.entity.RecruitState.모집완료;
 import static highsquare.hirecoder.entity.RecruitState.모집중;
 
-@Component
 @RequiredArgsConstructor
-public class InitData {
-
-    private static final Long DEFAULT_CREATED_BY = 1L;
-
+public abstract class InitData implements ConstraintsConfig {
     private final PlatformTransactionManager platformTransactionManager;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
@@ -37,10 +30,12 @@ public class InitData {
     private final ApplyForStudyRepository applyForStudyRepository;
     private final MessageForApplicationRepository messageForApplicationRepository;
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
 
         TransactionStatus ts = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        editConstraints();
 
         // ----------------멤버-----------------
         List<Member> members = List.of(
