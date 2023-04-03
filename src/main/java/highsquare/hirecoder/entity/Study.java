@@ -35,7 +35,7 @@ public class Study extends TimeEntity {
     private MeetingType meetingType;
 
     @OneToOne(fetch = LAZY)
-    @JoinColumn(name="manager_id")
+    @JoinColumn(name="manager_id", foreignKey = @ForeignKey(name = "FK_MANAGER__STUDY"))
     private Member manager;
 
     public Study(String name, ActivityState activityState, RecruitState recruitState, LocalDateTime studyStartDate, LocalDateTime studyFinishDate, Integer crewNumber, MeetingType meetingType, Member manager) {

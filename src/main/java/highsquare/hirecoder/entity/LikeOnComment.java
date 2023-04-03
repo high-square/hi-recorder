@@ -20,11 +20,11 @@ public class LikeOnComment extends TimeEntity {
     private Long id;
 
     @ManyToOne(fetch= LAZY)
-    @JoinColumn(name="member_id")
+    @JoinColumn(name="member_id", foreignKey = @ForeignKey(name = "FK_MEMBER__LIKE_ON_COMMENT"))
     private Member member;
 
     @ManyToOne(fetch= LAZY)
-    @JoinColumn(name="comment_id")
+    @JoinColumn(name="comment_id", foreignKey = @ForeignKey(name = "FK_COMMENT__LIKE_ON_COMMENT"))
     private Comment comment;
 
     // 0이면 좋아요 클릭 x, 1이면 좋아요 클릭 o

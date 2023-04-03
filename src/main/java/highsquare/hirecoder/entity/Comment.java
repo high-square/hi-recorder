@@ -32,11 +32,11 @@ public class Comment extends TimeEntity {
     private int likeCnt;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name="member_id")
+    @JoinColumn(name="member_id", foreignKey = @ForeignKey(name = "FK_MEMBER__COMMENT"))
     private Member member;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name="board_id")
+    @JoinColumn(name="board_id", foreignKey = @ForeignKey(name = "FK_BOARD__COMMENT"))
     private Board board;
 
 }

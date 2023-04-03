@@ -17,11 +17,11 @@ public class StudyMember extends TimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name="member_id")
+    @JoinColumn(name="member_id", foreignKey = @ForeignKey(name = "FK_MEMBER__STUDY_MEMBER"))
     private Member member;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name="study_id")
+    @JoinColumn(name="study_id", foreignKey = @ForeignKey(name = "FK_STUDY__STUDY_MEMBER"))
     private Study study;
 
     @Enumerated(value = STRING)

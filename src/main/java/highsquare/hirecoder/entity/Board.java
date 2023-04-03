@@ -22,11 +22,11 @@ public class Board extends TimeEntity {
     private Long id;
     // 게시글 작성자 Member 아이디
     @ManyToOne(fetch= LAZY)
-    @JoinColumn(name="member_id")
+    @JoinColumn(name="member_id", foreignKey = @ForeignKey(name = "FK_MEMBER__BOARD"))
     private Member member;
     // 게시글 제목
     @ManyToOne(fetch= LAZY)
-    @JoinColumn(name="study_id")
+    @JoinColumn(name="study_id", foreignKey = @ForeignKey(name = "FK_STUDY__BOARD"))
     private Study study;
 
     private String title;
