@@ -14,4 +14,8 @@ public interface StudyRepository extends JpaRepository<Study, Long>, StudyReposi
     @Query("select s from Study s where s.manager.id=:managerId")
     List<Study> findAllByManager_Id(@Param("managerId")Long managerId);
 
+    public Long findByCrewNumber(Long studyId);
+
+    public List<Study> findAllById(Long studyId);
+
 }

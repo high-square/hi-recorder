@@ -70,6 +70,11 @@ public class StudyMemberService {
         return false;
     }
 
+    public int getCountCurrentMember(Long studyId){
+
+        return studyMemberRepository.checkStudysMemberCount(studyId);
+    }
+
     public void changeAttendState(Long studyMemberId, AttendState attendState) {
         StudyMember findStudyMember = studyMemberRepository.findById(studyMemberId).get();
         findStudyMember.setAttendState(attendState);

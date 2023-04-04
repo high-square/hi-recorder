@@ -68,7 +68,7 @@ public class BoardListController {
         List<Board> popularList = boardListService.getPopularBoards(RECRUIT, pageable2);
 
         // 태그 목록 가져오기
-        List<Map<String, Object>> tagList = tagService.getTagList();
+        List<Map<String, Object>> tagList = tagService.getTagList(RECRUIT);
 
 
         model.addAttribute("studies", list);

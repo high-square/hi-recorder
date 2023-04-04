@@ -49,32 +49,30 @@
 <body>
 
 <!-- ======= Header ======= -->
-<nav id="header mainNav" class="navbar header-nav navbar-expand-lg bg-white" th:fragment="navFrag" style="z-index: 2">
+<header id="header" class="header fixed-top d-flex align-items-center">
   <script src="../../static/js/nav.js" th:src="@{/js/nav.js}" onload="getMyStudies()"></script>
-  <div class="container px-4 px-lg-5">
+  <div class="d-flex align-items-center justify-content-between">
     <i class="bi bi-list w-auto toggle-sidebar-btn text-black m-3"></i>
     <a class="navbar-brand text-black" href="/">Hi-Recorder</a>
-    <button class="navbar-toggler text-black" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-      Menu
-      <i class="fas fa-bars"></i>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav ms-auto py-4 py-lg-0">
-        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4 text-black" href="#" onclick="goLogout()">로그아웃</a></li>
-        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4 text-black" href="/">스터디 메인</a></li>
-        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4 text-black" href="/study/myStudy">마이 페이지</a></li>
-        <li class="nav-item py-3 px-lg-3 py-lg-3 dropdown">
-          <a class="nav-link dropdown-toggle text-black" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            내 스터디
-          </a>
-          <!-- Dropdown menu -->
-          <ul class="dropdown-menu dropdown-menu-end" id="myStudyDropDown" style="z-index: 1" aria-labelledby="navbarDropdown">
-          </ul>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+  </div><!-- End Logo -->
+
+  <nav class="header-nav ms-auto">
+    <ul class="d-flex align-items-center">
+      <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4 text-black" href="#" onclick="goLogout()">로그아웃</a></li>
+      <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4 text-black" href="/">스터디 메인</a></li>
+      <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4 text-black" href="/study/myStudy">마이 페이지</a></li>
+      <li class="nav-item py-3 px-lg-3 py-lg-3 dropdown">
+        <a class="nav-link dropdown-toggle text-black" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          내 스터디
+        </a>
+        <!-- Dropdown menu -->
+        <ul class="dropdown-menu dropdown-menu-end" id="myStudyDropDown" style="z-index: 1" aria-labelledby="navbarDropdown">
+        </ul>
+      </li>
+    </ul>
+  </nav><!-- End Icons Navigation -->
+
+</header><!-- End Header -->
 
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar" style="z-index: 1">

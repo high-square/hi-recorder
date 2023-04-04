@@ -43,6 +43,16 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
                                     @Param("kind") Kind kind,
                                     Pageable pageable);
 
+    // 대시보드 스터디 게시글 수 카운트
+    @Query("SELECT COUNT(b.id) FROM Board b WHERE b.study.id = :studyId and b.kind = :kind")
+    public int countByStudyId(@Param("studyId") Long studyId, @Param("kind") Kind kind);
+
+    List<Board> findByStudyIdAndKind(Long studyId, Kind kind);
+
+    // 대시보드 스터디 게시글 전체 조회수 카운트
+    @Query("SELECT SUM(b.viewCnt) FROM Board b WHERE b.study.id = :studyId and b.kind = :kind")
+    public int getViewCntByStudyId(@Param("studyId") Long studyId, @Param("kind") Kind kind);
+
     @Modifying
     @Transactional
     @Query("update Board b set b.likeCnt=:likeCnt where b.id=:boardId")
