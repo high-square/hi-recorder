@@ -139,7 +139,7 @@
                     <div class="sidebar-box">
                         <h3 class="heading">Tags</h3>
                         <ul class="tags" th:each="tags : ${tagList}">
-                            <li><a href="#"><span th:text="${tags.tag}"></span>(<span th:text="${tags.count}"></span>)</a></li>
+                            <li><span th:text="${tags.tag}" th:onclick="|location.href='@{/(searchKeyword='${tags.tag.name()}')}'|"></span>(<span th:text="${tags.count}"></span>)</li>
                         </ul>
                     </div>
 

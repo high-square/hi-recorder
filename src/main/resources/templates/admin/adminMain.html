@@ -9,61 +9,62 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="../../static/admin/assets/img/favicon.png" th:href="@{../static/admin/assets/img/favicon.png}" rel="icon">
-  <link href="../../static/admin/admin/assets/img/apple-touch-icon.png" th:href="@{../static/admin/assets/img/apple-touch-icon.png}" rel="apple-touch-icon">
+  <link href="../../static/admin/assets/img/favicon.png" th:href="@{/admin/assets/img/favicon.png}" rel="icon">
+  <link href="../../static/admin/admin/assets/img/apple-touch-icon.png" th:href="@{/admin/assets/img/apple-touch-icon.png}" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-  <link href="../../static/admin/assets/vendor/bootstrap/css/bootstrap.min.css" th:href="@{../static/admin/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" th:href="@{../static/admin/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/boxicons/css/boxicons.min.css" th:href="@{../static/admin/assets/vendor/boxicons/css/boxicons.min.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/quill/quill.snow.css" th:href="@{../static/admin/assets/vendor/quill/quill.snow.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/quill/quill.bubble.css" th:href="@{../static/admin/assets/vendor/quill/quill.bubble.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/remixicon/remixicon.css" th:href="@{../static/admin/assets/vendor/remixicon/remixicon.css}" rel="stylesheet">
-  <link href="../../static/admin/assets/vendor/simple-datatables/style.css" th:href="@{../static/admin/assets/vendor/simple-datatables/style.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/bootstrap/css/bootstrap.min.css" th:href="@{/admin/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" th:href="@{/admin/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/boxicons/css/boxicons.min.css" th:href="@{/admin/assets/vendor/boxicons/css/boxicons.min.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/quill/quill.snow.css" th:href="@{/admin/assets/vendor/quill/quill.snow.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/quill/quill.bubble.css" th:href="@{/admin/assets/vendor/quill/quill.bubble.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/remixicon/remixicon.css" th:href="@{/admin/assets/vendor/remixicon/remixicon.css}" rel="stylesheet">
+  <link href="../../static/admin/assets/vendor/simple-datatables/style.css" th:href="@{/admin/assets/vendor/simple-datatables/style.css}" rel="stylesheet">
 
   <!-- Template Main CSS File -->
-  <link href="../../static/admin/assets/css/style.css" th:href="@{../static/admin/assets/img/favicon.png}" rel="stylesheet">
+  <link href="../../static/admin/assets/css/style.css" th:href="@{/admin/assets/css/style.css}" rel="stylesheet">
 
-  <!-- =======================================================
-  * Template Name: NiceAdmin - v2.4.1
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+  <script src="../../static/admin/assets/vendor/apexcharts/apexcharts.min.js" th:src="@{/admin/assets/vendor/apexcharts/apexcharts.min.js}" ></script>
+  <script src="../../static/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js" th:src="@{/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}" ></script>
+  <script src="../../static/admin/assets/vendor/chart.js/chart.min.js" th:src="@{/admin/assets/vendor/chart.js/chart.min.js}" ></script>
+  <script src="../../static/admin/assets/vendor/echarts/echarts.min.js" th:src="@{/admin/assets/vendor/echarts/echarts.min.js}" ></script>
+  <script src="../../static/admin/assets/vendor/quill/quill.min.js" th:src="@{/admin/assets/vendor/quill/quill.min.js}" ></script>
+  <script src="../../static/admin/assets/vendor/simple-datatables/simple-datatables.js" th:src="@{/admin/assets/vendor/simple-datatables/simple-datatables.js}" ></script>
+  <script src="../../static/admin/assets/vendor/tinymce/tinymce.min.js" th:src="@{/admin/assets/vendor/tinymce/tinymce.min.js}" ></script>
+
+
 </head>
 <body>
 
 <!-- ======= Header ======= -->
-<nav id="header mainNav" class="navbar header-nav navbar-expand-lg bg-white" th:fragment="navFrag" style="z-index: 2">
+<header id="header" class="header fixed-top d-flex align-items-center">
   <script src="../../static/js/nav.js" th:src="@{/js/nav.js}" onload="getMyStudies()"></script>
-  <div class="container px-4 px-lg-5">
+  <div class="d-flex align-items-center justify-content-between">
     <i class="bi bi-list w-auto toggle-sidebar-btn text-black m-3"></i>
     <a class="navbar-brand text-black" href="/">Hi-Recorder</a>
-    <button class="navbar-toggler text-black" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-      Menu
-      <i class="fas fa-bars"></i>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav ms-auto py-4 py-lg-0">
-        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4 text-black" href="#" onclick="goLogout()">로그아웃</a></li>
-        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4 text-black" href="/">스터디 메인</a></li>
-        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4 text-black" href="/study/myStudy">마이 페이지</a></li>
-        <li class="nav-item py-3 px-lg-3 py-lg-3 dropdown">
-          <a class="nav-link dropdown-toggle text-black" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            내 스터디
-          </a>
-          <!-- Dropdown menu -->
-          <ul class="dropdown-menu dropdown-menu-end" id="myStudyDropDown" style="z-index: 1" aria-labelledby="navbarDropdown">
-          </ul>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+  </div><!-- End Logo -->
+
+  <nav class="header-nav ms-auto">
+    <ul class="d-flex align-items-center">
+      <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4 text-black" href="#" onclick="goLogout()">로그아웃</a></li>
+      <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4 text-black" href="/">스터디 메인</a></li>
+      <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4 text-black" href="/study/myStudy">마이 페이지</a></li>
+      <li class="nav-item py-3 px-lg-3 py-lg-3 dropdown">
+        <a class="nav-link dropdown-toggle text-black" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          내 스터디
+        </a>
+        <!-- Dropdown menu -->
+        <ul class="dropdown-menu dropdown-menu-end" id="myStudyDropDown" style="z-index: 1" aria-labelledby="navbarDropdown">
+        </ul>
+      </li>
+    </ul>
+  </nav><!-- End Icons Navigation -->
+
+</header><!-- End Header -->
 
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar" style="z-index: 1">
@@ -71,7 +72,7 @@
   <ul class="sidebar-nav" id="sidebar-nav">
 
     <li class="nav-item">
-      <a class="nav-link " href="adminMain.html">
+      <a class="nav-link " href="/admin/adminMain">
         <i class="bi bi-grid"></i>
         <span>Dashboard</span>
       </a>
@@ -83,12 +84,12 @@
       </a>
       <ul id="member-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
         <li>
-          <a href="admin-apply.html">
+          <a href="admin-apply.html" th:href="@{${#httpServletRequest.requestURI + '/applyList'}}">
             <i class="bi bi-circle"></i><span>신청관리</span>
           </a>
         </li>
         <li>
-          <a href="admin-member.html">
+          <a href="admin-member.html" th:href="@{${#httpServletRequest.requestURI + '/memberList'}}">
             <i class="bi bi-circle"></i><span>회원관리</span>
           </a>
         </li>
@@ -103,10 +104,10 @@
 <main id="main" class="main">
 
   <div class="pagetitle">
-    <h1>Dashboard</h1>
+    <h1 th:text="${studyName}"></h1>
     <nav>
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
         <li class="breadcrumb-item active">Dashboard</li>
       </ol>
     </nav>
@@ -123,29 +124,15 @@
           <div class="col-xxl-4 col-md-6">
             <div class="card info-card sales-card">
 
-              <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                  <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                  </li>
-
-                  <li><a class="dropdown-item" href="#">Today</a></li>
-                  <li><a class="dropdown-item" href="#">This Month</a></li>
-                  <li><a class="dropdown-item" href="#">This Year</a></li>
-                </ul>
-              </div>
-
               <div class="card-body">
-                <h5 class="card-title">게시글 수 <span>| Today</span></h5>
+                <h5 class="card-title">게시글 수 <span>| Total</span></h5>
 
                 <div class="d-flex align-items-center">
                   <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                     <i class="bi bi-journal-text"></i>
                   </div>
                   <div class="ps-3">
-                    <h6>145</h6>
-                    <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                    <h6 th:text="${boardCount}"></h6>
 
                   </div>
                 </div>
@@ -158,29 +145,15 @@
           <div class="col-xxl-4 col-md-6">
             <div class="card info-card revenue-card">
 
-              <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                  <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                  </li>
-
-                  <li><a class="dropdown-item" href="#">Today</a></li>
-                  <li><a class="dropdown-item" href="#">This Month</a></li>
-                  <li><a class="dropdown-item" href="#">This Year</a></li>
-                </ul>
-              </div>
-
               <div class="card-body">
-                <h5 class="card-title">전체 조회수 <span>| This Month</span></h5>
+                <h5 class="card-title">전체 조회수 <span>| Total</span></h5>
 
                 <div class="d-flex align-items-center">
                   <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                     <i class="bi bi-search"></i>
                   </div>
                   <div class="ps-3">
-                    <h6>3,264</h6>
-                    <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                    <h6 th:text="${countViewCnt}"></h6>
 
                   </div>
                 </div>
@@ -193,31 +166,15 @@
           <div class="col-xxl-4 col-xl-12">
 
             <div class="card info-card customers-card">
-
-              <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                  <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                  </li>
-
-                  <li><a class="dropdown-item" href="#">Today</a></li>
-                  <li><a class="dropdown-item" href="#">This Month</a></li>
-                  <li><a class="dropdown-item" href="#">This Year</a></li>
-                </ul>
-              </div>
-
               <div class="card-body">
-                <h5 class="card-title">스터디원 <span>| This Year</span></h5>
+                <h5 class="card-title">스터디원 <span>| Total</span></h5>
 
                 <div class="d-flex align-items-center">
                   <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                     <i class="bi bi-people"></i>
                   </div>
                   <div class="ps-3">
-                    <h6>3/10</h6>
-                    <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-
+                    <h6 th:text="${currentMember + '/' + totalMember}"></h6>
                   </div>
                 </div>
 
@@ -229,22 +186,8 @@
           <!-- Reports -->
           <div class="col-12">
             <div class="card">
-
-              <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                  <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                  </li>
-
-                  <li><a class="dropdown-item" href="#">Today</a></li>
-                  <li><a class="dropdown-item" href="#">This Month</a></li>
-                  <li><a class="dropdown-item" href="#">This Year</a></li>
-                </ul>
-              </div>
-
               <div class="card-body">
-                <h5 class="card-title">Reports <span>/Today</span></h5>
+                <h5 class="card-title">Reports <span>/Week</span></h5>
 
                 <!-- Line Chart -->
                 <div id="reportsChart"></div>
@@ -303,190 +246,47 @@
                 </script>
                 <!-- End Line Chart -->
 
-              </div>
 
             </div>
           </div><!-- End Reports -->
 
-          <!-- Recent Sales -->
-          <div class="col-12">
-            <div class="card recent-sales overflow-auto">
-
-              <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                  <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                  </li>
-
-                  <li><a class="dropdown-item" href="#">Today</a></li>
-                  <li><a class="dropdown-item" href="#">This Month</a></li>
-                  <li><a class="dropdown-item" href="#">This Year</a></li>
-                </ul>
-              </div>
-
-              <div class="card-body">
-                <h5 class="card-title">이건 지울 거<span>| Today</span></h5>
-
-                <table class="table table-borderless datatable">
-                  <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Customer</th>
-                    <th scope="col">신청 사유</th>
-                    <th scope="col">Status</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <th scope="row"><a href="#">#2457</a></th>
-                    <td>이효진</td>
-                    <td><a href="#" class="text-primary">스터디라도 붙여주세요</a></td>
-                    <td><span class="badge bg-success">수락</span> <span class="badge bg-danger">거절</span></td>
-                  </tr>
-                  <tr>
-                    <th scope="row"><a href="#">#2147</a></th>
-                    <td>Bridie Kessler</td>
-                    <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
-                    <td><span class="badge bg-success">수락</span> <span class="badge bg-danger">거절</span></td>
-                  </tr>
-                  <tr>
-                    <th scope="row"><a href="#">#2049</a></th>
-                    <td>Ashleigh Langosh</td>
-                    <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                    <td><span class="badge bg-success">수락</span> <span class="badge bg-danger">거절</span></td>
-                  </tr>
-                  <tr>
-                    <th scope="row"><a href="#">#2644</a></th>
-                    <td>Angus Grady</td>
-                    <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                    <td><span class="badge bg-success">수락</span> <span class="badge bg-danger">거절</span></td>
-                  </tr>
-                  <tr>
-                    <th scope="row"><a href="#">#2644</a></th>
-                    <td>Raheem Lehner</td>
-                    <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                    <td><span class="badge bg-success">수락</span> <span class="badge bg-danger">거절</span></td>
-                  </tr>
-                  </tbody>
-                </table>
-
-              </div>
-
-            </div>
-          </div><!-- End Recent Sales -->
-
         </div>
       </div><!-- End Left side columns -->
+
+      </div>
 
       <!-- Right side columns -->
       <div class="col-lg-4">
 
-        <!-- Recent Activity -->
-        <div class="card">
-          <div class="filter">
-            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-              <li class="dropdown-header text-start">
-                <h6>Filter</h6>
-              </li>
-
-              <li><a class="dropdown-item" href="#">Today</a></li>
-              <li><a class="dropdown-item" href="#">This Month</a></li>
-              <li><a class="dropdown-item" href="#">This Year</a></li>
-            </ul>
-          </div>
-
-          <div class="card-body">
-            <h5 class="card-title">Recent Activity <span>| Today</span></h5>
-
-            <div class="activity">
-
-              <div class="activity-item d-flex">
-                <div class="activite-label">32 min</div>
-                <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                <div class="activity-content">
-                  이효진 님이 <a href="#" class="fw-bold text-dark">가입신청</a>을 하셨습니다
-                </div>
-              </div><!-- End activity item-->
-
-              <div class="activity-item d-flex">
-                <div class="activite-label">56 min</div>
-                <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-                <div class="activity-content">
-                  <a href="#" class="fw-bold text-dark">Array 와 ArrayList의 차이</a> 게시글이 올라왔습니다
-                </div>
-              </div><!-- End activity item-->
-
-              <div class="activity-item d-flex">
-                <div class="activite-label">2 hrs</div>
-                <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
-                <div class="activity-content">
-                  log 1
-                </div>
-              </div><!-- End activity item-->
-
-              <div class="activity-item d-flex">
-                <div class="activite-label">1 day</div>
-                <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
-                <div class="activity-content">
-                  log 2
-                </div>
-              </div><!-- End activity item-->
-
-              <div class="activity-item d-flex">
-                <div class="activite-label">2 days</div>
-                <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
-                <div class="activity-content">
-                  송재원 님이 탈퇴하셨습니다
-                </div>
-              </div><!-- End activity item-->
-
-              <div class="activity-item d-flex">
-                <div class="activite-label">4 weeks</div>
-                <i class='bi bi-circle-fill activity-badge text-muted align-self-start'></i>
-                <div class="activity-content">
-                  log 3
-                </div>
-              </div><!-- End activity item-->
-
-            </div>
-
-          </div>
-        </div><!-- End Recent Activity -->
-
         <!-- Website Traffic -->
         <div class="card">
-          <div class="filter">
-            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-              <li class="dropdown-header text-start">
-                <h6>Filter</h6>
-              </li>
-
-              <li><a class="dropdown-item" href="#">Today</a></li>
-              <li><a class="dropdown-item" href="#">This Month</a></li>
-              <li><a class="dropdown-item" href="#">This Year</a></li>
-            </ul>
-          </div>
-
           <div class="card-body pb-0">
-            <h5 class="card-title">Website Traffic <span>| Today</span></h5>
+            <h5 class="card-title">TAG Chart <span>| Total</span></h5>
 
             <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
-
-            <script>
+            <script th:inline="javascript">
+              /*<![CDATA[*/
               document.addEventListener("DOMContentLoaded", () => {
+                var tagList = /*[[${tagList}]]*/ null;
+                var tagData = [];
+                var tagNames = [];
+                for (var i = 0; i < tagList.length; i++) {
+                  var tag = tagList[i].tag;
+                  var count = tagList[i].count;
+                  tagData.push({value: count, name: tag});
+                  tagNames.push(tag);
+                }
+
                 echarts.init(document.querySelector("#trafficChart")).setOption({
                   tooltip: {
                     trigger: 'item'
                   },
                   legend: {
-                    top: '5%',
+                    top: '1%',
                     left: 'center'
                   },
                   series: [{
-                    name: 'Access From',
+                    name: 'TAG',
                     type: 'pie',
                     radius: ['40%', '70%'],
                     avoidLabelOverlap: false,
@@ -497,45 +297,64 @@
                     emphasis: {
                       label: {
                         show: true,
-                        fontSize: '18',
+                        fontSize: '10',
                         fontWeight: 'bold'
                       }
                     },
                     labelLine: {
                       show: false
                     },
-                    data: [{
-                      value: 1048,
-                      name: 'Search Engine'
-                    },
-                      {
-                        value: 735,
-                        name: 'Direct'
-                      },
-                      {
-                        value: 580,
-                        name: 'Email'
-                      },
-                      {
-                        value: 484,
-                        name: 'Union Ads'
-                      },
-                      {
-                        value: 300,
-                        name: 'Video Ads'
-                      }
-                    ]
+                    data: tagData
                   }]
                 });
               });
+              /*]]>*/
             </script>
+            <!--            <script>-->
+            <!--              document.addEventListener("DOMContentLoaded", () => {-->
+
+
+            <!--                echarts.init(document.querySelector("#trafficChart")).setOption({-->
+            <!--                  tooltip: {-->
+            <!--                    trigger: 'item'-->
+            <!--                  },-->
+            <!--                  legend: {-->
+            <!--                    top: '5%',-->
+            <!--                    left: 'center',-->
+            <!--                    data: tagNames-->
+            <!--                  },-->
+            <!--                  series: [{-->
+            <!--                    name: 'Tag Count',-->
+            <!--                    type: 'pie',-->
+            <!--                    radius: ['40%', '70%'],-->
+            <!--                    avoidLabelOverlap: false,-->
+            <!--                    label: {-->
+            <!--                      show: false,-->
+            <!--                      position: 'center'-->
+            <!--                    },-->
+            <!--                    emphasis: {-->
+            <!--                      label: {-->
+            <!--                        show: true,-->
+            <!--                        fontSize: '18',-->
+            <!--                        fontWeight: 'bold'-->
+            <!--                      }-->
+            <!--                    },-->
+            <!--                    labelLine: {-->
+            <!--                      show: false-->
+            <!--                    },-->
+            <!--                    data: tagData-->
+            <!--                  }]-->
+            <!--                });-->
+            <!--              });-->
+            <!--            </script>-->
 
           </div>
-        </div><!-- End Website Traffic -->
+        </div>
+        <!-- End Website Traffic -->
 
 
-      </div><!-- End Right side columns -->
-
+      </div>
+      <!-- End Right side columns -->
     </div>
   </section>
 
@@ -558,16 +377,7 @@
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
-<script src="../../static/admin/assets/vendor/apexcharts/apexcharts.min.js" th:href="@{../static/admin/assets/vendor/apexcharts/apexcharts.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js" th:href="@{../static/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/chart.js/chart.min.js" th:href="@{../static/admin/assets/vendor/chart.js/chart.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/echarts/echarts.min.js" th:href="@{../static/admin/assets/vendor/echarts/echarts.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/quill/quill.min.js" th:href="@{../static/admin/assets/vendor/quill/quill.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/simple-datatables/simple-datatables.js" th:href="@{../static/admin/assets/vendor/simple-datatables/simple-datatables.js}" ></script>
-<script src="../../static/admin/assets/vendor/tinymce/tinymce.min.js" th:href="@{../static/admin/assets/vendor/tinymce/tinymce.min.js}" ></script>
 
-<!-- Template Main JS File -->
-<script src="../../static/admin/assets/js/main.js" th:href="@{../static/admin/assets/js/main.js}" ></script>
 
 </body>
 </html>

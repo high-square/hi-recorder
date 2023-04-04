@@ -4,6 +4,7 @@ import highsquare.hirecoder.domain.repository.BoardTagRepository;
 import highsquare.hirecoder.domain.repository.TagRepository;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.BoardTag;
+import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.*;
+
+import static highsquare.hirecoder.entity.Kind.RECRUIT;
 
 @Service
 @RequiredArgsConstructor
@@ -65,13 +68,14 @@ public class TagService {
 
     }
 
-    // Dto로 수정 필요
-    public List<Map<String, Object>> getTagList() {
-        List<Object[]> tagCountList = boardTagRepository.findTagCountByBoardTag();
+    //
+    public List<Map<String, Object>> getTagList(Kind kind) {
+        // RECRUIT, CONTENT 별 Tags
+        List<Object[]> tagCountList = boardTagRepository.findTagCountByBoardTag(kind);
         List<Map<String, Object>> popularTags = new ArrayList<>();
         for (Object[] tagCount : tagCountList){
-            String tag = ((Tag) tagCount[0]).getContent().toString();
-            int count = ((Number) tagCount[1]).intValue();
+            String tag = ((Tag) tagCount[0]).getContent().toString(); // tagname
+            int count = ((Number) tagCount[1]).intValue(); // tag count
             Map<String, Object> tagMap = new HashMap<>();
             tagMap.put("tag", tag);
             tagMap.put("count", count);
@@ -79,4 +83,5 @@ public class TagService {
         }
         return popularTags;
     }
+
 }

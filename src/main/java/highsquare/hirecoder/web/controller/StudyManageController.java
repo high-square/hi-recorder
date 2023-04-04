@@ -1,14 +1,13 @@
 package highsquare.hirecoder.web.controller;
 
-import highsquare.hirecoder.domain.service.ApplyForStudyService;
-import highsquare.hirecoder.domain.service.StudyMemberService;
-import highsquare.hirecoder.domain.service.StudyService;
+import highsquare.hirecoder.domain.service.*;
 import highsquare.hirecoder.dto.ApplyInfo;
 import highsquare.hirecoder.dto.ApplyPagingRequest;
 import highsquare.hirecoder.dto.MemberPagingRequest;
 import highsquare.hirecoder.dto.MemberInfo;
 import highsquare.hirecoder.entity.AttendState;
-import highsquare.hirecoder.entity.Member;
+import highsquare.hirecoder.entity.Kind;
+import highsquare.hirecoder.entity.Study;
 import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.utils.ScriptUtils;
 import lombok.RequiredArgsConstructor;
@@ -28,19 +27,51 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
+import java.util.Map;
+
+import static highsquare.hirecoder.entity.Kind.CONTENT;
+import static highsquare.hirecoder.entity.Kind.RECRUIT;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/studyManage/manager/{studyId}")
 @Slf4j
 public class StudyManageController {
+    private final DashBoardService dashBoardService;
     private final StudyMemberService studyMemberService;
     private final ApplyForStudyService applyForStudyService;
     private final StudyService studyService;
+    private final TagService tagService;
 
     // TODO: 2023-03-29 스터디 매니저 메인 페이지 작성 필요
     @GetMapping
-    public String getManagerMainPage() {
+    public String getManagerMainPage(@PathVariable("studyId") Long studyId,
+                                     Model model) {
+        // 해당 스터디의 게시글 수
+        int boardCount = dashBoardService.getCountBoard(studyId, CONTENT);
+        // 해당 스터디 글의 전체 조회수
+        int countViewCnt = dashBoardService.getViewCntBoard(studyId, CONTENT);
+        // 해당 스터디의 스터디원 수
+        // 여기서 Study를 불러와서 변수에 다 저장하는 게 좋을까??
+        // 이 과정을 컨트롤러에서 해도 되는지 모르겠음
+        Study myManageStudy = studyService.getStudyAll(studyId);
+        int totalMember = myManageStudy.getCrewNumber().intValue();
+        int currentMember = studyMemberService.getCountCurrentMember(studyId);
+        String studyName = myManageStudy.getName();
+
+        // tag 사용 수
+        List<Map<String, Object>> tagList = tagService.getTagList(CONTENT);
+        // tagList 들고 와서 개수 반환
+        System.out.println(tagList);
+
+        model.addAttribute("boardCount", boardCount);
+        model.addAttribute("countViewCnt", countViewCnt);
+        model.addAttribute("studyName", studyName);
+        model.addAttribute("tagList", tagList);
+        model.addAttribute("currentMember", currentMember);
+        model.addAttribute("totalMember", totalMember);
+
         return "/admin/adminMain";
     }
 
