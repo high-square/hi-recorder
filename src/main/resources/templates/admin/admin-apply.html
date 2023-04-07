@@ -89,7 +89,7 @@
       </a>
       <ul id="member-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
         <li>
-          <a href="#" class="active">
+          <a href="#" class="active" th:href="@{${#httpServletRequest.requestURI + '/../applyList'}}">
             <i class="bi bi-circle"></i><span>신청관리</span>
           </a>
         </li>
@@ -143,7 +143,11 @@
                 <td th:text="${apply.reason}">Blanditiis dolor omnis similique</td>
                 <td th:text="${apply.email}"></td>
                 <td th:text="${apply.date}">2023-03-10</td>
-                <td><button class="btn btn-outline-success btn-sm rounded-pill">수락</button> <button class="btn btn-outline-danger btn-sm rounded-pill">거절</button></td>
+                <td>
+                  <button class="btn btn-outline-success btn-sm rounded-pill"
+                          th:memberId="${apply.memberId}" th:applyId="${apply.applyId}"
+                          th:onclick="approve(this.getAttribute('memberId'), this.getAttribute('applyId'))">수락</button>
+                  <button class="btn btn-outline-danger btn-sm rounded-pill">거절</button></td>
               </tr>
               </tbody>
             </table>
@@ -207,6 +211,11 @@
 
 <!-- Template Main JS File -->
 <script src="../../static/admin/assets/js/main.js" th:src="@{/admin/assets/js/main.js}" ></script>
+<script>
+  function approve(memberId, applyId) {
+    location.href = location.pathname + "/../approval/" + memberId + "/" + applyId;
+  }
+</script>
 
 </body>
 <!-- Vendor JS Files -->

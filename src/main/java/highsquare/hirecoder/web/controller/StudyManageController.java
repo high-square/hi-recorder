@@ -117,10 +117,9 @@ public class StudyManageController {
      * memberId, studyId는 applyForStudyId에 해당하는 신청 테이블의 컬럼 값임(스터디장의 memberId값이 아님)
      * 우선 ScriptUtils를 이용하여 간단하게 로직 작성함(map에 오류를 넣어서 페이지로 반환시키든 리펙토링 필요)
      */
-    @PatchMapping("/approval/{memberId}/{applyForStudyId}")
-    public void approval(@PathVariable("studyId") Long studyId,
+    @GetMapping("/approval/{memberId}/{applyForStudyId}")
+    public String approval(@PathVariable("studyId") Long studyId,
                            @PathVariable("memberId") Long memberId,
-                           Principal principal,
                            @PathVariable("applyForStudyId") Long applyForStudyId,
                            HttpServletResponse response) throws IOException {
 
@@ -139,6 +138,8 @@ public class StudyManageController {
         } else {
             ScriptUtils.alert(response,"해당 스터디가 존재하지 않습니다.");
         }
+
+        return "redirect:/studyManage/manager/{studyId}/applyList";
     }
 
     @GetMapping("/reject/{applyForStudyId}")
