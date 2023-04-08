@@ -100,6 +100,28 @@
             <div class="col-xl-3" style="color:white"><b>수정날짜 :</b></div>
             <div class="col-xl-2" th:text="${#temporals.format(board.updatedTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
         </div>
+
+        <div class="row text-center" th:if="${board.kind.equals('RECRUIT')}" style="background-color:#0dcaf0">
+        <div th:if="${studyManagerId!=memberId}" class="row text-center">
+            <div class="col-xl-7"></div>
+            <div class="col-xl-3" style="color:white"><b>스터디 모집상태 :</b></div>
+            <div class="form-check form-switch col-xl-2">
+                <input class="form-check-input" type="checkbox" role="switch"  th:if="${isRecruiting}" th:value="${isRecruiting}"  disabled checked="checked" >
+                <input class="form-check-input" type="checkbox" role="switch"  th:unless="${isRecruiting}" th:value="${isRecruiting}"  disabled>
+                <span  th:text="${isRecruiting? '모집중':'모집완료'}" text="모집 상태"></span>
+            </div>
+        </div>
+        <div th:if="${studyManagerId==memberId}" class="row text-center">
+            <div class="col-xl-7"></div>
+            <div class="col-xl-3" style="color:white"><b>스터디 모집상태 :</b></div>
+            <div class="form-check form-switch col-xl-2">
+                <input class="form-check-input" type="checkbox" role="switch"  th:if="${isRecruiting}" th:value="${isRecruiting}" checked="checked" onclick="toggle(this)">
+                <input class="form-check-input" type="checkbox" role="switch"  th:unless="${isRecruiting}" th:value="${isRecruiting}"  onclick="toggle(this)">
+                <span  id="recruitState" th:text="${isRecruiting? '모집중':'모집완료'}" text="모집 상태"></span>
+            </div>
+        </div>
+        </div>
+
         <div>
             <h3 class="heading">Tags</h3>
             <th:block th:if="${tags.isEmpty()!=null}" th:each="tag : ${tags}">
@@ -676,6 +698,49 @@
         viewer: true,
         initialValue: [[${board.content}]]
     });
+</script>
+
+<script>
+    function  toggle(element) {
+        var data = { studyId : [[${studyId}]]}
+        console.log(data);
+        if (element.checked) {
+            fetch(location.origin+"/api/study/recruitOn", {
+                method: 'PATCH', // 또는 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log('성공:', data);
+                    let x = document.querySelector('#recruitState');
+                    x.textContent=data;
+                })
+                .catch((error) => {
+                    console.error('실패:', error);
+                });
+        } else {
+            fetch(location.origin+"/api/study/recruitOff", {
+                method: 'PATCH', // 또는 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then((response) => response.json())
+                .then(data => {
+                    console.log('성공:', data);
+                    let x = document.querySelector('#recruitState');
+                    x.textContent=data;
+                })
+                .catch((error) => {
+                    console.error('실패:', error);
+                });
+        }
+
+    }
 </script>
 
 </body>

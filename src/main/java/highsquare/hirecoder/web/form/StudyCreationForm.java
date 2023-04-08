@@ -1,6 +1,5 @@
 package highsquare.hirecoder.web.form;
 
-import highsquare.hirecoder.entity.ActivityState;
 import highsquare.hirecoder.entity.MeetingType;
 import highsquare.hirecoder.entity.RecruitState;
 import lombok.Data;
@@ -26,21 +25,19 @@ public class StudyCreationForm extends BoardForm {
     private String startDate;
     private String endDate;
     private Integer crewNumber;
-    private ActivityState activityState;
     private RecruitState recruitState;
     private MeetingType meetingType;
 
     public StudyCreationForm(String title, List<String> tags, boolean isPublic,
                              String content, List<String> images, String studyName,
                              String startDate, String endDate, Integer crewNumber,
-                             ActivityState activityState, RecruitState recruitState,
+                              RecruitState recruitState,
                              MeetingType meetingType, String headImageUrl) {
         super(title, tags, isPublic, content, headImageUrl, images);
         this.studyName = studyName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.crewNumber = crewNumber;
-        this.activityState = activityState;
         this.recruitState = recruitState;
         this.meetingType = meetingType;
     }
@@ -76,11 +73,10 @@ public class StudyCreationForm extends BoardForm {
     }
 
     public boolean isSelectionValid() {
-        boolean isActivityNull = activityState == null;
         boolean isRecruitNull = recruitState == null;
         boolean isMeetingTypeNull = meetingType == null;
 
-        return !isActivityNull && !isRecruitNull && !isMeetingTypeNull;
+        return   !isRecruitNull && !isMeetingTypeNull;
     }
 
     // BindingResult 유틸

@@ -52,7 +52,6 @@ public class MyPageService {
         MyStudyForm form = new MyStudyForm();
         form.setId(entity.getId());
         form.setName(entity.getName());
-        form.setActivityState(entity.getActivityState());
         form.setStudyStartDate(entity.getStudyStartDate());
         form.setStudyFinishDate(entity.getStudyFinishDate());
         form.setCrewNumber(entity.getCrewNumber());

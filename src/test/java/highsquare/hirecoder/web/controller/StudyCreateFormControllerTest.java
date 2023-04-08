@@ -83,7 +83,7 @@ class StudyCreateFormControllerTest {
         session.setAttribute(SessionConstant.MEMBER_ID, 1L);
 
         StudyCreationForm expectedForm = new StudyCreationForm("벡엔드 스터디입니다.", List.of("tag1", "tag2"), true, "# hello world", null, "백엔드 스터디",
-                "2023-01-01", "2023-03-31", 5, ActivityState.진행전, RecruitState.모집중, MeetingType.오프라인, null);
+                "2023-01-01", "2023-03-31", 5, RecruitState.모집중, MeetingType.오프라인, null);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("title", expectedForm.getTitle());
@@ -94,7 +94,6 @@ class StudyCreateFormControllerTest {
         params.add("startDate", expectedForm.getStartDate());
         params.add("endDate", expectedForm.getEndDate());
         params.add("crewNumber", Integer.toString(expectedForm.getCrewNumber()));
-        params.add("activityState", expectedForm.getActivityState().name());
         params.add("recruitState", expectedForm.getRecruitState().name());
         params.add("meetingType", expectedForm.getMeetingType().name());
 
