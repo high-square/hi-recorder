@@ -1,13 +1,12 @@
 package highsquare.hirecoder.domain.repository.custom;
 
-import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import highsquare.hirecoder.dto.MemberInfo;
 import highsquare.hirecoder.dto.MemberSort;
-import highsquare.hirecoder.entity.QMember;
 import highsquare.hirecoder.entity.StudyMember;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +22,7 @@ import static highsquare.hirecoder.entity.QMember.member;
 import static highsquare.hirecoder.entity.QStudy.study;
 import static highsquare.hirecoder.entity.QStudyMember.studyMember;
 
+@Slf4j
 public class StudyMemberRepositoryImpl implements StudyMemberRepositoryCustom {
     private final EntityManager em;
     private final JPAQueryFactory queryFactory;
@@ -68,7 +68,8 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepositoryCustom {
 
         Long count = queryFactory.select(studyMember.count())
                 .from(studyMember)
-                .join(study).on(studyMember.study.id.eq(studyId))
+                .join(studyMember.study, study)
+                .where(studyMember.study.id.eq(studyId))
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, count);

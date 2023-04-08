@@ -163,6 +163,14 @@
     </div>
   </section>
 
+  <ul class="pagination justify-content-center">
+    <li class="page-item" th:each="page : ${memberInfo.getPageList()}">
+      <a class="page-link" th:text="${page}"
+         th:href="@{${#httpServletRequest.getRequestURL().toString()}(page=${page}, size=${memberInfo.getSize()}, isAsc=${memberInfo.isAsc() ? 1 : 0}, sort=${memberInfo.getSort()})}">
+      </a>
+    </li>
+  </ul>
+
 </main><!-- End #main -->
 
 <script>

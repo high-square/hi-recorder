@@ -18,12 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,11 +70,10 @@ public class StudyManageController {
         return "/admin/adminMain";
     }
 
-    // TODO: 2023-03-30 테스트를 위해 ResponseBody를 걸어두었습니다. 이제 뷰에 연결해야 합니다.
     @GetMapping("/memberList")
     public String getStudyMemberListPage(@ModelAttribute MemberPagingRequest memberPagingRequest,
                                                                     @PathVariable("studyId") Long studyId,
-                                                                    BindingResult bindingResult, Model model) {
+                                                                     Model model) {
 
         Sort sort = Sort.by(memberPagingRequest.getSort().toString());
 
@@ -84,7 +81,7 @@ public class StudyManageController {
                                     memberPagingRequest.getIsAsc() == 1 ? sort.ascending() : sort.descending());
 
         PageResultDto<MemberInfo, ?> pageResultDto
-                = studyMemberService.ManageStudyMember(studyId, pageable);
+                = studyMemberService.manageStudyMember(studyId, pageable);
 
         model.addAttribute("memberInfo", pageResultDto);
 
