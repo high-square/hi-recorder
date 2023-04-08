@@ -3,35 +3,32 @@ package highsquare.hirecoder.web.controller;
 import highsquare.hirecoder.domain.service.*;
 import highsquare.hirecoder.dto.ApplyInfo;
 import highsquare.hirecoder.dto.ApplyPagingRequest;
-import highsquare.hirecoder.dto.MemberPagingRequest;
 import highsquare.hirecoder.dto.MemberInfo;
+import highsquare.hirecoder.dto.MemberPagingRequest;
 import highsquare.hirecoder.entity.AttendState;
-import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Study;
 import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.utils.ScriptUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static highsquare.hirecoder.entity.Kind.CONTENT;
-import static highsquare.hirecoder.entity.Kind.RECRUIT;
 
 @Controller
 @RequiredArgsConstructor
@@ -148,7 +145,7 @@ public class StudyManageController {
 
         // 신청테이블에 존재하는지, AuditState가 '대기'인지 확인하기
         if(!applyForStudyService.isValidApplication(applyForStudyId)) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.ok().build();
         }
@@ -159,28 +156,27 @@ public class StudyManageController {
      * 스터디장이 거절했을 시 사유 테이블에 거절 메시지 작성
      */
     @PostMapping("/reject/{applyForStudyId}")
-    public void reject(@PathVariable("applyForStudyId") Long applyForStudyId,
-                       @NotBlank @Range(min = 10, max = 500) @ModelAttribute("rejectReason")
-                       String rejectReason,
-                       BindingResult bindingResult,
-                       HttpServletResponse response) throws IOException {
+    @ResponseBody
+    public ResponseEntity<?> reject(@PathVariable("applyForStudyId") Long applyForStudyId,
+                         @RequestParam String rejectReason,
+                         HttpServletResponse response) throws IOException {
 
+        Map<String, Object> params = new HashMap<>();
         // 신청테이블에 존재하는지, AuditState가 '대기'인지 확인하기
         if(!applyForStudyService.isValidApplication(applyForStudyId)) {
-            ScriptUtils.alert(response,"유효한 신청이 아닙니다.");
-            return;
+            params.put("error", "유효한 신청이 아닙니다.");
+        } else if (rejectReason.length() < 10 || rejectReason.length() > 250) {
+            params.put("error", "거절 사유는 10 ~ 250자 사이여야 합니다.");
         }
 
-        if (bindingResult.hasErrors()) {
-            for (ObjectError error : bindingResult.getAllErrors()) {
-                log.error(error.toString());
-            }
-            return;
+        if (params.containsKey("error")) {
+            log.error("{}", params.get("error"));
+            return ResponseEntity.badRequest().body(params);
         }
 
-        // <---- 검증 종료
-        // 신청 테이블의 AuditState를 '거절'로 바꾸는 로직
         applyForStudyService.reject(applyForStudyId, rejectReason);
+
+        return ResponseEntity.status(HttpStatus.FOUND).build();
     }
 
     /**
