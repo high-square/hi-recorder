@@ -83,7 +83,7 @@
                     <div th:replace="/form/formFragment :: tagInput"></div>
 
                     <div class="form-check form-switch">
-                        <input th:field="*{open}" type="checkbox" id="public" value=true class="form-check-input">
+                        <input th:field="*{open}" type="checkbox" id="public" value=true class="form-check-input" th:disabled="*{kind.name().equals('RECRUIT')}">
                         <label for="public" class="form-check-label">전체 공개</label>
                     </div>
 

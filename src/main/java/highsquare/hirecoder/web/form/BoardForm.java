@@ -1,5 +1,6 @@
 package highsquare.hirecoder.web.form;
 
+import highsquare.hirecoder.entity.Kind;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class BoardForm {
     protected String content;
     protected String headImageUrl;
     protected List<String> images = new ArrayList<>();
+    protected Kind kind;
 
     // 폼 검증 로직
     public boolean isTitleTooShort() {
