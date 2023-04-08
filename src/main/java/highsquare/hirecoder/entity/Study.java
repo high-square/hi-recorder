@@ -19,8 +19,6 @@ public class Study extends TimeEntity {
 
     private String name;
 
-    @Enumerated(value = EnumType.STRING)
-    private ActivityState activityState;
 
     @Enumerated(value = EnumType.STRING)
     private RecruitState recruitState;
@@ -38,9 +36,8 @@ public class Study extends TimeEntity {
     @JoinColumn(name="manager_id", foreignKey = @ForeignKey(name = "FK_MANAGER__STUDY"))
     private Member manager;
 
-    public Study(String name, ActivityState activityState, RecruitState recruitState, LocalDateTime studyStartDate, LocalDateTime studyFinishDate, Integer crewNumber, MeetingType meetingType, Member manager) {
+    public Study(String name, RecruitState recruitState, LocalDateTime studyStartDate, LocalDateTime studyFinishDate, Integer crewNumber, MeetingType meetingType, Member manager) {
         this.name = name;
-        this.activityState = activityState;
         this.recruitState = recruitState;
         this.studyStartDate = studyStartDate;
         this.studyFinishDate = studyFinishDate;
