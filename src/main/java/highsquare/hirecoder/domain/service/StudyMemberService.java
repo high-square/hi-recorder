@@ -59,9 +59,9 @@ public class StudyMemberService {
         studyMemberRepository.save(studyMember);
     }
 
-    public boolean checkMemberInStudy(Long studyMemberId) {
-        if (studyMemberRepository.existsById(studyMemberId)) {
-            StudyMember findStudyMember = studyMemberRepository.findById(studyMemberId).get();
+    public boolean checkMemberInStudy(Long memberId, Long studyId) {
+        if (studyMemberRepository.existsById(memberId)) {
+            StudyMember findStudyMember = studyMemberRepository.findById(memberId).get();
 
             if(findStudyMember.getAttendState().name().equals("참여")) {
                 return true;
@@ -75,8 +75,8 @@ public class StudyMemberService {
         return studyMemberRepository.checkStudysMemberCount(studyId);
     }
 
-    public void changeAttendState(Long studyMemberId, AttendState attendState) {
-        StudyMember findStudyMember = studyMemberRepository.findById(studyMemberId).get();
+    public void changeAttendState(Long studyId, Long memberId, AttendState attendState) {
+        StudyMember findStudyMember = studyMemberRepository.findStudyMemberByStudyIdAndMemberId(studyId, memberId);
         findStudyMember.setAttendState(attendState);
     }
 

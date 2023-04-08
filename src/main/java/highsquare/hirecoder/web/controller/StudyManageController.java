@@ -182,42 +182,36 @@ public class StudyManageController {
     /**
      * 스터디장의 스터디 현황 페이지에서 현재 속해있는 스터디의 구성원을 강퇴시키는 기능
      */
-    @PatchMapping("/kickout/{studyMemberId}")
-    public void kickOut(@PathVariable("studyId") Long studyId,
-                          @PathVariable("studyMemberId") Long studyMemberId,
-                          HttpServletResponse response,
-                          Principal principal) throws IOException {
-
-        Long loginMemberId
-                = Long.parseLong(principal.getName());
+    @PostMapping("/kickout/{memberId}")
+    @ResponseBody
+    public ResponseEntity<?> kickOut(@PathVariable("studyId") Long studyId,
+                          @PathVariable("memberId") Long memberId) {
 
         boolean canKickOut = true;
 
         // 해당 스터디 존재 여부
         // 해당 스터디의 스터디 팀장인지 확인하는 로직
-        if (!studyService.isExistingStudy(studyId)) {
-            ScriptUtils.alert(response,"해당 스터디가 존재하지 않습니다.");
-            canKickOut = false;
-        }
-
-        if(studyService.getStudyManagerId(studyId)!=loginMemberId
-        ) {
-            ScriptUtils.alert(response,"해당 스터디의 팀장이 아닙니다.");
+        if (studyService.getStudyManagerId(studyId) == memberId) {
+            log.error("매니저는 강퇴가 불가능합니다.");
             canKickOut = false;
         }
 
         // 해당 studyMember가 존재하는지 확인하기
         // 해당 studyMember의 AttendState가 '참여'인지 확인하기
-        if (!studyMemberService.checkMemberInStudy(studyMemberId)) {
-            ScriptUtils.alert(response,"해당 스터디에 참여하고 있지 않습니다.");
+        if (!studyMemberService.doesMemberBelongToStudy(studyId, memberId)) {
+            log.error("스터디의 멤버가 아닙니다.");
             canKickOut = false;
         }
 
         // <---- 검증 종료
 
         // 해당 studyMember의 AttendState를 '강퇴'로 바꾸는 로직
-        if (canKickOut)
-            studyMemberService.changeAttendState(studyMemberId, AttendState.강퇴);
+        if (canKickOut) {
+            studyMemberService.changeAttendState(studyId, memberId, AttendState.강퇴);
+            return ResponseEntity.status(HttpStatus.FOUND).build();
+        } else {
+            return ResponseEntity.badRequest().body("강퇴가 불가능합니다.");
+        }
     }
 
 }
