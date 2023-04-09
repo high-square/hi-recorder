@@ -2,6 +2,7 @@ package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.StudyMemberRepository;
+import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.domain.service.*;
 import highsquare.hirecoder.entity.*;
 import highsquare.hirecoder.page.PageRequestDto;
@@ -47,6 +48,8 @@ public class BoardController {
     private final StudyMemberService studyMemberService;
     private final MessageForApplicationService messageForApplicationService;
     private final ApplyForStudyService applyForStudyService;
+
+    private final StudyRepository studyRepository;
 
 
     @GetMapping("/{kind}/{study_id}/{board_id}")
@@ -124,6 +127,14 @@ public class BoardController {
 
         //게시글에 해당하는 총 댓글수 체크
         Integer commentsTotalCounts = commentService.countComments(boardId);
+
+        // 스터디 모집 상태 체크
+        Study findStudy = studyRepository.findById(studyId).get();
+        if (findStudy.getRecruitState().name().equals("모집중")) {
+            model.addAttribute("isRecruiting", true);
+        } else {
+            model.addAttribute("isRecruiting", false);
+        }
 
 
         // view로 전달

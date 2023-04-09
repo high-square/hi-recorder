@@ -91,17 +91,21 @@ public class BoardService {
         if (oldCookie!=null) {
             // 쿠키의 값을 확인해서 게시글 번호가 포함되지 않을 시 값에 게시글 번호를 붙여주고 저장함
             log.info("postView1 cookie의 value = {}", oldCookie.getValue());
-            if(!oldCookie.getValue().contains("["+String.valueOf(boardId)+"]")) {
+            if(!oldCookie.getValue().contains("["+boardId+"]")) {
                 oldCookie.setValue(oldCookie.getValue() + "[" + boardId+"]");
                 log.info("postView2 cookie의 value = {}", oldCookie.getValue());
-                oldCookie.setMaxAge(COOKIE_VALID_TIME);
-                response.addCookie(oldCookie);
+                Cookie cookie = new Cookie("postView", oldCookie.getValue());
+                cookie.setMaxAge(COOKIE_VALID_TIME);
+                cookie.setPath("/");
+                response.addCookie(cookie);
                 return false;
             }
             return true;
         } else { // Cookie 새로 만들어서 저장
+            log.debug("새로운 쿠키 생성");
             Cookie newCookie = new Cookie("postView", "[" + boardId+"]");
             newCookie.setMaxAge(COOKIE_VALID_TIME);
+            newCookie.setPath("/");
             response.addCookie(newCookie);
             return false;
         }

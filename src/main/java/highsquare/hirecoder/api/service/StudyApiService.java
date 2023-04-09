@@ -24,4 +24,6 @@ public class StudyApiService {
                 .map((study)->new MyStudyResponse(study.getId(), study.getName()))
                 .collect(Collectors.toList());
     }
+
+
 }

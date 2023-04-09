@@ -1,8 +1,6 @@
 package highsquare.hirecoder.web.form;
 
-import highsquare.hirecoder.entity.ActivityState;
 import highsquare.hirecoder.entity.MeetingType;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +15,6 @@ public class MyStudyForm {
 
     private String name;
 
-    private ActivityState activityState;
 
     private LocalDateTime studyStartDate;
 

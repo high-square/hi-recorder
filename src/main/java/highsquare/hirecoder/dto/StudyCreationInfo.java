@@ -1,6 +1,5 @@
 package highsquare.hirecoder.dto;
 
-import highsquare.hirecoder.entity.ActivityState;
 import highsquare.hirecoder.entity.MeetingType;
 import highsquare.hirecoder.entity.RecruitState;
 import highsquare.hirecoder.web.form.StudyCreationForm;
@@ -16,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor
 public class StudyCreationInfo {
     private String studyName;
-    private ActivityState activityState;
     private RecruitState recruitState;
     private MeetingType meetingType;
     private Integer crewNumber;
@@ -27,7 +25,6 @@ public class StudyCreationInfo {
     public StudyCreationInfo(StudyCreationForm form, Long managerId) {
 
         studyName = form.getStudyName();
-        activityState = form.getActivityState();
         recruitState = form.getRecruitState();
         meetingType = form.getMeetingType();
         crewNumber = form.getCrewNumber();

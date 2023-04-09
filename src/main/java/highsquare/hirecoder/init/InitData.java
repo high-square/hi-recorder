@@ -10,8 +10,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
-import static highsquare.hirecoder.entity.ActivityState.진행전;
-import static highsquare.hirecoder.entity.ActivityState.진행중;
 import static highsquare.hirecoder.entity.Kind.CONTENT;
 import static highsquare.hirecoder.entity.Kind.RECRUIT;
 import static highsquare.hirecoder.entity.MeetingType.오프라인;
@@ -53,17 +51,17 @@ public abstract class InitData implements ConstraintsConfig {
 
         // ----------------스터디-----------------
         List<Study> studies = List.of(
-                setStudyData("백엔드1팀", members.get(0), 4, 진행중, 모집완료, 오프라인),
-                setStudyData("백엔드2팀", members.get(2), 5, 진행전, 모집중, 온라인),
+                setStudyData("백엔드1팀", members.get(0), 4, 모집완료, 오프라인),
+                setStudyData("백엔드2팀", members.get(2), 5, 모집중, 온라인),
 
-                setStudyData("백엔드3팀", members.get(4), 5, 진행전, 모집중, 온라인),
-                setStudyData("백엔드4팀", members.get(6), 5, 진행전, 모집중, 온라인),
+                setStudyData("백엔드3팀", members.get(4), 5, 모집중, 온라인),
+                setStudyData("백엔드4팀", members.get(6), 5, 모집중, 온라인),
 
-                setStudyData("백엔드5팀", members.get(0), 5, 진행전, 모집중, 온라인),
-                setStudyData("백엔드6팀", members.get(2), 5, 진행전, 모집중, 온라인),
+                setStudyData("백엔드5팀", members.get(0), 5, 모집중, 온라인),
+                setStudyData("백엔드6팀", members.get(2), 5, 모집중, 온라인),
 
-                setStudyData("백엔드7팀", members.get(4), 5, 진행전, 모집중, 온라인),
-                setStudyData("백엔드8팀", members.get(6), 5, 진행전, 모집중, 온라인)
+                setStudyData("백엔드7팀", members.get(4), 5, 모집중, 온라인),
+                setStudyData("백엔드8팀", members.get(6), 5, 모집중, 온라인)
 
 
         );
@@ -194,12 +192,11 @@ public abstract class InitData implements ConstraintsConfig {
         return board;
     }
 
-    private static Study setStudyData(String name, Member managerId, int crewCnt, ActivityState activityState, RecruitState recruitState, MeetingType meetingType) {
+    private static Study setStudyData(String name, Member managerId, int crewCnt, RecruitState recruitState, MeetingType meetingType) {
         Study study = new Study();
         study.setName(name);
         study.setManager(managerId);
         study.setCrewNumber(crewCnt);
-        study.setActivityState(activityState);
         study.setRecruitState(recruitState);
         study.setMeetingType(meetingType);
 

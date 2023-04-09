@@ -4,14 +4,13 @@ import highsquare.hirecoder.domain.repository.MemberRepository;
 import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.dto.StudyCreationInfo;
 import highsquare.hirecoder.entity.Member;
+import highsquare.hirecoder.entity.RecruitState;
 import highsquare.hirecoder.entity.Study;
-import highsquare.hirecoder.entity.StudyMember;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,7 +33,7 @@ public class StudyService {
         Optional<Member> optionalManager = memberRepository.findById(info.getManagerId());
 
         Study study = new Study(
-              info.getStudyName(), info.getActivityState(),
+              info.getStudyName(),
               info.getRecruitState(), info.getStartDate(),
               info.getEndDate(), info.getCrewNumber(),
               info.getMeetingType(), optionalManager.orElse(null)
@@ -70,5 +69,19 @@ public class StudyService {
 
         return study;
     }
+
+    @Transactional
+    public void modifyRecruitOff(Long studyId) {
+        Study findStudy = studyRepository.findById(studyId).get();
+        findStudy.setRecruitState(RecruitState.모집완료);
+    }
+
+    @Transactional
+    public void modifyRecruitOn(Long studyId) {
+        Study findStudy = studyRepository.findById(studyId).get();
+        findStudy.setRecruitState(RecruitState.모집중);
+    }
+
+
 }
 
