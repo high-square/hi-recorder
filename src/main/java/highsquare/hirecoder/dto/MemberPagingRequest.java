@@ -13,7 +13,6 @@ import static highsquare.hirecoder.constant.PageConstant.DEFAULT_SIZE;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberPagingRequest {
-
     @NotNull
     private int page = DEFAULT_PAGE;
     @NotNull

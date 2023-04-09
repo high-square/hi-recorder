@@ -4,6 +4,7 @@ import highsquare.hirecoder.domain.service.BoardService;
 import highsquare.hirecoder.domain.service.StudyMemberService;
 import highsquare.hirecoder.domain.service.TagService;
 import highsquare.hirecoder.entity.Board;
+import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Tag;
 import highsquare.hirecoder.web.form.BoardForm;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class BoardFormEditController {
     @GetMapping("/{board_id}/edit")
     public String getBoardEditForm(@PathVariable(name = "study_id") Long studyId,
                                    @PathVariable(name = "board_id") Long boardId,
+                                   @PathVariable(name = "kind") Kind kind,
                                    Principal principal, Model model) {
 
         Long memberId = Long.parseLong(principal.getName());
@@ -62,7 +64,7 @@ public class BoardFormEditController {
         List<String> tags = foundTags.stream().map(Tag::getContent).collect(Collectors.toList());
 
         boolean isOpen = board.getPublicYn().equals("y") ? true : false;
-        boardForm = new BoardForm(board.getTitle(), tags, isOpen, board.getContent(), board.getHeadImageUrl(), null);
+        boardForm = new BoardForm(board.getTitle(), tags, isOpen, board.getContent(), board.getHeadImageUrl(), null, kind);
 
         model.addAttribute("boardForm", boardForm);
 

@@ -92,12 +92,12 @@
       </a>
       <ul id="member-nav" class="nav-content collapse show bg-white" data-bs-parent="#sidebar-nav">
         <li>
-          <a href="admin-apply.html">
+          <a href="admin-apply.html" th:href="@{${#httpServletRequest.requestURI + '/../applyList'}}">
             <i class="bi bi-circle"></i><span>신청관리</span>
           </a>
         </li>
         <li>
-          <a href="admin-member.html"  class="active">
+          <a href="#" th:href="@{${#httpServletRequest.requestURI + '/../memberList'}}"  class="active">
             <i class="bi bi-circle"></i><span>회원관리</span>
           </a>
         </li>
@@ -148,7 +148,9 @@
                 <td th:text="${member.totalComment}">5</td>
                 <td th:text="${member.manager ? 'MANAGER' : 'USER'}">USER</td>
                 <td th:text="${member.attendState}">참석</td>
-                <td><button class="btn btn-outline-danger btn-sm rounded-pill">강퇴</button></td>
+                <td><button class="btn btn-outline-danger btn-sm rounded-pill"
+                            th:memberId="${member.id}"
+                            onclick="kickout(this.getAttribute('memberId'))">강퇴</button></td>
               </tr>
               </tbody>
             </table>
@@ -161,35 +163,44 @@
     </div>
   </section>
 
+  <ul class="pagination justify-content-center">
+    <li class="page-item" th:each="page : ${memberInfo.getPageList()}">
+      <a class="page-link" th:text="${page}"
+         th:href="@{${#httpServletRequest.getRequestURL().toString()}(page=${page}, size=${memberInfo.getSize()}, isAsc=${memberInfo.isAsc() ? 1 : 0}, sort=${memberInfo.getSort()})}">
+      </a>
+    </li>
+  </ul>
+
 </main><!-- End #main -->
 
-<!-- ======= Footer ======= -->
-<footer id="footer" class="footer">
-  <div class="copyright">
-    &copy; Copyright <strong><span>NiceAdmin</span></strong>. All Rights Reserved
-  </div>
-  <div class="credits">
-    <!-- All the links in the footer should remain intact. -->
-    <!-- You can delete the links only if you purchased the pro version. -->
-    <!-- Licensing information: https://bootstrapmade.com/license/ -->
-    <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-    Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-  </div>
-</footer><!-- End Footer -->
+<script>
+  function kickout(memberId) {
+    if (!confirm("정말 강퇴하시겠습니까?")) return;
+    fetch("kickout/" + memberId, {method: "POST"})
+            .then((resp) => {
+              if (resp.status === 302) {
+                location.reload();
+              } else {
+                resp.text().then((t)=>alert(t));
+              }
+            })
+  }
+</script>
+
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
-<script src="../../static/admin/assets/vendor/apexcharts/apexcharts.min.js" th:href="@{/admin/assets/vendor/apexcharts/apexcharts.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js" th:href="@{/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/chart.js/chart.min.js" th:href="@{/admin/assets/vendor/chart.js/chart.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/echarts/echarts.min.js" th:href="@{/admin/assets/vendor/echarts/echarts.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/quill/quill.min.js" th:href="@{/admin/assets/vendor/quill/quill.min.js}" ></script>
-<script src="../../static/admin/assets/vendor/simple-datatables/simple-datatables.js" th:href="@{/admin/assets/vendor/simple-datatables/simple-datatables.js}" ></script>
-<script src="../../static/admin/assets/vendor/tinymce/tinymce.min.js" th:href="@{/admin/assets/vendor/tinymce/tinymce.min.js}" ></script>
+<script src="../../static/admin/assets/vendor/apexcharts/apexcharts.min.js" th:src="@{/admin/assets/vendor/apexcharts/apexcharts.min.js}" ></script>
+<script src="../../static/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js" th:src="@{/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}" ></script>
+<script src="../../static/admin/assets/vendor/chart.js/chart.min.js" th:src="@{/admin/assets/vendor/chart.js/chart.min.js}" ></script>
+<script src="../../static/admin/assets/vendor/echarts/echarts.min.js" th:src="@{/admin/assets/vendor/echarts/echarts.min.js}" ></script>
+<script src="../../static/admin/assets/vendor/quill/quill.min.js" th:src="@{/admin/assets/vendor/quill/quill.min.js}" ></script>
+<script src="../../static/admin/assets/vendor/simple-datatables/simple-datatables.js" th:src="@{/admin/assets/vendor/simple-datatables/simple-datatables.js}" ></script>
+<script src="../../static/admin/assets/vendor/tinymce/tinymce.min.js" th:src="@{/admin/assets/vendor/tinymce/tinymce.min.js}" ></script>
 
 <!-- Template Main JS File -->
-<script src="../../static/admin/assets/js/main.js" th:href="@{/admin/assets/js/main.js}" ></script>
+<script src="../../static/admin/assets/js/main.js" th:src="@{/admin/assets/js/main.js}" ></script>
 
 </body>
 </html>

@@ -41,7 +41,7 @@ public class ApplyForStudyRepositoryImpl implements ApplyForStudyRepositoryCusto
     @Override
     public Page<ApplyInfo> searchApplyInfo(Long studyId, Pageable page) {
         List<ApplyInfo> content = queryFactory.select(
-                        constructor(ApplyInfo.class, applyForStudy.id, applyForStudy.member.name, messageForApplication.appealMessage, applyForStudy.member.email, applyForStudy.createDate)
+                        constructor(ApplyInfo.class, applyForStudy.id, member.id, member.name, messageForApplication.appealMessage, applyForStudy.member.email, applyForStudy.createDate)
                 )
                 .from(applyForStudy)
                 .join(applyForStudy.member, member)
