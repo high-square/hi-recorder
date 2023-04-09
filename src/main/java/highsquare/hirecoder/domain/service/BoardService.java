@@ -37,9 +37,6 @@ public class BoardService {
 
         Study study = studyRepository.findById(studyId).get();
 
-        log.info("boardForm {}", boardForm);
-
-
         Board board = new Board(member, study, boardForm.getTitle(), boardForm.getContent(), boardForm.getHeadImageUrl(),
                 boardForm.isOpen(), kind);
 
