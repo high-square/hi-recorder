@@ -74,7 +74,7 @@ function uploadImage(e) {
 }
 
 function renderHeaderImage(headerImageUrl) {
-    document.querySelector("#headerImageUrl").value = headerImageUrl;
+    document.querySelector("#headImageUrl").value = headerImageUrl;
     document.querySelector("#headerImage").style.backgroundImage = "url('" + headerImageUrl + "')";
 }
 
