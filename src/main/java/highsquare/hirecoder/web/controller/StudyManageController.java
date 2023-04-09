@@ -44,9 +44,9 @@ public class StudyManageController {
     public String getManagerMainPage(@PathVariable("studyId") Long studyId,
                                      Model model) {
         // 해당 스터디의 게시글 수
-        int boardCount = dashBoardService.getCountBoard(studyId, CONTENT);
+        Long boardCount = dashBoardService.getCountBoard(studyId, CONTENT);
         // 해당 스터디 글의 전체 조회수
-        int countViewCnt = dashBoardService.getViewCntBoard(studyId, CONTENT);
+        Long countViewCnt = dashBoardService.getViewCntBoard(studyId, CONTENT);
         // 해당 스터디의 스터디원 수
         // 여기서 Study를 불러와서 변수에 다 저장하는 게 좋을까??
         // 이 과정을 컨트롤러에서 해도 되는지 모르겠음

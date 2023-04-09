@@ -26,11 +26,12 @@ public class DashBoardService {
     public final StudyRepository studyRepository;
     public final StudyMemberRepository studyMemberRepository;
 
-    public int getCountBoard(Long studyId, Kind kind) {
+    public Long getCountBoard(Long studyId, Kind kind) {
         return boardRepository.countByStudyId(studyId, kind);
     }
 
-    public int getViewCntBoard(Long studyId, Kind kind){
+    public Long getViewCntBoard(Long studyId, Kind kind){
+        // 해당 스터디의 전체 글 조회수
         return boardRepository.getViewCntByStudyId(studyId, kind);
     }
 
@@ -41,8 +42,11 @@ public class DashBoardService {
         Map<DayOfWeek, List<Board>> boardsByDayOfWeek = boards.stream()
                 .collect(Collectors.groupingBy(board -> board.getCreateDate().getDayOfWeek()));
         // 조회수 조회
+        Map<DayOfWeek, List<Board>> allViewCntByDayOfWeek = boards.stream()
+                .collect(Collectors.groupingBy(board -> board.getCreateDate().getDayOfWeek()));
 
         //
+
         return null;
     }
 
