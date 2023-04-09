@@ -28,7 +28,7 @@ public abstract class InitData implements ConstraintsConfig {
     private final ApplyForStudyRepository applyForStudyRepository;
     private final MessageForApplicationRepository messageForApplicationRepository;
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
 
         TransactionStatus ts = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());

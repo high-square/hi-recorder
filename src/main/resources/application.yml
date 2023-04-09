@@ -7,11 +7,11 @@ spring:
       max-request-size: 10MB
 
   profiles:
-    active: h2
+    active: mysql
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         #        show_sql: true 시스템아웃을 통해 찍음
