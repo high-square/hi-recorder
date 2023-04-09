@@ -3,35 +3,30 @@ package highsquare.hirecoder.web.controller;
 import highsquare.hirecoder.domain.service.*;
 import highsquare.hirecoder.dto.ApplyInfo;
 import highsquare.hirecoder.dto.ApplyPagingRequest;
-import highsquare.hirecoder.dto.MemberPagingRequest;
 import highsquare.hirecoder.dto.MemberInfo;
+import highsquare.hirecoder.dto.MemberPagingRequest;
 import highsquare.hirecoder.entity.AttendState;
-import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Study;
 import highsquare.hirecoder.page.PageResultDto;
 import highsquare.hirecoder.utils.ScriptUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotBlank;
 import java.io.IOException;
-import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static highsquare.hirecoder.entity.Kind.CONTENT;
-import static highsquare.hirecoder.entity.Kind.RECRUIT;
 
 @Controller
 @RequiredArgsConstructor
@@ -75,11 +70,10 @@ public class StudyManageController {
         return "/admin/adminMain";
     }
 
-    // TODO: 2023-03-30 테스트를 위해 ResponseBody를 걸어두었습니다. 이제 뷰에 연결해야 합니다.
     @GetMapping("/memberList")
     public String getStudyMemberListPage(@ModelAttribute MemberPagingRequest memberPagingRequest,
                                                                     @PathVariable("studyId") Long studyId,
-                                                                    BindingResult bindingResult, Model model) {
+                                                                     Model model) {
 
         Sort sort = Sort.by(memberPagingRequest.getSort().toString());
 
@@ -87,7 +81,7 @@ public class StudyManageController {
                                     memberPagingRequest.getIsAsc() == 1 ? sort.ascending() : sort.descending());
 
         PageResultDto<MemberInfo, ?> pageResultDto
-                = studyMemberService.ManageStudyMember(studyId, pageable);
+                = studyMemberService.manageStudyMember(studyId, pageable);
 
         model.addAttribute("memberInfo", pageResultDto);
 
@@ -117,10 +111,9 @@ public class StudyManageController {
      * memberId, studyId는 applyForStudyId에 해당하는 신청 테이블의 컬럼 값임(스터디장의 memberId값이 아님)
      * 우선 ScriptUtils를 이용하여 간단하게 로직 작성함(map에 오류를 넣어서 페이지로 반환시키든 리펙토링 필요)
      */
-    @PatchMapping("/approval/{memberId}/{applyForStudyId}")
-    public void approval(@PathVariable("studyId") Long studyId,
+    @GetMapping("/approval/{memberId}/{applyForStudyId}")
+    public String approval(@PathVariable("studyId") Long studyId,
                            @PathVariable("memberId") Long memberId,
-                           Principal principal,
                            @PathVariable("applyForStudyId") Long applyForStudyId,
                            HttpServletResponse response) throws IOException {
 
@@ -139,6 +132,8 @@ public class StudyManageController {
         } else {
             ScriptUtils.alert(response,"해당 스터디가 존재하지 않습니다.");
         }
+
+        return "redirect:/studyManage/manager/{studyId}/applyList";
     }
 
     @GetMapping("/reject/{applyForStudyId}")
@@ -147,7 +142,7 @@ public class StudyManageController {
 
         // 신청테이블에 존재하는지, AuditState가 '대기'인지 확인하기
         if(!applyForStudyService.isValidApplication(applyForStudyId)) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.ok().build();
         }
@@ -158,69 +153,62 @@ public class StudyManageController {
      * 스터디장이 거절했을 시 사유 테이블에 거절 메시지 작성
      */
     @PostMapping("/reject/{applyForStudyId}")
-    public void reject(@PathVariable("applyForStudyId") Long applyForStudyId,
-                       @NotBlank @Range(min = 10, max = 500) @ModelAttribute("rejectReason")
-                       String rejectReason,
-                       BindingResult bindingResult,
-                       HttpServletResponse response) throws IOException {
+    @ResponseBody
+    public ResponseEntity<?> reject(@PathVariable("applyForStudyId") Long applyForStudyId,
+                         @RequestParam String rejectReason,
+                         HttpServletResponse response) throws IOException {
 
+        Map<String, Object> params = new HashMap<>();
         // 신청테이블에 존재하는지, AuditState가 '대기'인지 확인하기
         if(!applyForStudyService.isValidApplication(applyForStudyId)) {
-            ScriptUtils.alert(response,"유효한 신청이 아닙니다.");
-            return;
+            params.put("error", "유효한 신청이 아닙니다.");
+        } else if (rejectReason.length() < 10 || rejectReason.length() > 250) {
+            params.put("error", "거절 사유는 10 ~ 250자 사이여야 합니다.");
         }
 
-        if (bindingResult.hasErrors()) {
-            for (ObjectError error : bindingResult.getAllErrors()) {
-                log.error(error.toString());
-            }
-            return;
+        if (params.containsKey("error")) {
+            log.error("{}", params.get("error"));
+            return ResponseEntity.badRequest().body(params);
         }
 
-        // <---- 검증 종료
-        // 신청 테이블의 AuditState를 '거절'로 바꾸는 로직
         applyForStudyService.reject(applyForStudyId, rejectReason);
+
+        return ResponseEntity.status(HttpStatus.FOUND).build();
     }
 
     /**
      * 스터디장의 스터디 현황 페이지에서 현재 속해있는 스터디의 구성원을 강퇴시키는 기능
      */
-    @PatchMapping("/kickout/{studyMemberId}")
-    public void kickOut(@PathVariable("studyId") Long studyId,
-                          @PathVariable("studyMemberId") Long studyMemberId,
-                          HttpServletResponse response,
-                          Principal principal) throws IOException {
-
-        Long loginMemberId
-                = Long.parseLong(principal.getName());
+    @PostMapping("/kickout/{memberId}")
+    @ResponseBody
+    public ResponseEntity<?> kickOut(@PathVariable("studyId") Long studyId,
+                          @PathVariable("memberId") Long memberId) {
 
         boolean canKickOut = true;
 
         // 해당 스터디 존재 여부
         // 해당 스터디의 스터디 팀장인지 확인하는 로직
-        if (!studyService.isExistingStudy(studyId)) {
-            ScriptUtils.alert(response,"해당 스터디가 존재하지 않습니다.");
-            canKickOut = false;
-        }
-
-        if(studyService.getStudyManagerId(studyId)!=loginMemberId
-        ) {
-            ScriptUtils.alert(response,"해당 스터디의 팀장이 아닙니다.");
+        if (studyService.getStudyManagerId(studyId) == memberId) {
+            log.error("매니저는 강퇴가 불가능합니다.");
             canKickOut = false;
         }
 
         // 해당 studyMember가 존재하는지 확인하기
         // 해당 studyMember의 AttendState가 '참여'인지 확인하기
-        if (!studyMemberService.checkMemberInStudy(studyMemberId)) {
-            ScriptUtils.alert(response,"해당 스터디에 참여하고 있지 않습니다.");
+        if (!studyMemberService.doesMemberBelongToStudy(studyId, memberId)) {
+            log.error("스터디의 멤버가 아닙니다.");
             canKickOut = false;
         }
 
         // <---- 검증 종료
 
         // 해당 studyMember의 AttendState를 '강퇴'로 바꾸는 로직
-        if (canKickOut)
-            studyMemberService.changeAttendState(studyMemberId, AttendState.강퇴);
+        if (canKickOut) {
+            studyMemberService.changeAttendState(studyId, memberId, AttendState.강퇴);
+            return ResponseEntity.status(HttpStatus.FOUND).build();
+        } else {
+            return ResponseEntity.badRequest().body("강퇴가 불가능합니다.");
+        }
     }
 
 }

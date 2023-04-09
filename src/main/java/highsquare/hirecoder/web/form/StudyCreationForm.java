@@ -1,5 +1,6 @@
 package highsquare.hirecoder.web.form;
 
+import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.MeetingType;
 import highsquare.hirecoder.entity.RecruitState;
 import lombok.Data;
@@ -33,7 +34,7 @@ public class StudyCreationForm extends BoardForm {
                              String startDate, String endDate, Integer crewNumber,
                               RecruitState recruitState,
                              MeetingType meetingType, String headImageUrl) {
-        super(title, tags, isPublic, content, headImageUrl, images);
+        super(title, tags, isPublic, content, headImageUrl, images, Kind.RECRUIT);
         this.studyName = studyName;
         this.startDate = startDate;
         this.endDate = endDate;

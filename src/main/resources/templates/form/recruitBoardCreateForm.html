@@ -107,18 +107,7 @@
 
                         </div>
 
-                        <div class="mb-5 row">
-
-                            <!-- 진행상태 셀렉트 리스트 작성 -->
-                            <div class="col" th:fragment="activitySelect">
-                                <select th:field="*{activityState}" class="form-select">
-                                    <option value="">==진행상태 선택==</option>
-                                    <option th:each="activity : ${T(highsquare.hirecoder.entity.ActivityState).values()}"
-                                            th:value="${activity}" th:text="${activity.name()}">
-                                        진행중
-                                    </option>
-                                </select>
-                            </div>
+                        <div class="mb-5 row">:
 
                             <!-- 모집상태 셀렉트 리스트 작성 -->
                             <div class="col" th:fragment="recruitSelect">
@@ -182,7 +171,7 @@
     </div>
 </article>
 <!-- Footer-->
-<footer class="border-top mt-5">
+<footer th:replace="/fragments/footerFrag::footerFrag" class="border-top mt-5">
     <div class="container px-1 px-lg-1">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">

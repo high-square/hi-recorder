@@ -18,7 +18,7 @@ public interface StudyMemberRepository extends JpaRepository<StudyMember, Long>,
     Page<Study> findAllStudyByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
 
-    @Query("select sm.study from StudyMember sm where sm.member.id =:memberId and sm.study.id =:studyId and sm.attendState='참여'")
+    @Query("select sm from StudyMember sm where sm.member.id =:memberId and sm.study.id =:studyId and sm.attendState='참여'")
     StudyMember findStudyMemberByStudyIdAndMemberId(@Param("studyId") Long studyId, @Param("memberId") Long memberId);
 
     @Query("select sm.attendState from StudyMember sm where sm.study.id=:studyId and sm.member.id=:memberId")
