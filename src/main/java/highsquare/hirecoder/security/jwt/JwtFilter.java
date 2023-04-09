@@ -1,6 +1,7 @@
 package highsquare.hirecoder.security.jwt;
 
 import highsquare.hirecoder.security.exception.ExpiredTokenException;
+import highsquare.hirecoder.security.exception.NoJwtTokenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -49,9 +50,9 @@ public class JwtFilter implements Filter {
                         authentication.getName(), requestURI);
             } else {
                 log.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
-//                httpServletResponse.sendRedirect("/login?redirectedURL="+requestURI);
+                throw new NoJwtTokenException("JWT 토큰이 없습니다. Refresh 토큰을 확인하겠습니다.");
             }
-        } catch (ExpiredTokenException ete) {
+        } catch (ExpiredTokenException | NoJwtTokenException e) {
 
             try {
                 if (StringUtils.hasText(refreshToken) && refreshTokenProvider.validateToken(refreshToken, ipAddress)) {
