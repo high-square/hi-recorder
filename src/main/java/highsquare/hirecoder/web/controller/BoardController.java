@@ -1,5 +1,6 @@
 package highsquare.hirecoder.web.controller;
 
+import highsquare.hirecoder.domain.repository.BoardImageRepository;
 import highsquare.hirecoder.domain.repository.BoardRepository;
 import highsquare.hirecoder.domain.repository.StudyMemberRepository;
 import highsquare.hirecoder.domain.repository.StudyRepository;
@@ -40,6 +41,8 @@ public class BoardController {
     private final LikeOnBoardService likeOnBoardService;
 
     private final StudyService studyService;
+
+    private final BoardImageRepository boardImageRepository;
 
 
     private final BoardRepository boardRepository;
@@ -136,6 +139,8 @@ public class BoardController {
             model.addAttribute("isRecruiting", false);
         }
 
+        // 게시글 헤더 이미지 가져오기
+        BoardImage boardImage = boardImageRepository.findByBoardId(boardId).orElse(null);
 
         // view로 전달
         model.addAttribute("comments", allComments);
@@ -147,6 +152,7 @@ public class BoardController {
         model.addAttribute("tags", tags);
         model.addAttribute("commentsTotalCounts", commentsTotalCounts);
         model.addAttribute("memberId", loginMemberId);
+        model.addAttribute("boardImage",boardImage);
         return "boards/board";
     }
 

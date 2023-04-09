@@ -6,6 +6,7 @@ import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.BoardImage;
 import highsquare.hirecoder.entity.Image;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ImageService {
 
     private final ResourceLoader resourceLoader;
@@ -31,6 +33,9 @@ public class ImageService {
 
         String originalFilename = image.getOriginalFilename();
         String extName = originalFilename.substring(originalFilename.indexOf('.'), originalFilename.length());
+
+        log.info("resource : {}", resourceLoader.getResource("classpath:")
+                .getFile().toString());
 
         String imageRoot = resourceLoader.getResource("classpath:")
                 .getFile()
