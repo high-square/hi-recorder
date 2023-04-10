@@ -70,7 +70,7 @@
                     <div th:each="studyLists : ${studies}" class="blog-entry d-flex blog-entry-search-item">
                         <div class="img-wrapper me-4">
                             <a th:href="@{/boards/{kind}/{studyId}/{boardId}(kind=${studyLists.kind},studyId=${studyLists.study.id}, boardId=${studyLists.id})}"></a>
-                                <img th:src="@{/images/kyh_jsp.png}" alt="Image" class="img-fluid">
+                            <img th:src="${studyLists.headImageUrl != null} ? ${studyLists.headImageUrl} : @{/images/no_image.jpg}" alt="Image" class="img-fluid">
                             </a>
                         </div>
                         <div class="content-wrapper">
@@ -120,6 +120,7 @@
                             <ul>
                                 <div th:each="popularList : ${popularList}" class="blog-entry d-flex blog-entry-search-item">
                                     <li>
+                                        <img th:src="${popularList.headImageUrl != null} ? ${popularList.headImageUrl} : @{/images/no_image.jpg}" alt="Image" class="me-4 rounded">
                                         <img src="../../static/images/kyh_jsp.png" alt="Image placeholder" class="me-4 rounded">
                                         <div class="text">
                                             <a th:href="@{/boards/{kind}/{studyId}/{boardId}(kind=${popularList.kind},studyId=${popularList.study.id}, boardId=${popularList.id})}"><h4 th:text="${popularList.title}"></h4></a>

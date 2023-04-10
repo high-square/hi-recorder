@@ -2,10 +2,11 @@ package highsquare.hirecoder.domain.repository.custom;
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import highsquare.hirecoder.dto.MemberInfo;
 import highsquare.hirecoder.dto.MemberSort;
-import highsquare.hirecoder.entity.AttendState;
+import highsquare.hirecoder.entity.QBoard;
 import highsquare.hirecoder.entity.StudyMember;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -54,13 +55,16 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepositoryCustom {
     @Override
     public Page<MemberInfo> searchStudyMemberInfo(Long studyId, Pageable pageable) {
 
+        QBoard board2 = new QBoard("board2");
+
         List<MemberInfo> content = queryFactory.select(constructor(MemberInfo.class,
-                        member.id, member.name, board.count(), comment.count(), studyMember.member.eq(studyMember.study.manager), studyMember.attendState.stringValue()))
+                        member.id, member.name, board.countDistinct(), comment.countDistinct(), studyMember.member.eq(studyMember.study.manager), studyMember.attendState.stringValue()))
                 .from(studyMember)
                 .join(studyMember.study, study).on(study.id.eq(studyId))
                 .join(studyMember.member, member)
-                .leftJoin(board).on(studyMember.study.id.eq(board.study.id), member.id.eq(board.member.id)).fetchJoin()
-                .leftJoin(comment).on(board.study.eq(study), member.id.eq(comment.member.id)).fetchJoin()
+                .leftJoin(board).on(board.study.eq(study), board.member.eq(member)).fetchJoin()
+                .leftJoin(board2).on(board2.study.eq(study)).fetchJoin()
+                .leftJoin(comment).on(comment.board.eq(board2), comment.member.eq(member))
                 .groupBy(member.id)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -106,7 +110,7 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepositoryCustom {
     @Override
     public List<StudyMember> getMyStudies(Long memberId) {
         return queryFactory.selectFrom(studyMember)
-                .where(studyMember.member.id.eq(memberId), studyMember.attendState.eq(AttendState.참여))
+                .where(studyMember.member.id.eq(memberId))
                 .join(studyMember.study, study).fetchJoin()
                 .fetch();
     }
