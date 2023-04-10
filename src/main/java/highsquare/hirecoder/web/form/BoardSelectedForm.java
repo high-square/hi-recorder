@@ -42,5 +42,5 @@ public class BoardSelectedForm {
 
     private LocalDateTime updatedTime;
 
-
+    private String headImageUrl;
 }

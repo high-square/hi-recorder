@@ -5,16 +5,12 @@ import highsquare.hirecoder.dto.StudyCreationInfo;
 import highsquare.hirecoder.entity.Board;
 import highsquare.hirecoder.entity.Kind;
 import highsquare.hirecoder.entity.Study;
-import highsquare.hirecoder.security.jwt.JwtFilter;
 import highsquare.hirecoder.security.jwt.TokenProvider;
 import highsquare.hirecoder.security.util.JwtRenewal;
 import highsquare.hirecoder.web.form.StudyCreationForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,13 +20,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @Slf4j
@@ -121,9 +113,6 @@ public class StudyCreateFormController {
          */
 
         jwtRenewal.managerInjection(response,authentication, study.getId());
-
-
-
 
         studyCreationForm.setOpen(true);
         Board board = boardService.createBoard(memberId, study.getId(), Kind.RECRUIT, studyCreationForm);
