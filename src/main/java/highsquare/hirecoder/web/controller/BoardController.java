@@ -2,7 +2,6 @@ package highsquare.hirecoder.web.controller;
 
 import highsquare.hirecoder.domain.repository.BoardImageRepository;
 import highsquare.hirecoder.domain.repository.BoardRepository;
-import highsquare.hirecoder.domain.repository.StudyMemberRepository;
 import highsquare.hirecoder.domain.repository.StudyRepository;
 import highsquare.hirecoder.domain.service.*;
 import highsquare.hirecoder.entity.*;
@@ -135,6 +134,8 @@ public class BoardController {
         } else {
             model.addAttribute("isRecruiting", false);
         }
+
+
 
         // view로 전달
         model.addAttribute("comments", allComments);
