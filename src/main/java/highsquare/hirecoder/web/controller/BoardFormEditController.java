@@ -105,7 +105,7 @@ public class BoardFormEditController {
             return "form/contentBoardCreateForm";
         }
 
-        Board board = boardService.updateBoard(boardId, boardForm.getTitle(), boardForm.isOpen(), boardForm.getContent());
+        Board board = boardService.updateBoard(boardId, boardForm);
         tagService.updateTags(board, boardForm.getTags());
 
         return String.format("redirect:/boards/%s/%d/%d", board.getKind().name().toLowerCase(), studyId, boardId);

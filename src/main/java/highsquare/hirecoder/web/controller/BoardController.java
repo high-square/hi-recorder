@@ -125,9 +125,6 @@ public class BoardController {
         PageResultDto<CommentSelectedForm, Comment> bestComments =
                 commentService.pagingBestComments(boardId, loginMemberId, pageRequestDto);
 
-
-
-
         //게시글에 해당하는 총 댓글수 체크
         Integer commentsTotalCounts = commentService.countComments(boardId);
 
@@ -139,9 +136,6 @@ public class BoardController {
             model.addAttribute("isRecruiting", false);
         }
 
-        // 게시글 헤더 이미지 가져오기
-        BoardImage boardImage = boardImageRepository.findByBoardId(boardId).orElse(null);
-
         // view로 전달
         model.addAttribute("comments", allComments);
         model.addAttribute("bestComments", bestComments);
@@ -152,7 +146,6 @@ public class BoardController {
         model.addAttribute("tags", tags);
         model.addAttribute("commentsTotalCounts", commentsTotalCounts);
         model.addAttribute("memberId", loginMemberId);
-        model.addAttribute("boardImage",boardImage);
         return "boards/board";
     }
 
@@ -208,7 +201,7 @@ public class BoardController {
         BoardSelectedForm boardForm = new BoardSelectedForm(board.getId(), board.getMember().getId(), board.getMember().getName(),
                 board.getStudy().getId(), board.getStudy().getName(), board.getTitle(), board.getContent(),
                 board.getPublicYn(), board.getViewCnt(), board.getLikeCnt(), board.getKind().name(), board.getCreateDate(),
-                board.getUpdateDate());
+                board.getUpdateDate(), board.getHeadImageUrl());
         return boardForm;
     }
 

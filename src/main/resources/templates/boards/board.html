@@ -44,7 +44,7 @@
     </div>
 </nav>
 <!-- Page Header-->
-<header class="masthead" style="background-image: url('/images/no_image.jpg')" th:if="${boardImage!=null}" th:style="'background-image:url(' + ${boardImage.getImage().getUrl()} + ');'">
+<header class="masthead" style="background-image: url('/images/no_image.jpg')" th:if="${board.headImageUrl!=null}" th:style="'background-image:url(' + ${board.headImageUrl} + ');'">
     <div class="container position-relative px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
@@ -59,7 +59,7 @@
     </div>
 </header>
 
-<header class="masthead" style="background-image: url('/images/no_image.jpg')" th:if="${boardImage==null}" >
+<header class="masthead" style="background-image: url('/images/no_image.jpg')" th:if="${board.headImageUrl==null}" >
     <div class="container position-relative px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">

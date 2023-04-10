@@ -114,12 +114,13 @@ public class BoardService {
     }
 
     @Transactional
-    public Board updateBoard(Long boardId, String title, boolean open, String content) {
+    public Board updateBoard(Long boardId, BoardForm boardForm) {
         Board board = boardRepository.findById(boardId).get();
 
-        board.setTitle(title);
-        board.setContent(content);
-        board.setPublicYn(open ? "y" : "n");
+        board.setTitle(boardForm.getTitle());
+        board.setContent(boardForm.getContent());
+        board.setPublicYn(boardForm.isOpen() ? "y" : "n");
+        board.setHeadImageUrl(boardForm.getHeadImageUrl());
 
         return board;
     }
