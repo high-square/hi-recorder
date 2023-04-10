@@ -1,12 +1,12 @@
 package highsquare.hirecoder.domain.repository.custom;
 
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import highsquare.hirecoder.dto.MemberInfo;
 import highsquare.hirecoder.dto.MemberSort;
+import highsquare.hirecoder.entity.AttendState;
 import highsquare.hirecoder.entity.QBoard;
 import highsquare.hirecoder.entity.StudyMember;
 import lombok.extern.slf4j.Slf4j;
@@ -111,7 +111,7 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepositoryCustom {
     @Override
     public List<StudyMember> getMyStudies(Long memberId) {
         return queryFactory.selectFrom(studyMember)
-                .where(studyMember.member.id.eq(memberId))
+                .where(studyMember.member.id.eq(memberId), studyMember.attendState.eq(AttendState.참여))
                 .join(studyMember.study, study).fetchJoin()
                 .fetch();
     }
