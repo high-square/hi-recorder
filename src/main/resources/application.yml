@@ -33,6 +33,6 @@ decorator:
       enable-logging: true
 
 jwt:
-  secret: Ji4CH3Ujc7QBH1SJCkCjrWxW80FInv1W5KVwjSThQMv7QqwIxGdPC7YkRAcvtXsaN0bfGCoo2tTqibpvcMhGYQ==
+  secret: ENC(1xIW31DCra6i9PkVGEA4A+N5K2tR9Ar6A9kxbxT97zVA+W93ImF495Aez+BWSeOzugJSx7m57jsVR95bRN8g5tykj8oIkJyMb2AXWNRl2+vE34Js7w274bAVHyVYV7hTxa+p9H72hDM=)
   token-validity-in-seconds: 900  # 60 * 15 15분 -> 초
   refresh-token-validity-in-seconds: 1209600 #1209600 # 60 * 60 * 24 * 14 2주일 -> 초
