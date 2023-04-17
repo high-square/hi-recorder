@@ -35,6 +35,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-devtools'
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.7.1'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '3.0.4'
 	runtimeOnly 'com.h2database:h2:2.1.214'
 
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
