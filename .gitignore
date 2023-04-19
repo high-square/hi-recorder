@@ -34,3 +34,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### individual file ###
+h2datasource.yml
