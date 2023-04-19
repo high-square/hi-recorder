@@ -50,7 +50,8 @@ public class LoginController {
     }
 
     @GetMapping("/signup")
-    public String signUpPage() {
+    public String signUpPage(Model model) {
+        model.addAttribute("signUpForm", new SignUpForm());
         return "form/signUp";
     }
 
@@ -82,8 +83,18 @@ public class LoginController {
     }
 
     @PostMapping("/signup")
-    public String signUp(@Valid @ModelAttribute SignUpForm signUpForm) {
-        Member member = memberService.signUp(signUpForm);
+    public String signUp(@Valid @ModelAttribute SignUpForm signUpForm, BindingResult bindingResult) {
+
+        if (memberService.checkMemberIsExists(signUpForm.getName())) {
+            bindingResult.rejectValue("name", "signup.name.duplication", "아이디가 중복되었습니다.");
+        }
+
+        if (!signUpForm.getPassword().equals(signUpForm.getRePassword())) {
+            bindingResult.rejectValue("rePassword", "signup.password", "비밀번호가 다릅니다.");
+        }
+
+        if (bindingResult.hasErrors()) return "form/signUp";
+
         return "redirect:/login";
     }
 }
