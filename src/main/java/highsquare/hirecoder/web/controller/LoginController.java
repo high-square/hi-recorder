@@ -19,6 +19,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -42,18 +44,22 @@ public class LoginController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(Model model) {
+        model.addAttribute("loginForm", new LoginForm());
         return "form/login";
     }
 
     @GetMapping("/signup")
-    public String signUpPage() {
+    public String signUpPage(Model model) {
+        model.addAttribute("signUpForm", new SignUpForm());
         return "form/signUp";
     }
 
     @PostMapping("/login")
-    public String authorize(@Valid @ModelAttribute LoginForm loginForm,
+    public String authorize(@Valid @ModelAttribute LoginForm loginForm, BindingResult bindingResult,
                             HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+
+        if (bindingResult.hasErrors()) return "form/login";
 
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword());
@@ -77,8 +83,18 @@ public class LoginController {
     }
 
     @PostMapping("/signup")
-    public String signUp(@Valid @ModelAttribute SignUpForm signUpForm) {
-        Member member = memberService.signUp(signUpForm);
+    public String signUp(@Valid @ModelAttribute SignUpForm signUpForm, BindingResult bindingResult) {
+
+        if (memberService.checkMemberIsExists(signUpForm.getName())) {
+            bindingResult.rejectValue("name", "signup.name.duplication", "아이디가 중복되었습니다.");
+        }
+
+        if (!signUpForm.getPassword().equals(signUpForm.getRePassword())) {
+            bindingResult.rejectValue("rePassword", "signup.password", "비밀번호가 다릅니다.");
+        }
+
+        if (bindingResult.hasErrors()) return "form/signUp";
+
         return "redirect:/login";
     }
 }

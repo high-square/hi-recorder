@@ -14,11 +14,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public boolean checkMemberIsExists(String name) {
+        return memberRepository.findByName(name).isPresent();
+    }
+
     @Transactional
     public Member signUp(SignUpForm signUpForm) {
-        memberRepository.findByName(signUpForm.getName())
-                .ifPresent(user -> { throw new RuntimeException("이미 가입된 유저입니다."); });
-
         Member member = Member.builder()
                 .name(signUpForm.getName())
                 .password(passwordEncoder.encode(signUpForm.getPassword()))
