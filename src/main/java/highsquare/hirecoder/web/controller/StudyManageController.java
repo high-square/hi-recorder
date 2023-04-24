@@ -67,7 +67,7 @@ public class StudyManageController {
         model.addAttribute("currentMember", currentMember);
         model.addAttribute("totalMember", totalMember);
 
-        return "/admin/adminMain";
+        return "admin/adminMain";
     }
 
     @GetMapping("/memberList")
@@ -85,7 +85,7 @@ public class StudyManageController {
 
         model.addAttribute("memberInfo", pageResultDto);
 
-        return "/admin/admin-member";
+        return "admin/admin-member";
     }
 
     @GetMapping("/applyList")
@@ -103,7 +103,7 @@ public class StudyManageController {
 
         model.addAttribute("applyInfo", applyInfoPageResultDto);
 
-        return "/admin/admin-apply";
+        return "admin/admin-apply";
     }
 
     /**
@@ -133,7 +133,7 @@ public class StudyManageController {
             ScriptUtils.alert(response,"해당 스터디가 존재하지 않습니다.");
         }
 
-        return "redirect:/studyManage/manager/{studyId}/applyList";
+        return "redirect:studyManage/manager/{studyId}/applyList";
     }
 
     @GetMapping("/reject/{applyForStudyId}")
