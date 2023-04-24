@@ -51,9 +51,9 @@ dependencies {
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
+//tasks.named('test') {
+//	useJUnitPlatform()
+//}
 
 // --> querydsl 설정 시작
 def querydslDir = "$buildDir/generated/querydsl"
