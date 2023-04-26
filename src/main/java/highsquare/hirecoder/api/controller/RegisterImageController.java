@@ -27,6 +27,7 @@ public class RegisterImageController {
             return new ResponseEntity<>(imageResponse, HttpStatus.OK);
 
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }

@@ -77,10 +77,10 @@
                 <div class="container">
 
                     <!-- 제목 작성 -->
-                    <div th:replace="/form/formFragment :: titleInput"></div>
+                    <div th:replace="form/formFragment :: titleInput"></div>
 
                     <!-- 태그 작성 -->
-                    <div th:replace="/form/formFragment :: tagInput"></div>
+                    <div th:replace="form/formFragment :: tagInput"></div>
 
                     <div class="form-check form-switch" th:if="*{kind != null}">
                         <input th:field="*{open}" type="checkbox" th:id="public" value=true class="form-check-input" th:disabled="*{kind.name().equals('RECRUIT')}">
@@ -94,7 +94,7 @@
 
 
                     <!-- 마크다운 작성 -->
-                    <div th:replace="/form/formFragment :: markdownInput"></div>
+                    <div th:replace="form/formFragment :: markdownInput"></div>
 
                     <input type="text" id="headImageUrl" name="headImageUrl" hidden />
 

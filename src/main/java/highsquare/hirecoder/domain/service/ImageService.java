@@ -7,7 +7,10 @@ import highsquare.hirecoder.entity.BoardImage;
 import highsquare.hirecoder.entity.Image;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,14 +37,9 @@ public class ImageService {
         String originalFilename = image.getOriginalFilename();
         String extName = originalFilename.substring(originalFilename.indexOf('.'), originalFilename.length());
 
-        log.info("resource : {}", resourceLoader.getResource("classpath:")
-                .getFile().toString());
-
-        String imageRoot = resourceLoader.getResource("classpath:")
+        String imageRoot = resourceLoader.getResource("file:/home/images")
                 .getFile()
-                .getParentFile()
-                .getParentFile()
-                .getParentFile().toString() + "/resources/main/static/images/";
+                .getPath();
 
         String imageUri = "/images/" + uuid + extName;
 
