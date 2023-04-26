@@ -133,7 +133,7 @@ public class StudyManageController {
             ScriptUtils.alert(response,"해당 스터디가 존재하지 않습니다.");
         }
 
-        return "redirect:studyManage/manager/{studyId}/applyList";
+        return "redirect:/studyManage/manager/{studyId}/applyList";
     }
 
     @GetMapping("/reject/{applyForStudyId}")
